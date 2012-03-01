@@ -207,13 +207,13 @@ def _altlang(code):
     #Default value
     return []
 
-def translate(code, xdict):
+def translate(code, xdict, fallback=True):
     """Return the most appropriate translation from a translation dict.
 
     Given a language code and a dictionary, returns the dictionary's value for
     key 'code' if this key exists; otherwise tries to return a value for an
     alternative language that is most applicable to use on the Wikipedia in
-    language 'code'.
+    language 'code' except fallback is False.
 
     The language itself is always checked first, then languages that
     have been defined to be alternatives, and finally English. If none of
@@ -238,12 +238,14 @@ def translate(code, xdict):
 
     if code in xdict:
         return xdict[code]
+    if not fallback:
+        return None
     for alt in _altlang(code):
         if alt in xdict:
             return xdict[alt]
     if '_default' in xdict:
         return xdict['_default']
-    elif 'en' in xdict:
+    if 'en' in xdict:
         return xdict['en']
     return xdict.values()[0]
 
