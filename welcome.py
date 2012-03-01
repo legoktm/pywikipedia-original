@@ -209,23 +209,19 @@ locale.setlocale(locale.LC_ALL, '')
 
 # The page where the bot will save the log (e.g. Wikipedia:Welcome log).
 #
-# ATTENTION: "Log disabled comment is listed the projects not to log welcomed users, and no necessary to set deatils.
+# ATTENTION: Not listed projects are disabled to log welcomed users, and no necessary to set details.
 logbook = {
-    'commons': {'_default': u'Project:Welcome log', },
-    'wikipedia': {
-        '_default': None,
-        # Log disabled: da, de, en, fa, he, id, ka, pdc, pt, ru, vo.
-        'ar': u'Project:سجل الترحيب',
-        'fr': u'Wikipedia:Prise de décision/Accueil automatique des nouveaux par un robot/log',
-        'ga': u'Project:Log fáilte',
-        'it': u'Project:Benvenuto Bot/Log',
-        'ja': u'利用者:Alexbot/Welcomebotログ',
-        'nl': u'Project:Logboek welkom',
-        'no': u'Project:Velkomstlogg',
-        'sq': u'Project:Tung log',
-        'sr': u'Project:Добродошлице',
-        'zh': u'User:Welcomebot/欢迎日志',
-    }
+    'ar': u'Project:سجل الترحيب',
+    'fr': u'Wikipedia:Prise de décision/Accueil automatique des nouveaux par un robot/log',
+    'ga': u'Project:Log fáilte',
+    'it': u'Project:Benvenuto Bot/Log',
+    'ja': u'利用者:Alexbot/Welcomebotログ',
+    'nl': u'Project:Logboek welkom',
+    'no': u'Project:Velkomstlogg',
+    'sq': u'Project:Tung log',
+    'sr': u'Project:Добродошлице',
+    'zh': u'User:Welcomebot/欢迎日志',
+    'commons': u'Project:Welcome log',
 }
 # The text for the welcome message (e.g. {{welcome}}) and %s at the end
 # that is your signature (the bot has a random parameter to add different
@@ -580,7 +576,7 @@ class WelcomeBot(object):
             return None
 
         text = u''
-        logg = pywikibot.translate(self.site, logbook)
+        logg = pywikibot.translate(self.site, logbook, fallback=False)
         if not logg:
             return None
 
