@@ -11,6 +11,7 @@ __version__ = '$Id$'
 
 import re, sys
 from pywikibot import Error
+import wikipedia as pywikibot
 
 # Languages to use for comment text after the actual language but before
 # en:. For example, if for language 'xx', you want the preference of
@@ -221,20 +222,19 @@ def translate(code, xdict, fallback=True):
     list.
 
     """
+    family = pywikibot.default_family
     # If a site is given instead of a code, use its language
     if hasattr(code, 'lang'):
+        family = code.family.name
         code = code.lang
 
-    # If xdict attribute is wikipedia, define the xdite had multiple projects
-    if 'wikipedia' in xdict:
-        import wikipedia as pywikibot
-        if pywikibot.default_family in xdict:
-            xdict = xdict[pywikibot.default_family]
-        else:
-            xdict = xdict['wikipedia']
-
-        if type(xdict) != dict:
-            return xdict
+    # Check whether xdict has multiple projects
+    if family in xdict:
+        xdict = xdict[family]
+    elif 'wikipedia' in xdict:
+        xdict = xdict['wikipedia']
+    if type(xdict) != dict:
+        return xdict
 
     if code in xdict:
         return xdict[code]
