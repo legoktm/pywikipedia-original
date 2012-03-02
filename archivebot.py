@@ -361,8 +361,8 @@ class PageArchiver(object):
     Execute by running the .run() method."""
 
     algo = 'none'
-    pageSummary = message('archivebot-page-summary')
-    archiveSummary = message('archivebot-archive-summary')
+    pageSummary = i18n.twntranslate('archivebot-page-summary')
+    archiveSummary = i18n.twntranslate('archivebot-archive-summary')
 
     def __init__(self, Page, tpl, salt, force=False):
         self.attributes = {
