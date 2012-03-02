@@ -679,7 +679,7 @@ class CosmeticChangesToolkit:
                                                    u'٠١٢٣٤٥٦٧٨٩'[i],
                                                    u'۰۱۲۳۴۵۶۷۸۹'[i], exceptions)
             # do not change digits in class, style and table params
-            pattern = re.compile(u'=".*?"', re.UNICODE)
+            pattern = re.compile(u'\w+=(".+?"|\d+)', re.UNICODE)
             exceptions.append(pattern)
             # do not change digits inside html-tags
             pattern = re.compile(u'<[/]*?[^</]+?[/]*?>', re.UNICODE)
