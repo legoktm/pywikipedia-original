@@ -75,8 +75,13 @@ docuReplacements = {
     '&warning;': warning,
 }
 
-nn_iw_msg = \
-u'<!--interwiki (no, sv, da first; then other languages alphabetically by name)-->'
+# Interwiki message on top of iw links
+# 2nd line is a regex if needed
+msg_interwiki = {
+    'fr' : u'<!-- Autres langues -->',
+    'nn' : (u'<!--interwiki (no, sv, da first; then other languages alphabetically by name)-->',
+            u'(<!-- ?interwiki \(no(?:/nb)?, ?sv, ?da first; then other languages alphabetically by name\) ?-->)')
+}    
 
 # This is from interwiki.py;
 # move it to family file and implement global instances
@@ -270,9 +275,14 @@ class CosmeticChangesToolkit:
 
         # nn got a message between the categories and the iw's
         # and they want to keep it there, first remove it
-        if self.site.language()=='nn':
-            regex = re.compile(
-'(<!-- ?interwiki \(no(?:/nb)?, ?sv, ?da first; then other languages alphabetically by name\) ?-->)')
+        if self.site.lang in msg_interwiki:
+            iw_msg = msg_interwiki[self.site.lang]
+            if isinstance(iw_msg, tuple):
+                iw_reg = iw_msg[1]
+                iw_msg = iw_msg[0]
+            else:
+                iw_reg = u'(%s)' % iw_msg
+            regex = re.compile(iw_reg)
             found = regex.findall(text)
             if found:
                 if pywikibot.verbose:
@@ -284,10 +294,13 @@ class CosmeticChangesToolkit:
         if categories:
             text = pywikibot.replaceCategoryLinks(text, categories,
                                                   site=self.site)
-        # Put the nn iw message back
-        if self.site.language()=='nn' and not self.talkpage and \
-           (interwikiLinks or hasCommentLine):
-            text = text + '\r\n\r\n' + nn_iw_msg
+        # Put the iw message back
+        if not self.talkpage and \
+           ((interwikiLinks or hasCommentLine) and
+            self.site.language() == 'nn' or
+            (interwikiLinks and hasCommentLine) and
+            self.site.language() == 'fr'):
+            text = text + '\r\n\r\n' + iw_msg
         # Adding stars templates
         if allstars:
             text = text.strip()+self.site.family.interwiki_text_separator
