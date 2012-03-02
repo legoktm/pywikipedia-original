@@ -612,7 +612,7 @@ class CosmeticChangesToolkit:
                                            r'(?i)([\r\n]) *<h%d> *([^<]+?) *</h%d> *([\r\n])'%(level, level),
                                            r'%s'%equals, exceptions)
         #remove empty <ref/>-tag
-        text = pywikibot.replaceExcept(text, r'(?i)<ref\s*/>', r'', exceptions)
+        text = pywikibot.replaceExcept(text, r'(?i)(<ref\s*/>|<ref *>\s*</ref>)', r'', exceptions)
         # TODO: maybe we can make the bot replace <p> tags with \r\n's.
         return text
 
