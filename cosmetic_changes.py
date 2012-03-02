@@ -491,6 +491,8 @@ class CosmeticChangesToolkit:
             124,     # Vertical bar (??) - used intentionally in navigation bar templates on de:
             160,     # Non-breaking space (&nbsp;) - not supported by Firefox textareas
             173,     # Soft-hypen (&shy;) - enable editing
+           8206,     # left-to-right mark (&ltr;)
+           8207,     # right-to-left mark (&rtl;)
         ]
         # ignore ' see http://eo.wikipedia.org/w/index.php?title=Liberec&diff=next&oldid=2320801
         #if self.site.lang == 'eo':
