@@ -361,8 +361,6 @@ class PageArchiver(object):
     Execute by running the .run() method."""
 
     algo = 'none'
-    pageSummary = i18n.twntranslate('archivebot-page-summary')
-    archiveSummary = i18n.twntranslate('archivebot-archive-summary')
 
     def __init__(self, Page, tpl, salt, force=False):
         self.attributes = {
@@ -490,7 +488,9 @@ class PageArchiver(object):
             #Save the archives first (so that bugs don't cause a loss of data)
             for a in sorted(self.archives.keys()):
                 self.commentParams['count'] = self.archives[a].archivedThreads
-                comment = self.archiveSummary % self.commentParams
+                comment = i18n.twntranslate(language,
+                                            'archivebot-archive-summary',
+                                            self.commentParams)
                 self.archives[a].update(comment)
 
             #Save the page itself
@@ -502,7 +502,9 @@ class PageArchiver(object):
             if not self.commentParams['archives']:
                 self.commentParams['archives'] = '/dev/null'
             self.commentParams['why'] = ', '.join(whys)
-            comment = self.pageSummary % self.commentParams
+            comment = i18n.twntranslate(language,
+                                        'archivebot-page-summary',
+                                        self.commentParams)
             self.Page.update(comment)
 
 def main():
