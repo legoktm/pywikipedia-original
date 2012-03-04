@@ -47,8 +47,8 @@ def get_base_dir():
         raise RuntimeError("Directory '%s' does not exist." % base_dir)
     if not os.path.exists(os.path.join(base_dir, "user-config.py")):
         print("No user-config.py found in directory '%s'" % base_dir)
-        called = os.path.basename(sys.argv[0].strip())
-        if not ('version' in called):
+        called = os.path.basename(sys.argv[0].strip()).split('.')[0]
+        if called != 'version':
             print("Creating...\n")
             create_user_config_file(base_dir)
     return base_dir
