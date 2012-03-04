@@ -170,6 +170,7 @@ class CosmeticChangesToolkit:
         text = self.removeNonBreakingSpaceBeforePercent(text)
         text = self.fixSyntaxSave(text)
         text = self.fixHtml(text)
+        text = self.fixReferences(text)
         text = self.fixStyle(text)
         text = self.fixTypo(text)
         if self.site.lang in ['ckb', 'fa']:
@@ -614,9 +615,18 @@ class CosmeticChangesToolkit:
             text = pywikibot.replaceExcept(text,
                                            r'(?i)([\r\n]) *<h%d> *([^<]+?) *</h%d> *([\r\n])'%(level, level),
                                            r'%s'%equals, exceptions)
+        # TODO: maybe we can make the bot replace <p> tags with \r\n's.
+        return text
+
+    def fixReferences(self, text):
+        #http://en.wikipedia.org/wiki/User:AnomieBOT/source/tasks/OrphanReferenceFixer.pm
+        exceptions = ['nowiki', 'comment', 'math', 'pre', 'source', 'startspace']
+
+        # it should be name = " or name=" NOT name   ="
+        text = re.sub(r'(?i)<ref +name(= *| *=)"', r'<ref name="', text)
         #remove empty <ref/>-tag
         text = pywikibot.replaceExcept(text, r'(?i)(<ref\s*/>|<ref *>\s*</ref>)', r'', exceptions)
-        # TODO: maybe we can make the bot replace <p> tags with \r\n's.
+        text = pywikibot.replaceExcept(text, r'(?i)<ref\s+([^>]+?)\s*>\s*</ref>', r'<ref \1/>', exceptions)
         return text
 
     def fixStyle(self, text):
