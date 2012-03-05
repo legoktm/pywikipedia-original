@@ -128,7 +128,7 @@ def _altlang(code):
     if code == 'ltg':
         return ['lv']
     #Dutch
-    if code in ['fy', 'li', 'pap', 'srn', 'vls', 'zea']:
+    if code in ['af', 'fy', 'li', 'pap', 'srn', 'vls', 'zea']:
         return ['nl']
     if code == ['nds-nl']:
         return ['nds', 'nl']
@@ -205,6 +205,8 @@ def _altlang(code):
         return ['kj', 'ng']
     if code in ['meu', 'hmo']:
         return ['meu', 'hmo']
+    if code == ['as']:
+        return ['bn']
     #Default value
     return []
 
