@@ -584,6 +584,10 @@ for _key, _val in globals().items():
             print "       Was: ",ot
             print "       Now: ",nt
         del nt, ot
+    elif _key == 'suppresssurvey':
+        # Temporary solution for 2012 version survey, search for this key
+        # in wikipedia.py
+        pass
     else:
         print "WARNING: Configuration variable %r is defined but unknown. Misspelled?" %_key
 

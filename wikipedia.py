@@ -8234,6 +8234,28 @@ if config.authenticate:
 
 MyURLopener.addheaders = [('User-agent', useragent)]
 
+# This is a temporary part for the 2012 version survey
+# http://thread.gmane.org/gmane.comp.python.pywikipediabot.general/12473
+# Upon removing the connected lines from config.py should be removed, too.
+if sys.version < '2.7.2':
+    try:
+        if config.suppresssurvey == True:
+            pass
+        else:
+            raise AttributeError
+    except AttributeError:
+        output(
+"""
+\03{lightyellow}Dear Pwikipedia user!\03{default}
+Pywikibot has detected that you use an outdated version of Python.
+We would like to hear your voice before ceasing support of this version.
+Please update to \03{lightyellow}Python 2.7.2\03{default} if possible or visit 
+http://www.mediawiki.org/wiki/Pywikipediabot/Survey2012 to tell us why we 
+should support your version and to learn how to hide this message.
+After collecting opinions for a time we will decide and announce the deadline
+of deprecating use of old Python versions for Pywikipedia.
+""")
+
 if __name__ == '__main__':
     import doctest
     print 'Pywikipediabot %s' % version.getversion()
