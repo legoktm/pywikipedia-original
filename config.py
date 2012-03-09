@@ -3,7 +3,7 @@
 # (C) Rob W.W. Hooft, 2003
 #     parts by holger@trillke.net 2002/03/18
 #     Purodha Blissenbach (Modifier), 2010
-# (C) Pywikipedia bot team, 2007-2010
+# (C) Pywikipedia bot team, 2007-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -477,6 +477,12 @@ actions_to_block = []
 # processing. As higher this value this effect will decrease.
 max_queue_size = 64
 
+############## TEMPORARY SETTINGS ##############
+# Temporary solution for 2012 version survey, search for this key
+# in wikipedia.py
+import sys # Just for the next line, remove them together
+suppresssurvey = (sys.version >= '2.7.2')
+
 # End of configuration section
 # ============================
 
@@ -584,10 +590,6 @@ for _key, _val in globals().items():
             print "       Was: ",ot
             print "       Now: ",nt
         del nt, ot
-    elif _key == 'suppresssurvey':
-        # Temporary solution for 2012 version survey, search for this key
-        # in wikipedia.py
-        pass
     else:
         print "WARNING: Configuration variable %r is defined but unknown. Misspelled?" %_key
 
