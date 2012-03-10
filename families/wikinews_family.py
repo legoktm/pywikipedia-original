@@ -237,16 +237,15 @@ class Family(family.Family):
             'ja': u'短信‐ノート',
         }
 
+        # CentralAuth cross avaliable projects.
+        self.cross_projects = [
+            'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
+            'wikiversity', 'meta', 'mediawiki', 'test', 'incubator', 'commons',
+            'species',
+        ]
 
-        self.obsolete = {
-            'hu': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=28342
-            'jp': 'ja',
-            'nb': 'no',
-            'nl': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
-            'th': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=28341
-            'zh-tw': 'zh',
-            'zh-cn': 'zh'
-        }
+        # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
+        self.cross_allowed = ['ca', 'cs', 'en', 'fa',]
 
         # Which languages have a special order for putting interlanguage links,
         # and what order is it? If a language is not in interwiki_putfirst,
@@ -263,14 +262,15 @@ class Family(family.Family):
             'pl': self.alphabetic,
         }
 
-        # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
-        self.cross_allowed = ['ca', 'cs', 'fa',]
-
-        # CentralAuth cross avaliable projects.
-        self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikiversity',
-            'meta', 'mediawiki', 'test', 'incubator', 'commons', 'species'
-        ]
+        self.obsolete = {
+            'hu': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=28342
+            'jp': 'ja',
+            'nb': 'no',
+            'nl': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
+            'th': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=28341
+            'zh-tw': 'zh',
+            'zh-cn': 'zh'
+        }
 
     def code2encoding(self, code):
         return 'utf-8'
