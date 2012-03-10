@@ -64,6 +64,7 @@ class Family(family.Family):
             'ang': u'Wicifruma',
             'ar': [u'ويكي مصدر', u'وم'],
             'az': u'VikiMənbə',
+            'be': u'Вікікрыніцы',
             'bg': u'Уикиизточник',
             'bn': [u'উইকিসংকলন', u'Wikisource'],
             'br': u'Wikimammenn',
@@ -131,6 +132,7 @@ class Family(family.Family):
             'ang': u'Wicifruma talk',
             'ar': [u'نقاش ويكي مصدر', u'نو'],
             'az': u'VikiMənbə müzakirəsi',
+            'be': u'Размовы пра Вікікрыніцы',
             'bg': u'Уикиизточник беседа',
             'bn': [u'উইকিসংকলন আলোচনা', u'উইকিসংকলন আলাপ'],
             'br': u'Kaozeadenn Wikimammenn',
@@ -340,6 +342,7 @@ class Family(family.Family):
         self.namespaces[104] = {
             '-': u'Page',
             'ar': u'صفحة',
+            'be': u'Старонка',
             'br': [u'Oberour', u'Author'],
             'ca': [u'Llibre', u'Index'],
             'da': u'Side',
@@ -376,6 +379,7 @@ class Family(family.Family):
         self.namespaces[105] = {
             '-': u'Page talk',
             'ar': u'نقاش الصفحة',
+            'be': u'Размовы_пра_старонку',
             'br': [u'Kaozeadenn oberour', u'Author talk'],
             'ca': [u'Llibre Discussió', u'Index talk'],
             'da': u'Sidediskussion',
@@ -412,6 +416,7 @@ class Family(family.Family):
         self.namespaces[106] = {
             '-': u'Index',
             'ar': u'فهرس',
+            'be': u'Індэкс',
             'ca': u'Autor',
             'da': u'Indeks',
             'en': u'Index',
@@ -441,6 +446,7 @@ class Family(family.Family):
         self.namespaces[107] = {
             '-': u'Index talk',
             'ar': u'نقاش الفهرس',
+            'be': u'Размовы_пра_індэкс',
             'ca': u'Autor Discussió',
             'da': u'Indeksdiskussion',
             'en': u'Index talk',
@@ -469,6 +475,7 @@ class Family(family.Family):
 
         self.namespaces[108] = {
             '-': u'Author',
+            'be': u'Аўтар',
             'he': u'מחבר',
             'it': u'Pagina',
             'pt': u'Em Tradução',
@@ -477,6 +484,7 @@ class Family(family.Family):
 
         self.namespaces[109] = {
             '-': u'Author talk',
+            'be': u'Размовы_пра_аўтара',
             'he': u'שיחת מחבר',
             'it': u'Discussioni pagina',
             'pt': u'Discussão Em Tradução',
@@ -533,10 +541,12 @@ class Family(family.Family):
             'pl': self.alphabetic,
             'simple': self.alphabetic
         }
+
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
             'el','fa','it','ko','no','vi','zh'
         ]
+
         # CentralAuth cross avaliable projects.
         self.cross_projects = [
             'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikinews', 'wikiversity',
