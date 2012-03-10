@@ -148,13 +148,12 @@ class Family(family.Family):
             'fr': u'Discussion Transwiki',
             'ja': u'Transwiki‐ノート',
         }
-        self.cross_allowed = [
-            'ja',
-        ]
+
         # CentralAuth cross avaliable projects.
         self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
-            'meta', 'mediawiki', 'test', 'incubator', 'commons', 'species'
+            'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
+            'wikiversity', 'meta', 'mediawiki', 'test', 'incubator', 'commons',
+            'species',
         ]
 
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
