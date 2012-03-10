@@ -513,6 +513,18 @@ class Family(family.Family):
             'he': u'שיחת מפתח',
         }
 
+        # CentralAuth cross avaliable projects.
+        self.cross_projects = [
+            'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
+            'wikiversity', 'meta', 'mediawiki', 'test', 'incubator', 'commons',
+            'species',
+        ]
+
+        # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
+        self.cross_allowed = [
+            'ca', 'el', 'fa', 'it', 'ko', 'no', 'pl', 'vi', 'zh',
+        ]
+
         # Which languages have a special order for putting interlanguage links,
         # and what order is it? If a language is not in interwiki_putfirst,
         # alphabetical order on language code is used. For languages that are in
@@ -540,17 +552,6 @@ class Family(family.Family):
             'zh-tw': 'zh',
             'zh-cn': 'zh'
         }
-
-        # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
-        self.cross_allowed = [
-            'el','fa','it','ko','no','vi','zh'
-        ]
-
-        # CentralAuth cross avaliable projects.
-        self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikinews', 'wikiversity',
-            'meta', 'mediawiki', 'test', 'incubator', 'commons', 'species'
-        ]
 
         self.authornamespaces = {
             '_default': [0],
