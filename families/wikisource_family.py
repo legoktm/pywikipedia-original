@@ -513,12 +513,21 @@ class Family(family.Family):
             'he': u'שיחת מפתח',
         }
 
-        self.alphabetic = ['ang','ar','az','bg','bs','ca','cs','cy',
-                      'da','de','el','en','es','et','fa','fi',
-                      'fo','fr','gl','he','hr','ht','hu','id',
-                      'is','it','ja', 'ko','la','lt','ml','nl',
-                      'no','pl','pt','ro','ru','sk','sl','sr',
-                      'sv','te','th','tr','uk','vi','yi','zh']
+        # Which languages have a special order for putting interlanguage links,
+        # and what order is it? If a language is not in interwiki_putfirst,
+        # alphabetical order on language code is used. For languages that are in
+        # interwiki_putfirst, interwiki_putfirst is checked first, and
+        # languages are put in the order given there. All other languages are
+        # put after those, in code-alphabetical order.
+        self.interwiki_putfirst = {
+            'en': self.alphabetic,
+            'fi': self.alphabetic,
+            'fr': self.alphabetic,
+            'he': ['en'],
+            'hu': ['en'],
+            'pl': self.alphabetic,
+            'simple': self.alphabetic
+        }
 
         self.obsolete = {
             'ang': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Old_English_Wikisource
@@ -530,16 +539,6 @@ class Family(family.Family):
             'tokipona': None,
             'zh-tw': 'zh',
             'zh-cn': 'zh'
-        }
-
-        self.interwiki_putfirst = {
-            'en': self.alphabetic,
-            'fi': self.alphabetic,
-            'fr': self.alphabetic,
-            'he': ['en'],
-            'hu': ['en'],
-            'pl': self.alphabetic,
-            'simple': self.alphabetic
         }
 
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
