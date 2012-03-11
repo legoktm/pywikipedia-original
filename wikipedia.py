@@ -4449,8 +4449,9 @@ def getall(site, pages, throttle=True, force=False):
     """
     # TODO: why isn't this a Site method?
     pages = list(pages)  # if pages is an iterator, we need to make it a list
-    output(u'Getting %d pages %sfrom %s...'
-           % (len(pages), (u'', u'via API ')[site.has_api() and debug], site))
+    output(u'Getting %d page%s %sfrom %s...'
+           % (len(pages), (u'', u's')[len(pages) != 1],
+              (u'', u'via API ')[site.has_api() and debug], site))
     limit = config.special_page_limit / 4 # default is 500/4, but It might have good point for server.
     if len(pages) > limit:
         # separate export pages for bulk-retrieve
