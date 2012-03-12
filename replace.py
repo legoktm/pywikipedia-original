@@ -96,7 +96,7 @@ Furthermore, the following command line parameters are supported:
 -fix:XYZ          Perform one of the predefined replacements tasks, which are
                   given in the dictionary 'fixes' defined inside the files
                   fixes.py and user-fixes.py.
-                  The -regex, -recursive and -nocase argument and given 
+                  The -regex, -recursive and -nocase argument and given
                   replacements and exceptions will be ignored if you use -fix
                   and they are present in the 'fixes' dictionary.
                   Currently available predefined fixes are:
@@ -345,7 +345,7 @@ class ReplaceRobot:
         # is on, and to display the number of edited articles otherwise.
         self.editcounter = 0
         # A counter for saved exceptions
-        self.exceptcounter = 0 
+        self.exceptcounter = 0
 
     def isTitleExcepted(self, title):
         """
@@ -478,7 +478,7 @@ class ReplaceRobot:
                 if self.exctitles:
                     choice = pywikibot.inputChoice(
                             u'Do you want to accept these changes?',
-                            ['Yes', 'No', 'no+eXcept', 'Edit', 
+                            ['Yes', 'No', 'no+eXcept', 'Edit',
                              'open in Browser', 'All', 'Quit'],
                             ['y', 'N', 'x', 'e', 'b', 'a', 'q'], 'N')
                 else:
