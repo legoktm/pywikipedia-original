@@ -516,7 +516,7 @@ class ReplaceRobot:
                     self.acceptall = True
                 if choice == 'x': #May happen only if self.exctitles isn't None
                     self.exctitles.write(
-                        u"u'%s$',\n" % re.escape(page.title()))
+                        u"ur'^%s$',\n" % re.escape(page.title()))
                     self.exctitles.flush()
                     self.exceptcounter += 1
                 if choice == 'y':
