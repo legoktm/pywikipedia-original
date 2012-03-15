@@ -73,8 +73,10 @@ parameterHelp = u"""\
                   across all namespaces.
 
 -namespace        Filter the page generator to only yield pages in the
--ns               specified namespaces.  Separate multiple namespace
-                  numbers with commas. Example "-ns:0,2,4"
+-ns               specified namespaces.  Separate multiple namespace numbers
+                  with commas. Example: -ns:"0,2,4" (Take care of quotation
+                  marks as comma may qualify as command line separator.)
+                  Will ask for namespaces if you write just -namespace or -ns.
 
 -interwiki        Work on the given page and all equivalent pages in other
                   languages. This can, for example, be used to fight
