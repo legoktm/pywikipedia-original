@@ -133,25 +133,25 @@ These arguments are useful to provide hints to the bot:
 
                    There are some special hints, trying a number of languages
                    at once:
-                       * all:       All languages with at least ca. 100 articles.
-                       * 10:        The 10 largest languages (sites with most
-                                    articles). Analogous for any other natural
-                                    number.
-                       * arab:      All languages using the Arabic alphabet.
-                       * cyril:     All languages that use the Cyrillic alphabet.
-                       * chinese:   All Chinese dialects.
-                       * latin:     All languages using the Latin script.
-                       * scand:     All Scandinavian languages.
+                      * all:       All languages with at least ca. 100 articles.
+                      * 10:        The 10 largest languages (sites with most
+                                   articles). Analogous for any other natural
+                                   number.
+                      * arab:      All languages using the Arabic alphabet.
+                      * cyril:     All languages that use the Cyrillic alphabet.
+                      * chinese:   All Chinese dialects.
+                      * latin:     All languages using the Latin script.
+                      * scand:     All Scandinavian languages.
 
                    Names of families that forward their interlanguage links
-                   to the wiki family being worked upon can be used, they are:
-                     with -family=wikipedia only:
-                       * commons:   Interlanguage links of Mediawiki Commons.
-                       * incubator: Links in pages on the Mediawiki Incubator.
-                       * meta:      Interlanguage links of named pages on Meta.
-                       * species:   Interlanguage links of the wikispecies wiki.
-                       * strategy:  Links in pages on Wikimedias strategy wiki.
-                       * test:      Take interwiki links from Test Wikipedia
+                   to the wiki family being worked upon can be used (with
+                   -family=wikipedia only), they are:
+                      * commons:   Interlanguage links of Mediawiki Commons.
+                      * incubator: Links in pages on the Mediawiki Incubator.
+                      * meta:      Interlanguage links of named pages on Meta.
+                      * species:   Interlanguage links of the wikispecies wiki.
+                      * strategy:  Links in pages on Wikimedias strategy wiki.
+                      * test:      Take interwiki links from Test Wikipedia
 
                    Languages, groups and families having the same page title
                    can be combined, as  -hint:5,scand,sr,pt,commons:New_York
