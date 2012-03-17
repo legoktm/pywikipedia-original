@@ -22,8 +22,6 @@ import re
 def splitwarning(folder):
     files={}
     count={}
-
-    # TODO: Variable log filename
     fn = pywikibot.config.datafilepath("logs", "interwiki.log")
     logFile = codecs.open(fn, 'r', 'utf-8')
     rWarning = re.compile('WARNING: (?P<family>.+?): \[\[(?P<code>.+?):.*')
