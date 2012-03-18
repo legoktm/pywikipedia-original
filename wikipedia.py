@@ -823,14 +823,13 @@ not supported by PyWikipediaBot!"""
                 self._redirarg = redirtarget
             else:
                 raise IsRedirectPage(redirtarget)
-        if self.section():
-            m = re.search("=+[ ']*%s[ ']*=+" % re.escape(self.section()),
-                          pageInfo['revisions'][0]['*'])
-            if not m:
-                try:
-                    self._getexception
-                except AttributeError:
-                    raise SectionError # Page has no section by this name
+
+        if self.section() and \
+           not textlib.does_text_contain_section(pagetext, self.section()):
+            try:
+                self._getexception
+            except AttributeError:
+                raise SectionError # Page has no section by this name
         return pagetext
 
     def _getEditPageOld(self, get_redirect=False, throttle=True, sysop=False,
@@ -965,14 +964,13 @@ not supported by PyWikipediaBot!"""
                 self._redirarg = redirtarget
             else:
                 raise IsRedirectPage(redirtarget)
-        if self.section():
-            m = re.search("=+[ ']*%s[ ']*=+" % re.escape(self.section()),
-                          text)
-            if not m:
-                try:
-                    self._getexception
-                except AttributeError:
-                    raise SectionError # Page has no section by this name
+
+        if self.section() and \
+           not textlib.does_text_contain_section(text, self.section()):
+            try:
+                self._getexception
+            except AttributeError:
+                raise SectionError # Page has no section by this name
 
         return pagetext
 
