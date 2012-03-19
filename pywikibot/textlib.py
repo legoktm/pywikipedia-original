@@ -172,9 +172,14 @@ def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
                         break
                     groupID = groupMatch.group('name') or \
                               int(groupMatch.group('number'))
-                    replacement = replacement[:groupMatch.start()] + \
-                                  match.group(groupID) + \
-                                  replacement[groupMatch.end():]
+                    try:
+                        replacement = replacement[:groupMatch.start()] + \
+                                      match.group(groupID) + \
+                                      replacement[groupMatch.end():]
+                    except IndexError:
+                        print '\nInvalid group reference:', groupID
+                        print 'Groups found:\n' match.groups()
+                        raise IndexError
             text = text[:match.start()] + replacement + text[match.end():]
 
             # continue the search on the remaining text
