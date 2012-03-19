@@ -178,7 +178,7 @@ def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
                                       replacement[groupMatch.end():]
                     except IndexError:
                         print '\nInvalid group reference:', groupID
-                        print 'Groups found:\n' match.groups()
+                        print 'Groups found:\n', match.groups()
                         raise IndexError
             text = text[:match.start()] + replacement + text[match.end():]
 
