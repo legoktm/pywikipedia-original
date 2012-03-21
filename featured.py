@@ -260,7 +260,7 @@ good_name = {
     'pl': (CAT, u"Dobre artykuły"),
     'pt': (CAT, u"Artigos bons"),
     'ro': (BACK, u"Articol bun"),
-    'ru': (CAT, u"Википедия:Хорошие статьи"),
+    'ru': (CAT, u"Википедия:Хорошие статьи по алфавиту"),
     'simple': (CAT, u"Good articles"),
     'sr': (BACK,u"Иконица добар"),
     'sv': (CAT, u"Wikipedia:Bra artiklar"),
