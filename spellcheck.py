@@ -420,6 +420,16 @@ class Word(object):
             newwords.append(self.word)
         return self.alternatives
 
+def checkPage(page, checknames=True, knownonly=False):
+    try:
+        text = page.get()
+    except pywikibot.Error:
+        pass
+    else:
+        text = spellcheck(text, checknames=checknames, knownonly=knownonly, title=page.title())
+        if text != page.get():
+            page.put(text)
+
 try:
     pageskip = []
     edit = SpecialTerm("edit")
@@ -499,38 +509,14 @@ except:
 try:
     if newpages:
         for (page, date, length, loggedIn, user, comment) in pywikibot.getSite().newpages(1000):
-            try:
-                text = page.get()
-            except pywikibot.Error:
-                pass
-            else:
-                text = spellcheck(text, checknames=checknames,
-                                  knownonly=knownonly, title=page.title())
-                if text != page.get():
-                    page.put(text)
+            checkPage(page, checknames, knownonly)
     elif start:
         for page in pagegenerators.PreloadingGenerator(pagegenerators.AllpagesPageGenerator(start=start,includeredirects=False)):
-            try:
-                text = page.get()
-            except pywikibot.Error:
-                pass
-            else:
-                text = spellcheck(text, checknames=checknames,
-                                  knownonly=knownonly, title=page.title())
-                if text != page.get():
-                    page.put(text)
+            checkPage(page, checknames, knownonly)
 
     if longpages:
         for (page, length) in pywikibot.getSite().longpages(500):
-            try:
-                text = page.get()
-            except pywikibot.Error:
-                pass
-            else:
-                text = spellcheck(text, checknames=checknames,
-                                  knownonly=knownonly, title=page.title())
-                if text != page.get():
-                    page.put(text)
+            checkPage(page, checknames, knownonly)
 
     else:
         title = ' '.join(title)
@@ -543,9 +529,7 @@ try:
             except pywikibot.IsRedirectPage:
                 print "Page is a redirect page"
             else:
-                text = spellcheck(text,knownonly=knownonly, title=page.title())
-                if text != page.get():
-                    page.put(text)
+                checkPage(page, knownonly=knownonly)
             title = pywikibot.input(u"Which page to check now? (enter to stop)")
 finally:
     pywikibot.stopme()
