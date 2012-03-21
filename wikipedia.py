@@ -6095,7 +6095,10 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 for s in data['search']:
                     offset += 1
                     page = Page(self, s['title'])
-                    yield page, s['snippet'], '', s['size'], s['wordcount'], s['timestamp']
+                    if self.versionnumber() >= 16:
+                        yield page, s['snippet'], '', s['size'], s['wordcount'], s['timestamp']
+                    else:
+                        yield page, '', '', '', '', ''
         else:
             #Yield search results (using Special:Search page) for query.
             throttle = True
