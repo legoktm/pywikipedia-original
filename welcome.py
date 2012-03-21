@@ -246,6 +246,7 @@ netext = {
         'no': u'{{subst:bruker:jhs/vk}} %s',
         'pdc':u'{{subst:Wilkum}}%s',
         'pt': u'{{subst:bem vindo}} %s',
+        'roa-tara': u'{{Bovègne}} %s',
         'ru': u'{{Hello}} %s',
         'sq': u'{{subst:tung}} %s',
         'sr': u'{{Добродошлица}} %s',
@@ -351,7 +352,9 @@ random_sign = {
     'fr': u'Projet:Service de Parrainage Actif/Signatures',
     'it': u'Project:Benvenuto_Bot/Firme',
     'ja': None, #jawiki comminuty discussion oppose , [[ja:Wikipedia:Bot作業依頼/ウェルカムメッセージ貼り付け依頼]]
+    'roa-tara': u'Wikipedia:Bovègne Bot/Firme',
     'ru': u'Участник:LatitudeBot/Sign',
+    'vec': u'Utente:FriBot/Firme',
     'zh': u'User:Welcomebot/欢迎日志/用户',
     }
 # The page where the bot reads the real-time whitelist page.
