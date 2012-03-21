@@ -121,7 +121,7 @@ class DjVuTextBot:
         Loads the given page, does some changes, and saves it.
         """
         site = pywikibot.getSite()
-        page_namespace = site.family.namespaces[104][site.lang]
+        page_namespace = site.mediawiki_message('Proofreadpage namespace')
         page = pywikibot.Page(site, u'%s:%s/%d'
                               % (page_namespace, self.prefix, pageno))
         exists = page.exists()
@@ -228,7 +228,7 @@ def main():
             raise pywikibot.PageNotFound(u"Found family '%s'; Wikisource required." % site.family.name)
 
         if not index_page.exists() and index_page.namespace() == 0:
-            index_namespace = pywikibot.Page(site, 'MediaWiki:Proofreadpage index namespace').get()
+            index_namespace = site.mediawiki_message('Proofreadpage index namespace')
 
             index_page = pywikibot.Page(pywikibot.getSite(),
                                         u"%s:%s" % (index_namespace, index))
