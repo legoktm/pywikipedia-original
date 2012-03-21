@@ -77,6 +77,7 @@ import re, pagegenerators, urllib2, urllib
 import wikipedia as pywikibot
 from pywikibot import i18n
 import codecs, config
+import webbrowser
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
@@ -277,11 +278,17 @@ Match was: %s''' % result)
             if not always:
                 choice = pywikibot.inputChoice(
                     u'Do you want to accept these changes?',
-                    ['Yes', 'No', 'All'], ['y', 'N', 'a'], 'N')
+                    ['Yes', 'No', 'All', 'open in Browser'], ['y', 'N', 'a', 'b'], 'N')
                 if choice == 'a':
                     always = True
                 elif choice == 'n':
                     return (False, False, always)
+                elif choice == 'b':
+                    webbrowser.open("http://%s%s" % (
+                        page.site().hostname(),
+                        page.site().nice_get_address(page.title())
+                    ))
+                    pywikibot.input("Press Enter when finished in browser.")
             if always or choice == 'y':
                 try:
                     if always:
