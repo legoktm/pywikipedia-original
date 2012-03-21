@@ -73,6 +73,9 @@ placeBeforeSections = {
         u'Siehe auch',
         u'Weblink',      # bad, but common singular form of Weblinks
     ],
+    'dsb':[
+        u'Nožki',
+    ],
     'en': [              # no explicit policy on where to put the references
         u'Further reading',
         u'External links',
@@ -110,6 +113,9 @@ placeBeforeSections = {
         u'Liens externes',
         u'Voir aussi',
         u'Notes'
+    ],
+    'hsb':[
+        u'Nóžki',
     ],
     'hu': [
         u'Külső hivatkozások',
@@ -200,6 +206,9 @@ referencesSections = {
         u'Quellen',
         u'Quellenangaben',
     ],
+    'dsb':[
+        u'Nožki',
+    ],
     'en': [             # not sure about which ones are preferred.
         u'References',
         u'Footnotes',
@@ -233,6 +242,9 @@ referencesSections = {
     ],
     'he': [
         u'הערות שוליים',
+    ],
+    'hsb':[
+        u'Nóžki',
     ],
     'hu': [
         u'Források és jegyzetek',
@@ -313,6 +325,7 @@ referencesTemplates = {
         'ar': [u'Reflist', u'ثبت المراجع', u'قائمة المراجع'],
         'be': [u'Зноскі', u'Примечания', u'Reflist', u'Спіс заўваг', u'Заўвагі'],
         'da': [u'Reflist'],
+        'dsb':[u'Referency'],
         'en': [u'Reflist', u'Refs', u'FootnotesSmall', u'Reference',
                u'Ref-list', u'Reference list', u'References-small', u'Reflink',
                u'Footnotes', u'FootnotesSmall'],
@@ -322,6 +335,7 @@ referencesTemplates = {
                u'پانویس', u'پانویس‌ها ', u'پانویس ۲', u'پانویس۲',u'فهرست منابع'],
         'fi': [u'Viitteet', u'Reflist'],
         'fr': [u'Références', u'Notes', u'References', u'Reflist'],
+        'hsb':[u'Referency'],
         'hu': [u'reflist', u'források', u'references', u'megjegyzések'],
         'is': [u'reflist'],
         'it': [u'References'],
@@ -349,7 +363,9 @@ referencesSubstitute = {
     'wikipedia': {
         'be': u'{{зноскі}}',
         'da': u'{{reflist}}',
+        'dsb':u'{{referency}}',
         'fi': u'{{viitteet}}',
+        'hsb':u'{{referency}}',
         'hu': u'{{Források}}',
         'pl': u'{{Przypisy}}',
         'ru': u'{{примечания}}',
