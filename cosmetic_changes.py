@@ -209,6 +209,7 @@ class CosmeticChangesToolkit:
         """
         starsList = [
             u'bueno',
+            u'bom interwiki',
             u'cyswllt[ _]erthygl[ _]ddethol', u'dolen[ _]ed',
             u'destacado', u'destaca[tu]',
             u'enllaç[ _]ad',
