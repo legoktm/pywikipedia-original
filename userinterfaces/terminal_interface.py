@@ -18,48 +18,6 @@ except ImportError:
 
 transliterator = transliteration.transliterator()
 
-def getDefaultTextColorInWindows():
-    """
-    This method determines the default text color and saves its color
-    code inside the variable windowsColors['default'].
-
-    Based on MIT-licensed code by Andre Burgaud published at
-    http://starship.python.net/crew/theller/wiki/ColorConsole
-    """
-    if sys.platform != 'win32' or not ctypes_found:
-        return -1
-    SHORT = ctypes.c_short
-    WORD = ctypes.c_ushort
-
-    # wincon.h
-    class COORD(ctypes.Structure):
-        _fields_ = [
-            ("X", SHORT),
-            ("Y", SHORT)
-        ]
-
-    class SMALL_RECT(ctypes.Structure):
-        _fields_ = [
-            ("Left", SHORT),
-            ("Top", SHORT),
-            ("Right", SHORT),
-            ("Bottom", SHORT)
-        ]
-
-    class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
-        _fields_ = [
-            ("dwSize", COORD),
-            ("dwCursorPosition", COORD),
-            ("wAttributes", WORD),
-            ("srWindow", SMALL_RECT),
-            ("dwMaximumWindowSize", COORD)
-        ]
-
-    std_out_handle = ctypes.windll.kernel32.GetStdHandle(-11)
-    csbi = CONSOLE_SCREEN_BUFFER_INFO()
-    ctypes.windll.kernel32.GetConsoleScreenBufferInfo(std_out_handle, ctypes.byref(csbi))
-    return (csbi.wAttributes & 0x000f)
-
 # TODO: other colors:
          #0 = Black
          #1 = Blue
