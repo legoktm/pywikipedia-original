@@ -14,12 +14,22 @@
 # [5] http://stackoverflow.com/users/393146
 #
 ################################################
+#
+# stdin support added by Merlijn van Deen <valhallasw@gmail.com>, march 2012
+# Licensed under both CC-BY-SA as the MIT license.
+#
+################################################
 
 import sys
 if sys.platform == "win32":
     import codecs
-    from ctypes import WINFUNCTYPE, windll, POINTER, byref, c_int
-    from ctypes.wintypes import BOOL, HANDLE, DWORD, LPWSTR, LPCWSTR, LPVOID
+    from ctypes import WINFUNCTYPE, windll, POINTER, byref, c_int, \
+                       create_unicode_buffer
+    from ctypes.wintypes import BOOL, HANDLE, DWORD, LPWSTR, LPCWSTR
+    try:
+        from ctypes.wintypes import LPVOID
+    except ImportError:
+        from ctypes import c_void_p as LPVOID
 
     original_stderr = sys.stderr
 
@@ -50,6 +60,7 @@ if sys.platform == "win32":
         # BOOL WINAPI GetConsoleMode(HANDLE hConsole, LPDWORD lpMode);
 
         GetStdHandle = WINFUNCTYPE(HANDLE, DWORD)(("GetStdHandle", windll.kernel32))
+        STD_INPUT_HANDLE = DWORD(-10)
         STD_OUTPUT_HANDLE = DWORD(-11)
         STD_ERROR_HANDLE  = DWORD(-12)
         GetFileType = WINFUNCTYPE(DWORD, DWORD)(("GetFileType", windll.kernel32))
@@ -65,18 +76,29 @@ if sys.platform == "win32":
             return ((GetFileType(handle) & ~FILE_TYPE_REMOTE) != FILE_TYPE_CHAR
                     or GetConsoleMode(handle, byref(DWORD())) == 0)
 
+        old_stdin_fileno  = None
         old_stdout_fileno = None
         old_stderr_fileno = None
+
+        if hasattr(sys.stdin, 'fileno'):
+            old_stdin_fileno  = sys.stdin.fileno()
         if hasattr(sys.stdout, 'fileno'):
             old_stdout_fileno = sys.stdout.fileno()
         if hasattr(sys.stderr, 'fileno'):
             old_stderr_fileno = sys.stderr.fileno()
 
+        STDIN_FILENO  = 0            
         STDOUT_FILENO = 1
         STDERR_FILENO = 2
+        real_stdin  = (old_stdin_fileno  == STDIN_FILENO)
         real_stdout = (old_stdout_fileno == STDOUT_FILENO)
         real_stderr = (old_stderr_fileno == STDERR_FILENO)
 
+        if real_stdin:
+            hStdin = GetStdHandle(STD_INPUT_HANDLE)
+            if not_a_console(hStdin):
+                real_stdin = False
+                
         if real_stdout:
             hStdout = GetStdHandle(STD_OUTPUT_HANDLE)
             if not_a_console(hStdout):
@@ -86,6 +108,27 @@ if sys.platform == "win32":
             hStderr = GetStdHandle(STD_ERROR_HANDLE)
             if not_a_console(hStderr):
                 real_stderr = False
+
+        if real_stdin:
+            ReadConsoleW = WINFUNCTYPE(BOOL, HANDLE, LPVOID, DWORD, POINTER(DWORD), \
+                                       LPVOID)(("ReadConsoleW", windll.kernel32))
+            
+            class UnicodeInput:
+                def __init__(self, hConsole, name, bufsize=1024):
+                    self._hConsole = hConsole
+                    self.bufsize = bufsize
+                    self.buffer = create_unicode_buffer(bufsize)
+                    self.name = name
+                    self.encoding = 'utf-8'
+                
+                def readline(self):
+                    maxnum = DWORD(self.bufsize-1)
+                    numrecv = DWORD(0)
+                    result = ReadConsoleW(self._hConsole, self.buffer, maxnum, byref(numrecv), None)
+                    if not result:
+                        raise Exception("stdin failure")
+                    return self.buffer.value[:numrecv.value].encode(self.encoding)
+                    
 
         if real_stdout or real_stderr:
             # BOOL WINAPI WriteConsoleW(HANDLE hOutput, LPWSTR lpBuffer, DWORD nChars,
@@ -158,18 +201,23 @@ if sys.platform == "win32":
                         _complain("%s.writelines: %r" % (self.name, e))
                         raise
 
+            if real_stdin:
+                stdin  = UnicodeInput(hStdin, name='<Unicode console stdin>')
+            else:
+                stdin  = sys.stdin
+
             if real_stdout:
-                sys.stdout = UnicodeOutput(hStdout, None, STDOUT_FILENO,
+                stdout = UnicodeOutput(hStdout, None, STDOUT_FILENO,
                                            '<Unicode console stdout>')
             else:
-                sys.stdout = UnicodeOutput(None, sys.stdout, old_stdout_fileno,
+                stdout = UnicodeOutput(None, sys.stdout, old_stdout_fileno,
                                            '<Unicode redirected stdout>')
 
             if real_stderr:
-                sys.stderr = UnicodeOutput(hStderr, None, STDERR_FILENO,
+                stderr = UnicodeOutput(hStderr, None, STDERR_FILENO,
                                            '<Unicode console stderr>')
             else:
-                sys.stderr = UnicodeOutput(None, sys.stderr, old_stderr_fileno,
+                stderr = UnicodeOutput(None, sys.stderr, old_stderr_fileno,
                                            '<Unicode redirected stderr>')
     except Exception, e:
         _complain("exception %r while fixing up sys.stdout and sys.stderr" % (e,))
@@ -207,5 +255,8 @@ if sys.platform == "win32":
                 argv[0] = u'-c'
                 break
 
-    # if you like:
-    sys.argv = argv
+else:
+    stdin = sys.stdin
+    stdout = sys.stdout
+    stderr = sys.stderr
+    argv = sys.argv
