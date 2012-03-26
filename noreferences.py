@@ -182,8 +182,10 @@ placeBeforeSections = {
         u'Připisy',
     ],
     'zh': [
-        u'外部連结',
         u'外部链接',
+        u'外部連结',
+        u'外部連結',
+        u'外部连接',
     ],
 }
 
@@ -305,16 +307,12 @@ referencesSections = {
         u'Připisy',
     ],
     'zh': [
-        u'參考文獻',
-        u'参考文献',
         u'參考資料',
         u'参考资料',
+        u'參考文獻',
+        u'参考文献',
         u'資料來源',
         u'资料来源',
-        u'參見',
-        u'参见',
-        u'參閱',
-        u'参阅',
     ],
 }
 
@@ -370,6 +368,7 @@ referencesSubstitute = {
         'pl': u'{{Przypisy}}',
         'ru': u'{{примечания}}',
         'szl':u'{{Przipisy}}',
+        'zh': u'{{reflist}}',
     },
 }
 
@@ -387,6 +386,7 @@ maintenance_category = {
         'en': u'Pages with missing references list',
         'ja': u'Refタグがあるのにreferencesタグがないページ',
         'simple': u'Wikipedia pages with broken references',
+        'zh': u'参考资料格式错误的页面',
     },
 }
 
