@@ -10,7 +10,7 @@ import config, transliteration
 import traceback, re, sys
 import wikipedia
 
-transliterator = transliteration.transliterator()
+transliterator = transliteration.transliterator(config.console_encoding)
 
 colors = [
     'default',
@@ -40,6 +40,7 @@ class UI:
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.encoding = config.console_encoding
+        self.realencoding = config.console_encoding
 
     def printNonColorized(self, text, targetStream):
         # We add *** after the text as a whole if anything needed to be colorized.
@@ -69,7 +70,7 @@ class UI:
             # Encode our unicode string in the encoding used by the user's console,
             # and decode it back to unicode. Then we can see which characters
             # can't be represented in the console encoding.
-            codecedText = text.encode(self.encoding, 'replace').decode(self.encoding)
+            codecedText = text.encode(self.realencoding, 'replace').decode(self.realencoding)
             transliteratedText = ''
             # Note: A transliteration replacement might be longer than the original
             # character, e.g. ч is transliterated to ch.
