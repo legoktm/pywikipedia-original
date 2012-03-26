@@ -4,7 +4,7 @@
 #
 # Distributed under the terms of the MIT license.
 #
-__version__ = '$Id: terminal_interface.py 10040 2012-03-25 21:26:29Z valhallasw $'
+__version__ = '$Id$'
 
 import re
 import terminal_interface_base
