@@ -39,6 +39,7 @@ class UI:
         self.stdin  = sys.stdin
         self.stdout = sys.stdout
         self.stderr = sys.stderr
+        self.encoding = config.console_encoding
 
     def printNonColorized(self, text, targetStream):
         # We add *** after the text as a whole if anything needed to be colorized.
@@ -68,7 +69,7 @@ class UI:
             # Encode our unicode string in the encoding used by the user's console,
             # and decode it back to unicode. Then we can see which characters
             # can't be represented in the console encoding.
-            codecedText = text.encode(config.console_encoding, 'replace').decode(config.console_encoding)
+            codecedText = text.encode(self.encoding, 'replace').decode(self.encoding)
             transliteratedText = ''
             # Note: A transliteration replacement might be longer than the original
             # character, e.g. ч is transliterated to ch.
@@ -122,7 +123,7 @@ class UI:
             text = getpass.getpass('')
         else:
             text = self._raw_input()
-        text = unicode(text, config.console_encoding)
+        text = unicode(text, self.encoding)
         return text
 
     def inputChoice(self, question, options, hotkeys, default = None):

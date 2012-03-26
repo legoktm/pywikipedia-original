@@ -87,7 +87,7 @@ class Win32CtypesUI(Win32BaseUI):
         data = self.stdin.readline()
         if '\x1a' in data:
             raise EOFError()
-        return self.stdin.readline().strip()
+        return data.strip()
 
 if ctypes_found:
     Win32UI = Win32CtypesUI

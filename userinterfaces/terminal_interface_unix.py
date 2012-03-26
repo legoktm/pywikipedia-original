@@ -45,4 +45,4 @@ class UnixUI(terminal_interface_base.UI):
         # just to be sure, reset the color
         text += unixColors['default']
 
-        targetStream.write(text.encode(config.console_encoding, 'replace'))
+        targetStream.write(text.encode(self.encoding, 'replace'))
