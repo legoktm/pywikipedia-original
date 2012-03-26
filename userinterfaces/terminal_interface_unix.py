@@ -6,7 +6,8 @@
 #
 __version__ = '$Id: terminal_interface.py 10040 2012-03-25 21:26:29Z valhallasw $'
 
-from terminal_interface_base import colors
+import config
+import terminal_interface_base
 
 # TODO: other colors:
          #0 = Black
