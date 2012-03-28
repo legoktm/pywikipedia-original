@@ -913,10 +913,12 @@ class Family(family.Family):
 
         self.namespaces[106] = {
             'als': u'Text',
+            'ru': u'Арбитраж',
         }
 
         self.namespaces[107] = {
             'als': u'Text Diskussion',
+            'ru': u'Обсуждение арбитража',
         }
 
         self.namespaces[108] = {
