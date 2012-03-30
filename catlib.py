@@ -9,7 +9,7 @@ Library to work with category pages on Wikipedia
 # (C) Russell Blau, 2005
 # (C) Cyde Weys, 2005-2007
 # (C) Leonardo Gregianin, 2005-2007
-# (C) Pywikipedia bot team, 2007-2011
+# (C) Pywikipedia bot team, 2007-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -99,8 +99,9 @@ class Category(wikipedia.Page):
         else:
             return '[[%s]]' % titleWithSortKey
 
-    def _getAndCacheContents(self, recurse=False, purge=False, startFrom=None, cache=None,
-                                   sortby=None, sortdir=None):
+    def _getAndCacheContents(self, recurse=False, purge=False, startFrom=None,
+                             cache=None, sortby=None, sortdir=None,
+                             endsort=None):
         """
         Cache results of _parseCategory for a second call.
 
@@ -136,11 +137,13 @@ class Category(wikipedia.Page):
                         # contents of subcategory are cached by calling
                         # this method recursively; therefore, do not cache
                         # them again
-                        for item in subcat._getAndCacheContents(newrecurse, purge, cache=cache,
-                                            sortby=sortby, sortdir=sortdir):
+                        for item in subcat._getAndCacheContents(
+                                newrecurse, purge, cache=cache, sortby=sortby,
+                                sortdir=sortdir, endsort=endsort):
                             yield item
         else:
-            for tag, page in self._parseCategory(purge, startFrom, sortby, sortdir):
+            for tag, page in self._parseCategory(purge, startFrom, sortby,
+                                                 sortdir, endsort):
                 if tag == ARTICLE:
                     self.articleCache.append(page)
                     if not page in cache:
@@ -161,20 +164,25 @@ class Category(wikipedia.Page):
             if not startFrom:
                 self.completelyCached = True
 
-    def _getContentsNaive(self, recurse=False, startFrom=None, sortby=None, sortdir=None):
+    def _getContentsNaive(self, recurse=False, startFrom=None, sortby=None,
+                          sortdir=None, endsort=None):
         """
         Simple category content yielder. Naive, do not attempts to
         cache anything
         """
         for tag, page in self._parseCategory(startFrom=startFrom,
-                                             sortby=sortby, sortdir=sortdir):
+                                             sortby=sortby, sortdir=sortdir,
+                                             endsort=endsort):
             yield tag, page
             if tag == SUBCATEGORY and recurse:
                 for item in page._getContentsNaive(recurse=True,
-                                                   sortby=sortby, sortdir=sortdir):
+                                                   sortby=sortby,
+                                                   sortdir=sortdir,
+                                                   endsort=endsort):
                     yield item
 
-    def _parseCategory(self, purge=False, startFrom=None, sortby=None, sortdir=None):
+    def _parseCategory(self, purge=False, startFrom=None, sortby=None,
+                       sortdir=None, endsort=None):
         """
         Yields all articles and subcategories that are in this category by API.
 
@@ -215,13 +223,17 @@ class Category(wikipedia.Page):
                 params.update(currentPageOffset)
                 wikipedia.output('Getting [[%s]] list from %s...'
                                  % (self.title(), "%s=%s" % currentPageOffset.popitem()))
-            elif startFrom:
-                startFrom = startFrom.upper() # category sort keys are uppercase
-                params['cmstartsortkey'] = startFrom
-                wikipedia.output('Getting [[%s]] list starting at %s...'
-                                 % (self.title(), startFrom))
             else:
-                wikipedia.output('Getting [[%s]]...' % self.title())
+                msg = 'Getting [[%s]] list' % self.title()
+                if startFrom:
+                    startFrom = startFrom.upper() # category sort keys are uppercase
+                    params['cmstartsortkey'] = startFrom
+                    msg += ' starting at %s' % startFrom
+                if endsort:
+                    endsort = endsort.upper() # category sort keys are uppercase
+                    params['cmendsortkey'] = endsort
+                    msg += ' ending at %s' % endsort
+                wikipedia.output(msg + u'...')
 
             wikipedia.get_throttle()
             data = query.GetData(params, self.site())
@@ -393,7 +405,7 @@ class Category(wikipedia.Page):
         return unique(subcats)
 
     def articles(self, recurse=False, startFrom=None, cacheResults=False,
-                       sortby=None, sortdir=None):
+                       sortby=None, sortdir=None, endsort=None):
         """
         Yields all articles of the current category.
 
@@ -414,7 +426,7 @@ class Category(wikipedia.Page):
         else:
             gen = self._getContentsNaive
         for tag, page in gen(recurse=recurse, startFrom=startFrom,
-                             sortby=sortby, sortdir=sortdir):
+                             sortby=sortby, sortdir=sortdir, endsort=endsort):
             if tag == ARTICLE:
                 yield page
 
