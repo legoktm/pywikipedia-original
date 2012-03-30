@@ -21,6 +21,10 @@
 ################################################
 
 import sys
+stdin = sys.stdin
+stdout = sys.stdout
+stderr = sys.stderr
+argv = sys.argv
 if sys.platform == "win32":
     import codecs
     from ctypes import WINFUNCTYPE, windll, POINTER, byref, c_int, \
@@ -254,9 +258,3 @@ if sys.platform == "win32":
             if arg == u'-c':
                 argv[0] = u'-c'
                 break
-
-else:
-    stdin = sys.stdin
-    stdout = sys.stdout
-    stderr = sys.stderr
-    argv = sys.argv
