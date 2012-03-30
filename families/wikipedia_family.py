@@ -476,7 +476,7 @@ class Family(family.Family):
             'lad': [u'Diskusyón de Vikipedya', u'Vikipedya Discusión', u'Diskussión de Vikipedya'],
             'lb': u'Wikipedia Diskussioun',
             'lbe': u'Википедиялиясса ихтилат',
-            'lez': u'Килигун Википедия',
+            'lez': u'Википедия веревирд авун',
             'lg': u'Wikipedia talk',
             'li': u'Euverlèk Wikipedia',
             'lij': [u'Discûscioîn Wikipedia', u'Discussioni Wikipedia'],
