@@ -207,8 +207,6 @@ if sys.platform == "win32":
 
             if real_stdin:
                 stdin  = UnicodeInput(hStdin, name='<Unicode console stdin>')
-            else:
-                stdin  = sys.stdin
 
             if real_stdout:
                 stdout = UnicodeOutput(hStdout, None, STDOUT_FILENO,
