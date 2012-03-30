@@ -49,8 +49,8 @@ __version__ = '$Id$'
 #
 # (C) Maxim Razin, 2005
 # (C) Leonardo Gregianin, 2005-2008
-# (C) xqt, 2009-2011
-# (C) Pywikipedia bot team, 2005-2011
+# (C) xqt, 2009-2012
+# (C) Pywikipedia bot team, 2005-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -60,10 +60,14 @@ import wikipedia as pywikibot
 from pywikibot import i18n
 import catlib, config
 
-def CAT(site,name):
+def CAT(site, name, hide=None):
     name = site.namespace(14) + ':' + name
     cat=catlib.Category(site, name)
-    return cat.articles()
+    for article in cat.articles(endsort=hide):
+        yield article
+    if hide:
+        for article in cat.articles(startFrom=chr(ord(hide)+1)):
+            yield article
 
 def BACK(site,name):
     name = site.namespace(10) + ':' + name
@@ -288,8 +292,10 @@ lists_name = {
     'zh': (BACK, u'Featured list'),
 }
 
+# Third parameter is the sort key indicating articles to hide from the given list
 former_name = {
     'ca': (CAT, u"Arxiu de propostes de la retirada de la distinció"),
+    'en': (CAT, u"Wikipedia former featured articles", "#"),
     'es': (CAT, u"Wikipedia:Artículos anteriormente destacados"),
     'fa': (CAT, u"مقاله‌های برگزیده پیشین"),
     'hu': (CAT, u"Korábbi kiemelt cikkek"),
@@ -308,29 +314,28 @@ cache={}
 
 def featuredArticles(site, pType):
     arts=[]
+    if pType == 'good':
+        info = good_name
+    elif pType == 'former':
+        info = former_name
+    elif pType == 'list':
+        info = lists_name
+    else:
+        info = featured_name
     try:
-        if pType == 'good':
-            method = good_name[site.lang][0]
-        elif pType == 'former':
-            method = former_name[site.lang][0]
-        elif pType == 'list':
-            method = lists_name[site.lang][0]
-        else:
-            method = featured_name[site.lang][0]
+        method = info[site.lang][0]
     except KeyError:
         pywikibot.output(
             u'Error: language %s doesn\'t has %s category source.'
             % (site.lang, pType))
         return arts
-    if pType == 'good':
-        name = good_name[site.lang][1]
-    elif pType == 'former':
-        name = former_name[site.lang][1]
-    elif pType == 'list':
-        name = lists_name[site.lang][1]
-    else:
-        name = featured_name[site.lang][1]
-    raw = method(site, name)
+    name = info[site.lang][1]
+    # hide #-sorted items on en-wiki
+    try:
+        hide = info[site.lang][2]
+    except IndexError:
+        hide = None
+    raw = method(site, name, hide)
     for p in raw:
         if p.namespace() == 0: # Article
             arts.append(p)
