@@ -50,7 +50,7 @@ class Family(family.Family):
             'ja': u'Wikiversity',
             'pt': [u'Wikiversidade', u'Wikiversity'],
             'ru': [u'Викиверситет', u'Wikiversity'],
-            'sl': u'Wikiverza',
+            'sl': [u'Wikiverza', u'Wikiversity'],
             'sv': u'Wikiversity',
         }
         self.namespaces[5] = {
