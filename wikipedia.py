@@ -7836,7 +7836,6 @@ Global arguments available for all bots:
 
 -verbose          Have the bot provide additional output that may be
 -v                useful in debugging.
--debug
 
 -cosmeticchanges  Toggles the cosmetic_changes setting made in config.py or
 -cc               user_config.py to its inverse and overrules it. All other
