@@ -60,7 +60,7 @@ import wikipedia as pywikibot
 from pywikibot import i18n
 import catlib, config
 
-def CAT(site, name, hide=None):
+def CAT(site, name, hide):
     name = site.namespace(14) + ':' + name
     cat=catlib.Category(site, name)
     for article in cat.articles(endsort=hide):
@@ -69,9 +69,8 @@ def CAT(site, name, hide=None):
         for article in cat.articles(startFrom=chr(ord(hide)+1)):
             yield article
 
-def BACK(site,name):
-    name = site.namespace(10) + ':' + name
-    p=pywikibot.Page(site, name)
+def BACK(site, name, hide):
+    p=pywikibot.Page(site, name, defaultNamespace=10)
     return [page for page in p.getReferences(follow_redirects=False,
                                              onlyTemplateInclusion=True)]
 
