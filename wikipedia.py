@@ -7764,13 +7764,15 @@ def handleArgs(*args):
         elif arg == '-cosmeticchanges' or arg == '-cc':
             config.cosmetic_changes = not config.cosmetic_changes
             output(u'NOTE: option cosmetic_changes is %s\n' % config.cosmetic_changes)
+        elif arg == '-simulate':
+            if not getSite().has_api():
+                raise NotImplementedError('-simulate option is implemented for API only')
+            config.actions_to_block = ['edit', 'watch', 'move', 'delete',
+                                       'undelete', 'protect']
         # global debug option for development purposes. Normally does nothing.
         elif arg == '-debug':
             debug = True
             config.special_page_limit = 500
-        elif arg == '-simulate':
-            config.actions_to_block = ['edit', 'watch', 'move', 'delete',
-                                       'undelete', 'protect']
         else:
             # the argument is not global. Let the specific bot script care
             # about it.
@@ -7842,7 +7844,7 @@ Global arguments available for all bots:
                   settings and restrictions are untouched.
 
 -simulate         Disables writing to the server. Useful for testing
-                  and debugging of new code.
+                  and debugging of new code. (API only)
 '''# % moduleName
     output(globalHelp, toStdout=True)
     try:
