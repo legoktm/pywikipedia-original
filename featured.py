@@ -64,7 +64,7 @@ def CAT(site, name, hide):
     for article in cat.articles(endsort=hide):
         yield article
     if hide:
-        for article in cat.articles(startFrom=chr(ord(hide)+1)):
+        for article in cat.articles(startFrom=unichr(ord(hide)+1)):
             yield article
 
 def BACK(site, name, hide):
