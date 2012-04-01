@@ -37,10 +37,6 @@ This script understands various command-line arguments:
 
 -dry              for debug purposes. No changes will be made.
 
--query:#          a int. that determain number of pages will be checked each while
-                  (use for computers with a small amount of RAM e.g. toolserver users)
-                  default is 500
-
 usage: featured.py [-interactive] [-nocache] [-top] [-after:zzzz] [-fromlang:xx,yy--zz|-fromall]
 
 """
@@ -429,13 +425,24 @@ def getTemplateList (lang, pType):
             templates = template['_default']
     return templates
 
-def featuredbot(arts, cc, tosite, template_on_top, pType, quiet, dry):
+def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
+                          dry=False):
+    if not fromsite.lang in cache:
+        cache[fromsite.lang] = {}
+    if not tosite.lang in cache[fromsite.lang]:
+        cache[fromsite.lang][tosite.lang] = {}
+    cc = cache[fromsite.lang][tosite.lang]
+    if nocache:
+        cc={}
     templatelist = getTemplateList(tosite.lang, pType)
     findtemplate = '(' + '|'.join(templatelist) + ')'
     re_Link_FA=re.compile(ur"\{\{%s\|%s\}\}"
                           % (findtemplate.replace(u' ', u'[ _]'),
                              fromsite.lang), re.IGNORECASE)
     re_this_iw=re.compile(ur"\[\[%s:[^]]+\]\]" % fromsite.lang)
+
+    arts = featuredArticles(fromsite, pType)
+
     pairs=[]
     for a in arts:
         if a.title() < afterpage:
@@ -533,27 +540,6 @@ def featuredbot(arts, cc, tosite, template_on_top, pType, quiet, dry):
         except pywikibot.PageNotSaved, e:
             pywikibot.output(u"Page not saved")
 
-def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
-                          dry=False, query=500):
-    if not fromsite.lang in cache:
-        cache[fromsite.lang] = {}
-    if not tosite.lang in cache[fromsite.lang]:
-        cache[fromsite.lang][tosite.lang] = {}
-    cc = cache[fromsite.lang][tosite.lang]
-    if nocache:
-        cc={}
-
-    arts = featuredArticles(fromsite, pType)
-    top = 0
-    if len(arts) > query:
-        while top < len(arts):
-            bottom = top
-            top += query
-            featuredbot(arts[bottom:top], cc, tosite, template_on_top, pType,
-                        quiet, dry)
-    else:
-        featuredbot(arts, cc, tosite, template_on_top, pType, quiet, dry)
-
 if __name__=="__main__":
     template_on_top = True
     featuredcount = False
@@ -563,7 +549,6 @@ if __name__=="__main__":
     part  = False
     quiet = False
     dry = False
-    query=500
     for arg in pywikibot.handleArgs():
         if arg == '-interactive':
             interactive=1
@@ -572,11 +557,6 @@ if __name__=="__main__":
         elif arg.startswith('-fromlang:'):
             fromlang=arg[10:].split(",")
             part = True
-        elif arg.startswith('-query:'):
-            try:
-                query=int(arg[7:])
-            except:
-                query=500
         elif arg == '-fromall':
             doAll = True
         elif arg.startswith('-after:'):
@@ -661,8 +641,7 @@ if __name__=="__main__":
                 break
             elif  fromsite != pywikibot.getSite():
                 featuredWithInterwiki(fromsite, pywikibot.getSite(),
-                                      template_on_top, processType, quiet, dry,
-                                      query)
+                                      template_on_top, processType, quiet, dry)
     except KeyboardInterrupt:
         pywikibot.output('\nQuitting program...')
     finally:
