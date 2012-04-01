@@ -52,9 +52,11 @@ __version__ = '$Id$'
 #
 
 import sys, re, pickle, os.path
+from copy import copy
 import wikipedia as pywikibot
 from pywikibot import i18n
 import catlib, config
+from pagegenerators import PreloadingGenerator
 
 def CAT(site, name, hide):
     name = site.namespace(14) + ':' + name
@@ -141,8 +143,8 @@ featured_name = {
     'bs': (CAT, u"Odabrani članci"),
     'ca': (CAT, u"Llista d'articles de qualitat"),
     'ceb':(CAT, u"Mga napiling artikulo"),
-    'cs': (CAT, u"Nejlepší články"),
-    'cy': (CAT, u"Erthyglau dethol"),
+    'cs': (CAT, u"Wikipedie:Nejlepší články"),
+    'cy': (BACK,u"Erthygl ddethol"),
     'da': (CAT, u"Fremragende artikler"),
     'de': (CAT, u"Wikipedia:Exzellent"),
    #'dsb':(CAT, u"Ekscelentny"),
@@ -301,14 +303,8 @@ former_name = {
     'zh': (CAT, u"Wikipedia_former_featured_articles"),
 }
 
-# globals
-interactive=0
-nocache=0
-afterpage=u"!"
-cache={}
-
 def featuredArticles(site, pType):
-    arts=[]
+    articles=[]
     if pType == 'good':
         info = good_name
     elif pType == 'former':
@@ -323,7 +319,7 @@ def featuredArticles(site, pType):
         pywikibot.output(
             u'Error: language %s doesn\'t has %s category source.'
             % (site.lang, pType))
-        return arts
+        return
     name = info[site.lang][1]
     # hide #-sorted items on en-wiki
     try:
@@ -333,14 +329,16 @@ def featuredArticles(site, pType):
     raw = method(site, name, hide)
     for p in raw:
         if p.namespace() == 0: # Article
-            arts.append(p)
+            articles.append(p)
         # Article talk (like in English)
         elif p.namespace() == 1 and site.lang <> 'el':
-            arts.append(pywikibot.Page(p.site(), p.title(withNamespace=False)))
+            articles.append(pywikibot.Page(p.site(),
+                            p.title(withNamespace=False)))
     pywikibot.output(
         '\03{lightred}** wikipedia:%s has %i %s articles\03{default}'
-        % (site.lang, len(arts), pType))
-    return arts
+        % (site.lang, len(articles), pType))
+    for p in articles:
+        yield copy(p)
 
 def findTranslated(page, oursite=None, quiet=False):
     if not oursite:
@@ -441,10 +439,11 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
                              fromsite.lang), re.IGNORECASE)
     re_this_iw=re.compile(ur"\[\[%s:[^]]+\]\]" % fromsite.lang)
 
-    arts = featuredArticles(fromsite, pType)
+    gen = featuredArticles(fromsite, pType)
+    gen = PreloadingGenerator(gen)
 
     pairs=[]
-    for a in arts:
+    for a in gen:
         if a.title() < afterpage:
             continue
         if u"/" in a.title() and a.namespace() != 0:
@@ -540,7 +539,13 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
         except pywikibot.PageNotSaved, e:
             pywikibot.output(u"Page not saved")
 
-if __name__=="__main__":
+def main(*args):
+    global nocache, interactive, afterpage, cache
+    nocache = 0
+    interactive = 0
+    afterpage = u"!"
+    cache = {}
+
     template_on_top = True
     featuredcount = False
     fromlang=[]
@@ -632,7 +637,10 @@ if __name__=="__main__":
         for ll in fromlang:
             fromsite = pywikibot.getSite(ll)
             if featuredcount:
-                featuredArticles(fromsite, processType)
+                try:
+                    featuredArticles(fromsite, processType).next()
+                except StopIteration:
+                    continue
             elif not hasTemplate:
                 pywikibot.output(
                     u'\nNOTE: %s arcticles are not implemented at %s-wiki.'
@@ -645,6 +653,11 @@ if __name__=="__main__":
     except KeyboardInterrupt:
         pywikibot.output('\nQuitting program...')
     finally:
-        pywikibot.stopme()
         if not nocache:
             pickle.dump(cache,file(filename,"wb"))
+
+if __name__ == "__main__":
+    try:
+        main()
+    finally:
+        pywikibot.stopme()
