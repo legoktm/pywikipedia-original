@@ -16,12 +16,16 @@ Known parameters:
 -namespace        Works in the given namespace (only one at a time). Parameter
 -ns               may be given as "-ns:<number>" or "-namespace:<number>".
                   Defaults to 0 (main namespace).
+-save             Saves the title of existing hyphenated articles whose content
+                  is _other_ than a redirect to the corresponding article with
+                  n dash or m dash in the title and thus may need manual
+                  treatment. If omitted, these titles will be written only to
+                  the screen (or the log if logging is on). The file is in the
+                  form you may upload it to a wikipage.
+                  May be given as "-save:<filename>". If it exists, titles
+                  will be appended.
+"""
 
-"""
-"""
-TODO:
-- listing existing hyphenated titles to a file/wikipage instead of just skipping
-"""
 #
 # (C) Bináris, 2012
 #
@@ -29,6 +33,7 @@ TODO:
 #
 __version__='$Id$'
 
+import codecs
 import wikipedia as pywikibot
 from pagegenerators import RegexFilterPageGenerator as RPG
 from pywikibot import i18n
@@ -37,10 +42,11 @@ def main(*args):
     regex = ur'.*[–—]' # Alt 0150 (n dash), alt 0151 (m dash), respectively.
     ns = 0
     start = '!'
+    filename = None # The name of the file to save titles
+    titlefile = None # The file object itself
 
     # Handling parameters:
     for arg in pywikibot.handleArgs(*args):
-        pass
         if arg == '-start':
             start = pywikibot.input(
                     u'From which title do you want to continue?')
@@ -50,6 +56,19 @@ def main(*args):
             ns = pywikibot.input(u'Which namespace should we process?')
         elif arg.startswith('-ns:') or arg.startswith('-namespace:'):
             ns = arg[arg.find(':')+1:]
+        elif arg == '-save':
+            filename = pywikibot.input('Please enter the filename:')
+        elif arg.startswith('-save:'):
+            filename = arg[6:]
+    if filename:
+        try:
+            # This opens in strict error mode, that means bot will stop
+            # on encoding errors with ValueError.
+            # See http://docs.python.org/library/codecs.html#codecs.open
+            titlefile = codecs.open(filename, encoding='utf-8', mode='a')
+        except IOError:
+            pywikibot.output("%s cannot be opened for writing." % filename)
+            return
     site = pywikibot.getSite()
     redirword = site.redirect()
     gen = RPG(site.allpages(
@@ -71,14 +90,25 @@ def main(*args):
                     % (newtitle, title))
             else:
                 pywikibot.output(
-                    (u'Skipping [[%s]] beacuse it exists already with a ' +
-                    u'different content.') % newtitle)
-                # TODO: list it for further examination to a file or wikipage
+                    (u'\03{lightyellow}Skipping [[%s]] beacuse it exists ' +
+                    u'already with a different content.\03{default}')
+                    % newtitle)
+                if titlefile:
+                    s = u'\n#%s does not redirect to %s.' %\
+                    (redirpage.title(asLink=True, textlink=True),
+                    page.title(asLink=True, textlink=True))
+                    # For the unlikely case if someone wants to run it in
+                    # file namespace.
+                    titlefile.write(s)
+                    titlefile.flush()
         else:
             text = u'#%s[[%s]]' % (redirword, title)
             redirpage.put(text, editSummary)
         # Todo: output the title upon Ctrl C? (KeyboardInterrupt always hits
-        # RegexFilterPageGenerator and cannot be catched in this loop.)
+        # RegexFilterPageGenerator or throttle.py or anything else and cannot
+        # be catched in this loop.)
+    if titlefile:
+        titlefile.close() # For  the spirit of programming (it was flushed)
 
 if __name__ == "__main__":
     try:

@@ -125,6 +125,8 @@ makecat.py             : Given an existing or new category, find pages for that
                          category.
 movepages.py           : Bot page moves to another title.
 nowcommons.py          : This bot can delete images with NowCommons template.
+ndashredir.py          : Creates hyphenated redirects to articles with n dash 
+                         or m dash in their title.
 pagefromfile.py        : This bot takes its input from a file that contains a
                          number of pages to be put on the wiki.
 piper.py               : Pipes article text through external program(s) on
