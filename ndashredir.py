@@ -16,6 +16,9 @@ Known parameters:
 -namespace        Works in the given namespace (only one at a time). Parameter
 -ns               may be given as "-ns:<number>" or "-namespace:<number>".
                   Defaults to 0 (main namespace).
+-nosub            Will not process subpages. Useful in template or portal
+                  namespace. (Not recommended for main namespace that has no
+                  real subpages.)
 -save             Saves the title of existing hyphenated articles whose content
                   is _other_ than a redirect to the corresponding article with
                   n dash or m dash in the title and thus may need manual
@@ -56,6 +59,8 @@ def main(*args):
             ns = pywikibot.input(u'Which namespace should we process?')
         elif arg.startswith('-ns:') or arg.startswith('-namespace:'):
             ns = arg[arg.find(':')+1:]
+        elif arg == '-nosub':
+            regex = ur'[^/]*[–—][^/]*$'
         elif arg == '-save':
             filename = pywikibot.input('Please enter the filename:')
         elif arg.startswith('-save:'):
