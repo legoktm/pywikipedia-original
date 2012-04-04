@@ -325,6 +325,7 @@ class Family(family.Family):
             'ru': u'Импортировано',
             'sr': u'Кувар',
             'uk': u'Рецепт',
+            'vi': u'Chủ đề',
         }
 
         self.namespaces[103] = {
@@ -343,6 +344,7 @@ class Family(family.Family):
             'ru': u'Обсуждение импортированного',
             'sr': u'Разговор о кувару',
             'uk': u'Обговорення рецепта',
+            'vi': u'Thảo luận Chủ đề',
         }
 
         self.namespaces[104] = {
