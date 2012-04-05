@@ -95,8 +95,8 @@ def main(*args):
                     % (newtitle, title))
             else:
                 pywikibot.output(
-                    (u'\03{lightyellow}Skipping [[%s]] beacuse it exists ' +
-                    u'already with a different content.\03{default}')
+                    (u'\03{lightyellow}Skipping [[%s]] because it exists '
+                     u'already with a different content.\03{default}')
                     % newtitle)
                 if titlefile:
                     s = u'\n#%s does not redirect to %s.' %\
