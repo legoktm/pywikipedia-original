@@ -138,6 +138,12 @@ class Family(family.Family):
         self.namespaces[203] = {
             '_default': u'Research talk',
         }
+        self.namespaces[204] = {
+            '_default': u'Participation',
+        }
+        self.namespaces[205] = {
+            '_default': u'Participation talk',
+        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }
