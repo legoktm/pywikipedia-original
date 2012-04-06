@@ -27,6 +27,16 @@ Known parameters:
                   form you may upload it to a wikipage.
                   May be given as "-save:<filename>". If it exists, titles
                   will be appended.
+                  After checking these titles, you may want to write them to
+                  your ignore file (see below).
+-ignore           A file that contains titles that are not to be claimed to
+                  redirect somewhere else. For example, if X-1 (with hyphen)
+                  redirects to a disambiguation page that lists X–1 (with n
+                  dash), that's OK and you don't want it to appear at each run
+                  as a problematic article.
+                  File must be encoded in UTF-8 and contain titles among double
+                  square brackets (e.g. *[[X-1]] or [[:File:X-1.gif]]).
+                  May be given as "-ignore:<filename>".
 """
 
 #
@@ -36,7 +46,7 @@ Known parameters:
 #
 __version__='$Id$'
 
-import codecs
+import codecs, re
 import wikipedia as pywikibot
 from pagegenerators import RegexFilterPageGenerator as RPG
 from pywikibot import i18n
@@ -47,6 +57,8 @@ def main(*args):
     start = '!'
     filename = None # The name of the file to save titles
     titlefile = None # The file object itself
+    ignorefilename = None # The name of the ignore file
+    ignorelist = [] # A list to ignore titles that redirect to somewhere else
 
     # Handling parameters:
     for arg in pywikibot.handleArgs(*args):
@@ -65,6 +77,12 @@ def main(*args):
             filename = pywikibot.input('Please enter the filename:')
         elif arg.startswith('-save:'):
             filename = arg[6:]
+        elif arg == '-ignore':
+            ignorefilename = pywikibot.input('Please enter the filename:')
+        elif arg.startswith('-ignore:'):
+            ignorefilename = arg[8:]
+
+    # File operations:
     if filename:
         try:
             # This opens in strict error mode, that means bot will stop
@@ -74,6 +92,16 @@ def main(*args):
         except IOError:
             pywikibot.output("%s cannot be opened for writing." % filename)
             return
+    if ignorefilename:
+        try:
+            igfile = codecs.open(ignorefilename, encoding='utf-8', mode='r')
+            ignorelist = re.findall(ur'\[\[:?(.*?)\]\]', igfile.read())
+            igfile.close()
+        except IOError:
+            pywikibot.output("%s cannot be opened for reading." % ignorefilename)
+            return
+
+    # Ready to initialize
     site = pywikibot.getSite()
     redirword = site.redirect()
     gen = RPG(site.allpages(
@@ -93,6 +121,10 @@ def main(*args):
                 pywikibot.output(
                     u'[[%s]] already redirects to [[%s]], nothing to do with it.'
                     % (newtitle, title))
+            elif newtitle in ignorelist:
+                pywikibot.output(
+                    u'Skipping [[%s]] because it is on your ignore list.'
+                    % newtitle)
             else:
                 pywikibot.output(
                     (u'\03{lightyellow}Skipping [[%s]] because it exists '
@@ -108,7 +140,16 @@ def main(*args):
                     titlefile.flush()
         else:
             text = u'#%s[[%s]]' % (redirword, title)
-            redirpage.put(text, editSummary)
+            try:
+                redirpage.put_async(text, editSummary)
+            except pywikibot.LockedPage, err:
+                pywikibot.output(
+                    (u'\03{lightyellow}Skipping [[%s]] because it is '
+                     u'protected.\03{default}') % newtitle)
+            except:
+                pywikibot.output(
+                    (u'\03{lightyellow}Skipping [[%s]] because of an error.'
+                     u'\03{default}') % newtitle)
         # Todo: output the title upon Ctrl C? (KeyboardInterrupt always hits
         # RegexFilterPageGenerator or throttle.py or anything else and cannot
         # be catched in this loop.)
