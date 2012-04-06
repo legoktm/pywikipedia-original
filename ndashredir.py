@@ -141,7 +141,7 @@ def main(*args):
         else:
             text = u'#%s[[%s]]' % (redirword, title)
             try:
-                redirpage.put_async(text, editSummary)
+                redirpage.put(text, editSummary)
             except pywikibot.LockedPage, err:
                 pywikibot.output(
                     (u'\03{lightyellow}Skipping [[%s]] because it is '
