@@ -73,7 +73,8 @@ commonscatTemplates = {
     'ca' : (u'Commonscat', [u'Commons cat', u'Commons category']),
     'crh' : (u'CommonsKat', [u'Commonscat']),
     'cs' : (u'Commonscat', [u'Commons cat']),
-    'da' : (u'Commonscat', [u'Commons cat', u'Commonskat', u'Commonscat2']),
+    'da' : (u'Commonscat', [u'Commons cat', u'Commons category',
+                            u'Commonscat left', u'Commonscat2']),
     'de' : (u'Commonscat', [u'Commons cat',]),
     'en' : (u'Commons category', [u'Commoncat', u'Commonscat', u'Commons cat',
                                   u'Commons+cat', u'Commonscategory',
@@ -138,8 +139,7 @@ ignoreTemplates = {
     'be-x-old' : [u'Commons'],
     'cs' : [u'Commons', u'Sestřičky', u'Sisterlinks'],
     'da' : [u'Commons', u'Commons left', u'Commons2', u'Commonsbilleder',
-            u'Commonscat left', u'Commonscat2', u'GalleriCommons',
-            u'Søsterlinks'],
+            u'Commonskat', u'Commonscat2', u'GalleriCommons', u'Søsterlinks'],
     'de' : [u'Commons', u'ZhSZV', u'Bauwerk-stil-kategorien',
             u'Bauwerk-funktion-kategorien', u'KsPuB',
             u'Kategoriesystem Augsburg-Infoleiste'],
@@ -174,6 +174,7 @@ ignoreTemplates = {
 
 msg_change = {
     'cs': u'Robot změnil šablonu Commonscat z [[:Commons:Category:%(oldcat)s|%(oldcat)s]] na [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'da': u'Robot: Ændrer commonscat link fra [[:Commons:Category:%(oldcat)s|%(oldcat)s]] til [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'de': u'Bot: Ändere commonscat link von [[:Commons:Category:%(oldcat)s|%(oldcat)s]] zu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'en': u'Bot: Changing commonscat link from [[:Commons:Category:%(oldcat)s|%(oldcat)s]] to [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'fr': u'Robot: Changé commonscat link de [[:Commons:Category:%(oldcat)s|%(oldcat)s]] à [[:Commons:Category:%(newcat)s|%(newcat)s]]',
