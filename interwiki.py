@@ -333,8 +333,8 @@ that you have to break it off, use "-continue" next time.
 # (C) Rob W.W. Hooft, 2003
 # (C) Daniel Herding, 2004
 # (C) Yuri Astrakhan, 2005-2006
-# (C) xqt, 2009-2011
-# (C) Pywikipedia bot team, 2007-2011
+# (C) xqt, 2009-2012
+# (C) Pywikipedia bot team, 2007-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -673,7 +673,7 @@ class StoredPage(pywikibot.Page):
             StoredPage.SPpath = path
             StoredPage.SPstore = shelve.open(path)
 
-        self.SPkey = self.title(asLink=True).encode('utf-8')
+        self.SPkey = str(self)
         self.SPcontentSet = False
 
     def SPgetContents(self):
@@ -920,8 +920,8 @@ class Subject(object):
                            auto = globalvar.auto, removebrackets = globalvar.hintnobracket)
         else:
             pages = titletranslate.translate(self.originPage, hints=hints,
-                           auto = globalvar.auto, removebrackets = globalvar.hintnobracket,
-                           site = pywikibot.getSite())
+                           auto=globalvar.auto, removebrackets=globalvar.hintnobracket,
+                           site=pywikibot.getSite())
         for page in pages:
             if globalvar.contentsondisk:
                 page = StoredPage(page)
@@ -981,7 +981,8 @@ class Subject(object):
         """
         if self.forcedStop:
             return False
-        if globalvar.nobackonly and self.originPage: # cannot check backlink before we have an origin page
+        # cannot check backlink before we have an origin page
+        if globalvar.nobackonly and self.originPage:
             if page == self.originPage:
                 try:
                     pywikibot.output(u"%s has a backlink from %s."
@@ -1609,7 +1610,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
         # TODO: should be move to assemble()
         # replaceLinks will skip the site it's working on.
         if self.originPage.site() not in new:
-            if not self.originPage.site().family.interwiki_forward: #TODO: make this possible as well.
+            #TODO: make this possible as well.
+            if not self.originPage.site().family.interwiki_forward:
                 new[self.originPage.site()] = self.originPage
 
         #self.replaceLinks(self.originPage, new, True, bot)
