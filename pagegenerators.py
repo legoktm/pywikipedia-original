@@ -1026,14 +1026,17 @@ def NamespaceFilterPageGenerator(generator, namespaces, site = None):
     of the given namespaces.
 
     The namespace list can contain both integers (namespace numbers) and
-    strings/unicode strings (namespace names).
+    strings/unicode strings (namespace names). Namespace may also be a single
+    number or a single string.
     """
     # convert namespace names to namespace numbers
     if site is None:
         site = pywikibot.getSite()
+    if isinstance(namespace, (int, basestring)):
+        namespace = [namespace]
     for i in xrange(len(namespaces)):
         ns = namespaces[i]
-        if isinstance(ns, unicode) or isinstance(ns, str):
+        if isinstance(ns, basestring):
             index = site.getNamespaceIndex(ns)
             if index is None:
                 raise ValueError(u'Unknown namespace: %s' % ns)
