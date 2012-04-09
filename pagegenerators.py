@@ -1153,6 +1153,15 @@ def CategoryGenerator(generator):
     for page in generator:
         yield catlib.Category(page.site(), page.title())
 
+def ImageGenerator(generator):
+    """
+    Wraps around another generator. Yields the same pages, but as Image
+    objects instead of Page objects. Makes sense only if it is ascertained
+    that only categories are being retrieved.
+    """
+    for page in generator:
+        yield pywikibot.ImagePage(page.site(), page.title())
+
 def PageWithTalkPageGenerator(generator):
     """
     Wraps around another generator. Yields the same pages, but for non-talk
