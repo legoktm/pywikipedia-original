@@ -418,7 +418,7 @@ class XmlDumpNoReferencesPageGenerator:
 
 class NoReferencesBot:
 
-    def __init__(self, generator, always = False):
+    def __init__(self, generator, always=False):
         self.generator = generator
         self.always = always
         self.site = pywikibot.getSite()
@@ -437,7 +437,7 @@ class NoReferencesBot:
         except KeyError:
             self.referencesText = u'<references />'
 
-    def lacksReferences(self, text, verbose = True):
+    def lacksReferences(self, text, verbose=True):
         """
         Checks whether or not the page is lacking a references tag.
         """
@@ -673,7 +673,8 @@ def main():
             import catlib
             if not namespaces:
                 namespaces = [0]
-            cat = catlib.Category(site, "%s:%s" % (site.namespace(14), cat))
+            cat = catlib.Category(site, "%s:%s" % (site.category_namespace(),
+                                                   cat))
             gen = pagegenerators.CategorizedPageGenerator(cat)
     if not gen:
         pywikibot.showHelp('noreferences')
