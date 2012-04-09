@@ -1032,8 +1032,8 @@ def NamespaceFilterPageGenerator(generator, namespaces, site = None):
     # convert namespace names to namespace numbers
     if site is None:
         site = pywikibot.getSite()
-    if isinstance(namespace, (int, basestring)):
-        namespace = [namespace]
+    if isinstance(namespaces, (int, basestring)):
+        namespaces = [namespaces]
     for i in xrange(len(namespaces)):
         ns = namespaces[i]
         if isinstance(ns, basestring):
