@@ -531,8 +531,8 @@ class ReplaceRobot:
                         #Save the title for later processing instead of editing
                         self.editcounter += 1
                         self.articles.write(u'#%s\n%s'
-                                            % (page.title(asLink=True),
-                                               self.splitLine()))
+                                    % (page.title(asLink=True, textlink=True),
+                                       self.splitLine()))
                         self.articles.flush() # For the peace of our soul :-)
                 # choice must be 'N'
                 break
@@ -559,8 +559,8 @@ class ReplaceRobot:
                     #Save the title for later processing instead of editing
                     self.editcounter += 1
                     self.articles.write(u'#%s\n%s'
-                                        % (page.title(asLink=True),
-                                           self.splitLine()))
+                                    % (page.title(asLink=True, textlink=True),
+                                       self.splitLine()))
                     self.articles.flush()
 
         #Finally:
