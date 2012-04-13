@@ -355,6 +355,7 @@ class Family(family.Family):
             'pl': u'Wikijunior',
             'ro': u'Carte de bucate',
             'ru': u'Рецепт',
+            'vi': u'Trẻ em',
         }
 
         self.namespaces[105] = {
@@ -365,14 +366,17 @@ class Family(family.Family):
             'pl': u'Dyskusja Wikijuniora',
             'ro': u'Discuţie Carte de bucate',
             'ru': u'Обсуждение рецепта',
+            'vi': u'Thảo luận Trẻ em',
         }
 
         self.namespaces[106] = {
             'ru': u'Задача',
+            'vi': u'Nấu ăn',
         }
 
         self.namespaces[107] = {
             'ru': u'Обсуждение задачи',
+            'vi': u'Thảo luận Nấu ăn',
         }
 
         self.namespaces[108] = {
