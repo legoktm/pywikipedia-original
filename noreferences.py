@@ -202,9 +202,11 @@ referencesSections = {
     ],
     'de': [             #see [[de:WP:REF]]
         u'Einzelnachweise',
-        u'Fußnoten',
         u'Anmerkungen',
         u'Belege',
+        u'Endnoten',
+        u'Fußnoten',
+        u'Fuß-/Endnoten',
         u'Quellen',
         u'Quellenangaben',
     ],
