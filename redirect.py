@@ -55,7 +55,7 @@ from __future__ import generators
 #
 # (C) Daniel Herding, 2004.
 # (C) Purodha Blissenbach, 2009.
-# (C) xqt, 2009-2011
+# (C) xqt, 2009-2012
 # (C) Pywikipedia bot team, 2004-2010
 #
 # Distributed under the terms of the MIT license.
@@ -68,18 +68,6 @@ from pywikibot import i18n
 import config
 import query
 import xmlreader
-
-# Summary message for fixing double redirects
-msg_double = 'redirect-fix-double'
-
-# Reason for deleting broken redirects
-reason_broken = 'redirect-remove-broken'
-
-# Reason for deleting redirect loops
-reason_loop = 'redirect-remove-loop'
-
-# Insert deletion template into page with a broken redirect
-sd_template = 'redirect-broken-redirect-template'
 
 
 class RedirectGenerator:
@@ -382,11 +370,12 @@ class RedirectGenerator:
         offset_time = start.strftime("%Y%m%d%H%M%S")
         pywikibot.output(u'Retrieving %s moved pages via API...'
                          % str(self.api_number))
+        move_gen = self.site.logpages(mode="move", start=offset_time,
+                                      number=self.api_number)
         if pywikibot.verbose:
             pywikibot.output(u"[%s]" % offset_time)
-        for moved_page, u, t, c in self.site.logpages(number=self.api_number,
-                                                      mode='move',
-                                                      start=offset_time):
+        for logentry in move_gen:
+            moved_page = logentry[0]
             try:
                 if not moved_page.isRedirectPage():
                     continue
@@ -483,9 +472,9 @@ class RedirectRobot:
 
     def delete_broken_redirects(self):
         # get reason for deletion text
-        reason = i18n.twtranslate(self.site, reason_broken)
+        reason = i18n.twtranslate(self.site, 'redirect-remove-broken')
         for redir_name in self.generator.retrieve_broken_redirects():
-            self.delete_1_broken_redirect( redir_name, reason)
+            self.delete_1_broken_redirect(redir_name, reason)
             if self.exiting:
                 break
 
@@ -513,9 +502,10 @@ class RedirectRobot:
                         redir_page.delete(reason, prompt = False)
                     except pywikibot.NoUsername:
                         if i18n.twhas_key(
-                            targetPage.site().lang, sd_template) and \
+                            targetPage.site().lang,
+                            'redirect-broken-redirect-template') and \
                             i18n.twhas_key(targetPage.site().lang,
-                                           reason_broken):
+                                           'redirect-remove-broken'):
                             pywikibot.output(
         u"No sysop in user-config.py, put page to speedy deletion.")
                             content = redir_page.get(get_redirect=True)
@@ -523,7 +513,8 @@ class RedirectRobot:
                             ###       Not supported via TW yet
                             content = i18n.twtranslate(
                                 targetPage.site().lang,
-                                sd_template) + "\n" + content
+                                'redirect-broken-redirect-template'
+                                ) + "\n" + content
                             redir_page.put(content, reason)
             except pywikibot.IsRedirectPage:
                 pywikibot.output(
@@ -632,15 +623,20 @@ class RedirectRobot:
 ##                                      targetPage.site(),
 ##                                      targetPage.sectionFreeTitle()
 ##                                  ).get(get_redirect=True)
-##                    if targetPage.site().lang in sd_template and \
-##                       targetPage.site().lang in sd_tagging_sum:
+##                    if i18n.twhas_key(
+##                        targetPage.site().lang,
+##                        'redirect-broken-redirect-template') and \
+##                        i18n.twhas_key(targetPage.site().lang,
+##                                       'redirect-remove-loop'):
 ##                        pywikibot.output(u"Tagging redirect for deletion")
 ##                        # Delete the two redirects
-##                        content = pywikibot.translate(
-##                                    targetPage.site().lang,
-##                                    sd_template)+"\n"+content
-##                        summ = pywikibot.translate(targetPage.site().lang,
-##                                                   reason_loop)
+##                        content = i18n.translate(
+##                                      targetPage.site().lang,
+##                                      'redirect-remove-loop',
+##                                      ) + "\n" + content
+##                        summ = i18n.translate(
+##                                   targetPage.site().lang,
+##                                   'redirect-broken-redirect-template')
 ##                        targetPage.put(content, summ)
 ##                        redir.put(content, summ)
 ##                    break # TODO Better implement loop redirect
@@ -665,8 +661,9 @@ class RedirectRobot:
                 pywikibot.output(u"Note: Nothing left to do on %s"
                                  % redir.title(asLink=True))
                 break
-            summary = i18n.twtranslate(self.site, msg_double) \
-                      % {'to': targetPage.title(asLink=True)}
+            summary = i18n.twtranslate(self.site, 'redirect-fix-double',
+                                       {'to': targetPage.title(asLink=True)}
+                                       )
             pywikibot.showDiff(oldText, text)
             if self.prompt(u'Do you want to accept the changes?'):
                 try:
@@ -693,7 +690,7 @@ class RedirectRobot:
     def fix_double_or_delete_broken_redirects(self):
         # TODO: part of this should be moved to generator, the rest merged into self.run()
         # get reason for deletion text
-        delete_reason = i18n.twtranslate(self.site, reason_broken)
+        delete_reason = i18n.twtranslate(self.site, 'redirect-remove-broken')
         count = 0
         for (redir_name, code, target, final)\
                 in self.generator.get_redirects_via_api(maxlen=2):
@@ -781,7 +778,7 @@ def main(*args):
         elif arg.startswith('-until:'):
             until = arg[7:]
         elif arg.startswith('-total:'):
-            number = int(arg[8:])
+            number = int(arg[7:])
         # old param, use -total instead
         elif arg.startswith('-number:'):
             number = int(arg[8:])
