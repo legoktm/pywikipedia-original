@@ -289,7 +289,7 @@ class transliterator(object):
                       u"Ӛ": u"Ë", u"Ӭ": u"Ë", u"ӛ": u"ë", u"ӭ": u"ë", u"Җ": u"Zhj",
                       u"җ": u"zhj", u"Ұ": u"U", u"ұ": u"u", u"ў": u"ù", u"Ў": u"Ù",
                       u"ѝ": u"ì", u"Ѝ": u"Ì", u"Ӑ": u"A", u"ă": u"a", u"Ӓ": u"Ä",
-                      u"ä": u"ä", u"Ҽ" : u"Ts", u"Ҿ": u"Ts", u"ҽ": u"ts", u"ҿ": u"ts",
+                      u"ҿ": u"ä", u"Ҽ" : u"Ts", u"Ҿ": u"Ts", u"ҽ": u"ts", u"ҿ": u"ts",
                       u"Ҙ": u"Dh", u"ҙ": u"dh", u"Ӏ": u"", u"ӏ": u"", u"Ӆ": u"L",
                       u"ӆ": u"l", u"Ӎ": u"M", u"ӎ": u"m", u"Ӧ": u"Ö", u"ӧ": u"ö",
                       u"Ҩ": u"u", u"ҩ": u"u", u"Ҧ": u"Ph", u"ҧ": u"ph", u"Ҏ": u"R",
@@ -1661,7 +1661,7 @@ class transliterator(object):
             value = self.trans[char]
             if value == "?": continue
             while value.encode(encoding, 'replace').decode(encoding) == "?" and value in self.trans:
-                assert(value != self.trans[value])
+                assert value != self.trans[value], "%r == self.trans[%r]!" % (value, value)
                 value = self.trans[value]
             self.trans[char] = value
         
