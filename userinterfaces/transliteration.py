@@ -1661,6 +1661,7 @@ class transliterator(object):
             value = self.trans[char]
             if value == "?": continue
             while value.encode(encoding, 'replace').decode(encoding) == "?" and value in self.trans:
+                assert(value != self.trans[value])
                 value = self.trans[value]
             self.trans[char] = value
         
