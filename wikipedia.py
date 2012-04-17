@@ -453,7 +453,7 @@ not supported by PyWikipediaBot!"""
 
         @param underscore: if true, replace all ' ' characters with '_'
         @param withNamespace: if false, omit the namespace prefix
-        @param withSection: - not implemented yet -
+        @param withSection: if false, omit the section
         @param asUrl: - not implemented yet -
         @param asLink: if true, return the title in the form of a wikilink
         @param allowInterwiki: (only used if asLink is true) if true, format
@@ -486,7 +486,7 @@ not supported by PyWikipediaBot!"""
                 else:
                     title = u'[[%s%s:%s]]' % (colon, self._site.lang, title)
             elif textlink and (self.isImage() or self.isCategory()):
-                    title = u'[[:%s]]' % title
+                title = u'[[:%s]]' % title
             else:
                 title = u'[[%s]]' % title
         if savetitle or asLink:
@@ -494,6 +494,10 @@ not supported by PyWikipediaBot!"""
             title = title.replace(u"''", u'%27%27')
         if underscore:
             title = title.replace(' ', '_')
+        if not withSection:
+            sectionName = self.section(underscore=underscore)
+            if sectionName:
+                title = title[:-len(sectionName)-1]
         return title
 
     #@deprecated("Page.title(withNamespace=False)")
