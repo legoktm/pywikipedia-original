@@ -396,7 +396,7 @@ class RedirectGenerator:
     def get_moved_pages_redirects_old(self):
 
         move_regex = re.compile(
-                r'moved <a href.*?>(.*?)</a> to <a href=.*?>.*?</a>.*?</li>')
+            r'moved <a href.*?>(.*?)</a> to <a href=.*?>.*?</a>.*?</li>')
 
         if self.offset <= 0:
             self.offset = 1
@@ -410,8 +410,8 @@ class RedirectGenerator:
         offset_time = start.strftime("%Y%m%d%H%M%S")
         while True:
             move_url = \
-                self.site.path() + "?title=Special:Log&limit=500&offset=%s&type=move"\
-                       % offset_time
+"%(path)s?title=Special:Log&limit=500&offset=%(offset)s&type=move&uselang=en" \
+                       % {'path': self.site.path(), 'offset': offset_time}
             try:
                 move_list = self.site.getUrl(move_url)
                 if pywikibot.verbose:
@@ -632,11 +632,11 @@ class RedirectRobot:
 ##                        # Delete the two redirects
 ##                        content = i18n.translate(
 ##                                      targetPage.site().lang,
-##                                      'redirect-remove-loop',
+##                                      'redirect-broken-redirect-template'
 ##                                      ) + "\n" + content
 ##                        summ = i18n.translate(
 ##                                   targetPage.site().lang,
-##                                   'redirect-broken-redirect-template')
+##                                   'redirect-remove-loop')
 ##                        targetPage.put(content, summ)
 ##                        redir.put(content, summ)
 ##                    break # TODO Better implement loop redirect
@@ -781,6 +781,8 @@ def main(*args):
             number = int(arg[7:])
         # old param, use -total instead
         elif arg.startswith('-number:'):
+            pywikibot.output(u'\nNOTE: -number option is deprecated.'
+                             u' Use -total instead')
             number = int(arg[8:])
         elif arg == '-always':
             always = True
