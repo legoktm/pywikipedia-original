@@ -12,6 +12,7 @@ __version__ = '$Id$'
 import re, sys
 from pywikibot import Error
 import wikipedia as pywikibot
+import config
 
 # Languages to use for comment text after the actual language but before
 # en:. For example, if for language 'xx', you want the preference of
@@ -423,3 +424,22 @@ def twhas_key(code, twtitle):
     if hasattr(code, 'lang'):
         code = code.lang
     return code in transdict and twtitle in transdict[code]
+
+def input(twtitle, parameters=None, password=False):
+    """ Ask the user a question, return the user's answer.
+        @param twtitle The TranslateWiki string title, in <package>-<key> format
+        @param parameters For passing parameters. In the future, this will
+                          be used for plural support.
+        @param password Hides the user's input (for password entry)
+        Returns a unicode string
+
+        The translations are retrieved from i18n.<package>, based on the callers
+        import table.
+        Translation code should be set by in the user_config.py like
+        userinterface_lang = 'de'
+        default is mylang setting
+
+    """
+    code = config.userinterface_lang or config.mylang
+    trans = twtranslate(code, twtitle, parameters)
+    return pywikibot.input(trans, password)
