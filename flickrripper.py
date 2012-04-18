@@ -26,6 +26,7 @@ Todo:
 '''
 #
 # (C) Multichill, 2009
+# (C) Pywikipedia team, 2009-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -207,7 +208,7 @@ def buildDescription(flinfoDescription=u'', flickrreview=False, reviewer=u'',
     the info from flickrinfo and improved.
 
     '''
-    description = flinfoDescription
+    description = u'== {{int:filedesc}} ==\n%s' % flinfoDescription
     if removeCategories:
         description = pywikibot.removeCategoryLinks(description,
                                                     pywikibot.getSite(
@@ -280,6 +281,8 @@ def processPhoto(flickr=None, photo_id=u'', flickrreview=False, reviewer=u'',
                                          verifyDescription=False)
                 bot.upload_image(debug=False)
                 return 1
+    else:
+        pywikibot.output(u'Invalid license')
     return 0
 
 
