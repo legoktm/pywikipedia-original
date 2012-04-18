@@ -3,7 +3,7 @@
     and for TranslateWiki-based translations
 """
 #
-# (C) Pywikipedia bot team, 2004-2011
+# (C) Pywikipedia bot team, 2004-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -262,8 +262,7 @@ def twtranslate(code, twtitle, parameters=None):
 
         @param code The language code
         @param twtitle The TranslateWiki string title, in <package>-<key> format
-        @param parameters For passing parameters. In the future, this will
-                          be used for plural support.
+        @param parameters For passing parameters.
 
         The translations are retrieved from i18n.<package>, based on the callers
         import table.
@@ -316,7 +315,7 @@ def twntranslate(code, twtitle, parameters=None):
 
     @param code The language code
     @param twtitle The TranslateWiki string title, in <package>-<key> format
-    @param parameters For passing parameters.
+    @param parameters For passing (plural) parameters.
 
     Support is implemented like in MediaWiki extension. If the tw message
     contains a plural tag inside which looks like
