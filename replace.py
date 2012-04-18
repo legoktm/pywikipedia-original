@@ -499,7 +499,7 @@ class ReplaceRobot:
                         page.site().hostname(),
                         page.site().nice_get_address(page.title())
                     ))
-                    pywikibot.input("Press Enter when finished in browser.")
+                    i18n.input('pywikibot-enter-finished-browser')
                     try:
                         original_text = page.get(get_redirect=True, force=True)
                     except pywikibot.NoPage:
@@ -659,8 +659,7 @@ def main(*args):
                 xmlStart = arg[10:]
         elif arg.startswith('-xml'):
             if len(arg) == 4:
-                xmlFilename = pywikibot.input(
-                    u'Please enter the XML dump\'s filename:')
+                xmlFilename = i18n.input('pywikibot-enter-xml-filename')
             else:
                 xmlFilename = arg[5:]
         elif arg =='-sql':
@@ -794,7 +793,7 @@ def main(*args):
             if old == '':
                 change += ')'
                 break
-            new = pywikibot.input(u'Please enter the new text:')
+            new = i18n.input('pywikibot-enter-new-text')
             change += ' & -' + old + ' +' + new
             replacements.append((old, new))
         if not summary_commandline:

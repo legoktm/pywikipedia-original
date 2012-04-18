@@ -645,7 +645,7 @@ def main():
     for arg in pywikibot.handleArgs():
         if arg.startswith('-xml'):
             if len(arg) == 4:
-                xmlFilename = pywikibot.input(u'Please enter the XML dump\'s filename:')
+                xmlFilename = i18n.input('pywikibot-enter-xml-filename')
             else:
                 xmlFilename = arg[5:]
             gen = XmlDumpNoReferencesPageGenerator(xmlFilename)

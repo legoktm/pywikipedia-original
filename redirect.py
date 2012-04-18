@@ -748,8 +748,7 @@ def main(*args):
             api = True
         elif arg.startswith('-xml'):
             if len(arg) == 4:
-                xmlFilename = pywikibot.input(
-                                u'Please enter the XML dump\'s filename: ')
+                xmlFilename = i18n.input('pywikibot-enter-xml-filename')
             else:
                 xmlFilename = arg[5:]
         elif arg.startswith('-moves'):
@@ -758,10 +757,8 @@ def main(*args):
             ns = arg[11:]
             if ns == '':
         ## "-namespace:" does NOT yield -namespace:0 further down the road!
-                ns = pywikibot.input(
-                        u'Please enter a namespace by its number: ')
-#                       u'Please enter a namespace by its name or number: ')
-#  TODO! at least for some generators.
+                ns = i18n.input('pywikibot-enter-namespace-number')
+#  TODO! at least for some generators enter a namespace by its name or number
             if ns == '':
                ns = '0'
             try:

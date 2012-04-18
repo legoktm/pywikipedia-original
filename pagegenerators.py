@@ -21,7 +21,7 @@ These parameters are supported to specify which pages titles to print:
 __version__='$Id$'
 
 import wikipedia as pywikibot
-from pywikibot import deprecate_arg
+from pywikibot import deprecate_arg, i18n
 import config
 
 import traceback
@@ -242,7 +242,7 @@ class GeneratorFactory(object):
     def getCategoryGen(self, arg, length, recurse=False):
         site = pywikibot.getSite()
         if len(arg) == length:
-            categoryname = pywikibot.input(u'Please enter the category name:')
+            categoryname = i18n.input('pywikibot-enter-category-name')
         else:
             categoryname = arg[length + 1:]
         categoryname = categoryname.replace('#', '|')
@@ -259,7 +259,7 @@ class GeneratorFactory(object):
     def setSubCategoriesGen(self, arg, length, recurse = False):
         site = pywikibot.getSite()
         if len(arg) == length:
-            categoryname = pywikibot.input(u'Please enter the category name:')
+            categoryname = i18n.input('pywikibot-enter-category-name')
         else:
             categoryname = arg[length + 1:]
 
@@ -289,8 +289,8 @@ class GeneratorFactory(object):
         if arg.startswith('-filelinks'):
             fileLinksPageTitle = arg[11:]
             if not fileLinksPageTitle:
-                fileLinksPageTitle = pywikibot.input(
-                    u'Links to which image page should be processed?')
+                fileLinksPageTitle = i18n.input(
+                                        'pywikibot-enter-file-links-processing')
             if fileLinksPageTitle.startswith(site.namespace(6)
                                              + ":"):
                 fileLinksPage = pywikibot.ImagePage(site,
@@ -325,7 +325,7 @@ class GeneratorFactory(object):
         elif arg.startswith('-interwiki'):
             title = arg[11:]
             if not title:
-                title = pywikibot.input(u'Which page should be processed?')
+                title = i18n.input('pywikibot-enter-page-processing')
             page = pywikibot.Page(site, title)
             gen = InterwikiPageGenerator(page)
         elif arg.startswith('-randomredirect'):
