@@ -34,7 +34,7 @@ class Family(family.Family):
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
-        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Diskuse s uživatelkou', u'Uživatel diskuse', u'Uživatelka diskuse']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
         self.namespaces[12]['nl'] = [u'Help']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
@@ -44,6 +44,8 @@ class Family(family.Family):
         self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[2]['fr'] = [u'Utilisateur']
+        self.namespaces[3]['hr'] = [u'Razgovor sa suradnikom', u'Razgovor sa suradnicom']
+        self.namespaces[2]['hr'] = [u'Suradnik', u'Suradnica']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'Benutzerin Diskussion']
@@ -51,8 +53,9 @@ class Family(family.Family):
         self.namespaces[12]['de'] = [u'Hilfe']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
-        self.namespaces[3]['ro'] = [u'Discuție Utilizator', u'Discuţie Utilizator']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
+        self.namespaces[-2]['mk'] = [u'Медиум', u'Медија']
+        self.namespaces[-1]['sa'] = [u'विशेषम्', u'विशेष']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -275,6 +278,7 @@ class Family(family.Family):
             'ar': u'مؤلف',
             'az': u'Müəllif',
             'be': u'Аўтар',
+            'bn': u'নির্ঘণ্ট',
             'br': u'Pajenn',
             'ca': u'Pàgina',
             'da': u'Forfatter',
@@ -310,6 +314,7 @@ class Family(family.Family):
             'ar': u'نقاش المؤلف',
             'az': u'Müəllif müzakirəsi',
             'be': u'Размовы пра аўтара',
+            'bn': u'নির্ঘণ্ট আলাপ',
             'br': u'Kaozeadenn pajenn',
             'ca': u'Pàgina Discussió',
             'da': u'Forfatterdiskussion',
@@ -345,6 +350,7 @@ class Family(family.Family):
             '-': u'Page',
             'ar': u'صفحة',
             'be': u'Старонка',
+            'bn': u'পাতা',
             'br': [u'Oberour', u'Author'],
             'ca': [u'Llibre', u'Index'],
             'da': u'Side',
@@ -383,6 +389,7 @@ class Family(family.Family):
             '-': u'Page talk',
             'ar': u'نقاش الصفحة',
             'be': u'Размовы пра старонку',
+            'bn': u'পাতা আলাপ',
             'br': [u'Kaozeadenn oberour', u'Author talk'],
             'ca': [u'Llibre Discussió', u'Index talk'],
             'da': u'Sidediskussion',
@@ -421,6 +428,7 @@ class Family(family.Family):
             '-': u'Index',
             'ar': u'فهرس',
             'be': u'Індэкс',
+            'bn': u'প্রবেশদ্বার',
             'ca': u'Autor',
             'da': u'Indeks',
             'en': u'Index',
@@ -452,6 +460,7 @@ class Family(family.Family):
             '-': u'Index talk',
             'ar': u'نقاش الفهرس',
             'be': u'Размовы пра індэкс',
+            'bn': u'প্রবেশদ্বার আলাপ',
             'ca': u'Autor Discussió',
             'da': u'Indeksdiskussion',
             'en': u'Index talk',
