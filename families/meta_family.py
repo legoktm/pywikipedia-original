@@ -159,9 +159,6 @@ class Family(family.Family):
             'commons', 'species',
         ]
 
-    def version(self,code):
-        return '1.20wmf1'
-
     def shared_image_repository(self, code):
         return ('commons', 'commons')
 
