@@ -855,9 +855,12 @@ def main(*args):
             caseInsensitive = fix['nocase']
         try:
             replacements = fix['replacements']
+            # enable regex/replacements as a dictionary for different langs
+            if isinstance(replacements, dict):
+                replacements = replacements[pywikibot.getSite().lang]
         except KeyError:
             pywikibot.output(
-                        u"No replacements given in fix, don't joke with me!")
+                u"No replacements given in fix, don't joke with me!")
             return
 
     # Set the regular expression flags
