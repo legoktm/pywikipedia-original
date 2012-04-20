@@ -543,7 +543,7 @@ def main():
 
     if options.calc:
         if not options.salt:
-            parser.error('you must specify a salt to calculate a key')
+            parser.error('Note: you must specify a salt to calculate a key')
         s = new_hash()
         s.update(options.salt+'\n')
         s.update(options.calc+'\n')
@@ -563,7 +563,11 @@ def main():
     if options.lang:
         Site = pywikibot.getSite(options.lang)
         language = Site.language()
-        if pywikibot.debug: print Site
+
+    if not args:
+        pywikibot.output(u'NOTE: you must specify a template to run the bot')
+        pywikibot.showHelp('archivebot')
+        return
 
     for a in args:
         pagelist = []
