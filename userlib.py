@@ -62,8 +62,11 @@ class User(object):
             self._site = pywikibot.getSite(site)
         else:
             self._site = site
+        if self._site.lang in self._site.family.nocapitalize:
+            self._name = name
+        else:
+            self._name = name[0].upper() + name[1:]
         # None means not loaded
-        self._name = name
         self._blocked = None
         self._groups = None
         self._registrationTime = -1
