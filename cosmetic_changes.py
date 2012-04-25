@@ -295,6 +295,14 @@ class CosmeticChangesToolkit:
 
         # Adding categories
         if categories:
+            #Sorting categories in alphabetic order. beta test only on Persian Wikipedia
+            if self.site.language() == 'fa':
+                categories.sort()
+                #Taking main cats to top
+                for name in categories:
+                    if re.search(u"(.+?)\|(.{,1}?)",name.title()) or name.title()==name.title().split(":")[0]+title:
+                        categories.remove(name)
+                        categories.insert(0, name)
             text = pywikibot.replaceCategoryLinks(text, categories,
                                                   site=self.site)
         # Put the iw message back
