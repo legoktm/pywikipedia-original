@@ -7668,7 +7668,7 @@ def getSite(code=None, fam=None, user=None, noLogin=False):
     if key not in _sites:
         _sites[key] = Site(code=code, fam=fam, user=user)
     ret =  _sites[key]
-    if not ret.family.isPublic() and not noLogin:
+    if not ret.family.isPublic(code) and not noLogin:
         ret.forceLogin()
     return ret
 

@@ -4207,7 +4207,7 @@ class Family:
         # TODO : If the local computer time is wrong, result will be wrong
         return datetime.utcnow() + self.servergmtoffset
 
-    def isPublic(self):
+    def isPublic(self, code):
         """Does the wiki require logging in before viewing it?"""
         return True
 
