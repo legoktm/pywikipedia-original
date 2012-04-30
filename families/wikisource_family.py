@@ -44,8 +44,6 @@ class Family(family.Family):
         self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[2]['fr'] = [u'Utilisateur']
-        self.namespaces[3]['hr'] = [u'Razgovor sa suradnikom', u'Razgovor sa suradnicom']
-        self.namespaces[2]['hr'] = [u'Suradnik', u'Suradnica']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'Benutzerin Diskussion']
@@ -54,8 +52,6 @@ class Family(family.Family):
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
-        self.namespaces[-2]['mk'] = [u'Медиум', u'Медија']
-        self.namespaces[-1]['sa'] = [u'विशेषम्', u'विशेष']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
