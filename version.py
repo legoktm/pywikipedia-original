@@ -64,7 +64,7 @@ def getversion_svn():
         cur.execute( '''select local_relpath, repos_path, revision, changed_date from nodes order by revision desc, changed_date desc''')
         name, tag, rev, date = cur.fetchone()
         con.close()
-        tag = tag.rstrip(name)
+        tag = tag[:len(tag) - len(name)]
         date = time.gmtime(date/1000000)
     else:
         for i in range(3):
