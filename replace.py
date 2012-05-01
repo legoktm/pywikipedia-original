@@ -860,7 +860,7 @@ def main(*args):
                 replacements = replacements[pywikibot.getSite().lang]
         except KeyError:
             pywikibot.output(
-                u"No replacements given in fix, don't joke with me!")
+                u"No replacements given in fix.")
             return
 
     # Set the regular expression flags
