@@ -584,34 +584,34 @@ def main(*args):
     if part:
         try:
             # BUG: range with zh-min-nan (3 "-")
-            if len(fromlang)==1 and fromlang[0].index("-")>=0:
-                ll1,ll2=fromlang[0].split("--",1)
-                if not ll1: ll1=""
-                if not ll2: ll2="zzzzzzz"
+            if len(fromlang) == 1 and fromlang[0].index("-") >= 0:
+                start, end = fromlang[0].split("--", 1)
+                if not start: start = ""
+                if not end: end = "zzzzzzz"
                 if processType == 'good':
-                    fromlang=[ll for ll in good_name.keys()
-                              if ll>=ll1 and ll<=ll2]
+                    fromlang = [lang for lang in good_name.keys()
+                                if lang >= start and lang <= end]
                 elif processType == 'list':
-                    fromlang=[ll for ll in good_lists.keys()
-                              if ll>=ll1 and ll<=ll2]
+                    fromlang = [lang for lang in lists_name.keys()
+                                if lang >= start and lang <= end]
                 elif processType == 'former':
-                    fromlang=[ll for ll in former_lists.keys()
-                              if ll>=ll1 and ll<=ll2]
+                    fromlang = [lang for lang in former_name.keys()
+                                if lang >= start and lang <= end]
                 else:
-                    fromlang=[ll for ll in featured_name.keys()
-                              if ll>=ll1 and ll<=ll2]
+                    fromlang = [lang for lang in featured_name.keys()
+                                if lang >= start and lang <= end]
         except:
             pass
 
     if doAll:
         if processType == 'good':
-            fromlang=good_name.keys()
+            fromlang = good_name.keys()
         elif processType == 'list':
-            fromlang=lists_name.keys()
+            fromlang = lists_name.keys()
         elif processType == 'former':
-            fromlang=former_name.keys()
+            fromlang = former_name.keys()
         else:
-            fromlang=featured_name.keys()
+            fromlang = featured_name.keys()
 
     filename="cache/" + processType
     try:
