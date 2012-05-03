@@ -464,11 +464,10 @@ use_diskcache = False
 retry_on_fail = True
 
 # Defines what actions the bots are NOT allowed to do (e.g. 'edit') on wikipedia
-# servers. Setting this to:
-# actions_to_block = ['edit', 'watch', 'move', 'delete', 'undelete', 'protect']
-# allows simulation runs of bots to be carried out without changing any page on
-# the server side.
-actions_to_block = []
+# servers. Allows simulation runs of bots to be carried out without changing any
+# page on the server side. This setting may be overridden in user_config.py.
+actions_to_block = ['edit', 'watch', 'move', 'delete', 'undelete', 'protect',
+                    'emailuser']
 
 # How many pages should be put to a queue in asynchroneous mode.
 # If maxsize is <= 0, the queue size is infinite.

@@ -7731,7 +7731,7 @@ def handleArgs(*args):
     args may be passed as an argument, thereby overriding sys.argv
 
     """
-    global default_code, default_family, verbose, debug
+    global default_code, default_family, verbose, debug, simulate
     # get commandline arguments if necessary
     if not args:
         args = sys.argv[1:]
@@ -7776,9 +7776,9 @@ def handleArgs(*args):
             output(u'NOTE: option cosmetic_changes is %s\n' % config.cosmetic_changes)
         elif arg == '-simulate':
             if not getSite().has_api():
-                raise NotImplementedError('-simulate option is implemented for API only')
-            config.actions_to_block = ['edit', 'watch', 'move', 'delete',
-                                       'undelete', 'protect', 'emailuser']
+                raise NotImplementedError(
+                    '-simulate option is implemented for API only')
+            simulate = True
         # global debug option for development purposes. Normally does nothing.
         elif arg == '-debug':
             debug = True
@@ -7877,6 +7877,7 @@ exec "import %s_interface as uiModule" % config.userinterface
 ui = uiModule.UI()
 verbose = 0
 debug = False
+simulate = False
 
 # TEST for bug #3081100
 unicode_error = __import__('unicodedata').normalize(
