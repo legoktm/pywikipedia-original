@@ -7777,7 +7777,7 @@ def handleArgs(*args):
             if not getSite().has_api():
                 raise NotImplementedError('-simulate option is implemented for API only')
             config.actions_to_block = ['edit', 'watch', 'move', 'delete',
-                                       'undelete', 'protect']
+                                       'undelete', 'protect', 'emailuser']
         # global debug option for development purposes. Normally does nothing.
         elif arg == '-debug':
             debug = True
