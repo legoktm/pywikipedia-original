@@ -3920,6 +3920,11 @@ class ImagePage(Page):
                 result.append((datetime, username, resolution, size, comment))
         return result
 
+    def getFirstUploader(self):
+        """ Function that uses the APIs to detect the first uploader of the image """
+        inf = self.getFileVersionHistory()[-1]
+        return [inf[1], inf[0]]
+
     def getLatestUploader(self):
         """ Function that uses the APIs to detect the latest uploader of the image """
         if not self._infoLoaded:
