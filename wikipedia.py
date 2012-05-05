@@ -4551,11 +4551,11 @@ def decodeEsperantoX(text):
                     # The first two chars represent an Esperanto letter.
                     # Following x's are doubled.
                     new = esperanto + ''.join([old[2 * i]
-                                               for i in range(1, len(old)/2)])
+                                               for i in xrange(1, len(old)/2)])
                 else:
                     # The first character stays latin; only the x's are doubled.
                     new = latin + ''.join([old[2 * i + 1]
-                                           for i in range(0, len(old)/2)])
+                                           for i in xrange(0, len(old)/2)])
                 result += text[pos : match.start() + pos] + new
                 pos += match.start() + len(old)
             else:
@@ -4583,7 +4583,7 @@ def encodeEsperantoX(text):
         if match:
             old = match.group()
             # the first letter stays; add an x after each X or x.
-            new = old[0] + ''.join([old[i] + 'x' for i in range(1, len(old))])
+            new = old[0] + ''.join([old[i] + 'x' for i in xrange(1, len(old))])
             result += text[pos : match.start() + pos] + new
             pos += match.start() + len(old)
         else:

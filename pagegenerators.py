@@ -762,13 +762,13 @@ def ShortPagesPageGenerator(number = 100, repeat = False, site = None):
 def RandomPageGenerator(number = 10, site = None):
     if site is None:
         site = pywikibot.getSite()
-    for i in range(number):
+    for i in xrange(number):
         yield site.randompage()
 
 def RandomRedirectPageGenerator(number = 10, site = None):
     if site is None:
         site = pywikibot.getSite()
-    for i in range(number):
+    for i in xrange(number):
         yield site.randomredirectpage()
 
 def PagesFromTitlesGenerator(iterable, site=None):

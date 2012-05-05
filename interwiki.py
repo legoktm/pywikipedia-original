@@ -2106,7 +2106,7 @@ class InterwikiBot(object):
                              % fs.originPage)
         pywikibot.output(u"NOTE: Number of pages queued is %d, trying to add %d more."
                          % (len(self.subjects), number))
-        for i in range(number):
+        for i in xrange(number):
             try:
                 while True:
                     try:
@@ -2263,7 +2263,7 @@ class InterwikiBot(object):
     def queryStep(self):
         self.oneQuery()
         # Delete the ones that are done now.
-        for i in range(len(self.subjects)-1, -1, -1):
+        for i in xrange(len(self.subjects)-1, -1, -1):
             subj = self.subjects[i]
             if subj.isDone():
                 subj.finish(self)
@@ -2483,7 +2483,8 @@ def main():
             for FileName in glob.iglob('interwiki-dumps/interwikidump-*.txt'):
                 s = FileName.split('\\')[1].split('.')[0].split('-')
                 sitename = s[1]
-                for i in range(0,2): s.remove(s[0])
+                for i in xrange(0,2):
+                    s.remove(s[0])
                 sitelang = '-'.join(s)
                 if site.family.name == sitename:
                     File2Restore.append([sitename, sitelang])
