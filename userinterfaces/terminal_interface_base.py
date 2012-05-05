@@ -40,6 +40,7 @@ class UI:
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.encoding = config.console_encoding
+        self.transliteration_target = config.transliteration_target
 
     def printNonColorized(self, text, targetStream):
         # We add *** after the text as a whole if anything needed to be colorized.
@@ -69,7 +70,12 @@ class UI:
             # Encode our unicode string in the encoding used by the user's console,
             # and decode it back to unicode. Then we can see which characters
             # can't be represented in the console encoding.
+            # We need to take min(console_encoding, transliteration_target)
+            # the first is what the terminal is capable of
+            # the second is how unicode-y the user would like the output
             codecedText = text.encode(self.encoding, 'replace').decode(self.encoding)
+            if self.transliteration_target:
+                codecedText = codecedText.encode(self.transliteration_target, 'replace').decode(self.transliteration_target)
             transliteratedText = ''
             # Note: A transliteration replacement might be longer than the original
             # character, e.g. ч is transliterated to ch.
