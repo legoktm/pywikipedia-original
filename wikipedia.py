@@ -427,6 +427,7 @@ not supported by PyWikipediaBot!"""
                 )
             raise
 
+    @property
     def site(self):
         """Return the Site object for the wiki on which this Page resides."""
         return self._site
@@ -4985,6 +4986,17 @@ class Site(object):
         for language in self.languages():
             if not language[0].upper() + language[1:] in self.namespaces():
                 self._validlanguages.append(language)
+
+    def __call__(self):
+        """Since the Page.site() method has a property decorator, return the
+        site object for backwards-compatibility if Page.site() call is still
+        used instead of Page.site as recommended.
+
+        """
+##        # DEPRECATED warning. Should be uncommented if scripts are actualized
+##        pywikibot.output('Page.site() method is DEPRECATED, '
+##                         'use Page.site instead.')
+        return self
 
     @property
     def family(self):
