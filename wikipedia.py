@@ -7806,8 +7806,8 @@ def handleArgs(*args):
 
 ================================================================================
 \03{lightyellow}WARNING:\03{lightred} your python version might trigger issue #3081100\03{default}
-See http://goo.gl/W8lJB for more information.
-\03{lightyellow}Use an older python version (<2.6.5) if you are running on wikimedia sites!\03{default}
+More information: See https://sourceforge.net/support/tracker.php?aid=3081100
+\03{lightyellow}Please update python to 2.7.2+ if you are running on wikimedia sites!\03{default}
 ================================================================================
 
 """)
