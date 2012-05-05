@@ -8266,7 +8266,7 @@ MyURLopener.addheaders = [('User-agent', useragent)]
 if not config.suppresssurvey:
         output(
 """
-\03{lightyellow}Dear Pwikipedia user!\03{default}
+\03{lightyellow}Dear Pywikipedia user!\03{default}
 Pywikibot has detected that you use this outdated version of Python:
 %s.
 We would like to hear your voice before ceasing support of this version.
