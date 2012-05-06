@@ -8270,7 +8270,7 @@ if not config.suppresssurvey:
 Pywikibot has detected that you use this outdated version of Python:
 %s.
 We would like to hear your voice before ceasing support of this version.
-Please update to \03{lightyellow}Python 2.7.2\03{default} if possible or visit
+Please update to \03{lightyellow}Python 2.7.2\03{default} or higher if possible or visit
 http://www.mediawiki.org/wiki/Pywikipediabot/Survey2012 to tell us why we
 should support your version and to learn how to hide this message.
 After collecting opinions for a time we will decide and announce the deadline
