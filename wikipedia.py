@@ -7801,7 +7801,7 @@ def handleArgs(*args):
             nonGlobalArgs.append(arg)
 
     # TEST for bug #3081100
-    if unicode_error and (default_code == 'hi' or moduleName=='interwiki'):
+    if unicode_error:
         output("""
 
 ================================================================================
