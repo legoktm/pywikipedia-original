@@ -56,7 +56,7 @@ from __future__ import generators
 # (C) Daniel Herding, 2004.
 # (C) Purodha Blissenbach, 2009.
 # (C) xqt, 2009-2012
-# (C) Pywikipedia bot team, 2004-2010
+# (C) Pywikipedia bot team, 2004-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -502,9 +502,9 @@ class RedirectRobot:
                         redir_page.delete(reason, prompt = False)
                     except pywikibot.NoUsername:
                         if i18n.twhas_key(
-                            targetPage.site().lang,
+                            targetPage.site.lang,
                             'redirect-broken-redirect-template') and \
-                            i18n.twhas_key(targetPage.site().lang,
+                            i18n.twhas_key(targetPage.site.lang,
                                            'redirect-remove-broken'):
                             pywikibot.output(
         u"No sysop in user-config.py, put page to speedy deletion.")
@@ -512,7 +512,7 @@ class RedirectRobot:
                             ### TODO: Add bot's signature if needed
                             ###       Not supported via TW yet
                             content = i18n.twtranslate(
-                                targetPage.site().lang,
+                                targetPage.site.lang,
                                 'redirect-broken-redirect-template'
                                 ) + "\n" + content
                             redir_page.put(content, reason)
@@ -543,7 +543,7 @@ class RedirectRobot:
         newRedir = redir
         redirList = []  # bookkeeping to detect loops
         while True:
-            redirList.append(u'%s:%s' % (newRedir.site().lang,
+            redirList.append(u'%s:%s' % (newRedir.site.lang,
                                          newRedir.sectionFreeTitle()))
             try:
                 targetPage = newRedir.getRedirectTarget()
@@ -594,14 +594,14 @@ class RedirectRobot:
                 pywikibot.output(
                     u'   Links to: %s.'
                     % targetPage.title(asLink=True))
-                if targetPage.site().sitename() == 'wikipedia:en':
-                    mw_msg = targetPage.site().mediawiki_message(
+                if targetPage.site.sitename() == 'wikipedia:en':
+                    mw_msg = targetPage.site.mediawiki_message(
                                  'wikieditor-toolbar-tool-redirect-example')
                     if targetPage.title() == mw_msg:
                         pywikibot.output(
                             u"Skipping toolbar example: Redirect source is potentially vandalized.")
                         break
-                if targetPage.site() != self.site:
+                if targetPage.site != self.site:
                     pywikibot.output(
                         u'Warning: redirect target (%s) is on a different site.'
                         % targetPage.title(asLink=True))
@@ -609,7 +609,7 @@ class RedirectRobot:
                         break  # skip if automatic
                 # watch out for redirect loops
                 if redirList.count(u'%s:%s'
-                                   % (targetPage.site().lang,
+                                   % (targetPage.site.lang,
                                       targetPage.sectionFreeTitle())
                                   ) > 0:
                     pywikibot.output(
@@ -620,22 +620,22 @@ class RedirectRobot:
 ##                        content = targetPage.get(get_redirect=True)
 ##                    except pywikibot.SectionError:
 ##                        content = pywikibot.Page(
-##                                      targetPage.site(),
+##                                      targetPage.site,
 ##                                      targetPage.sectionFreeTitle()
 ##                                  ).get(get_redirect=True)
 ##                    if i18n.twhas_key(
-##                        targetPage.site().lang,
+##                        targetPage.site.lang,
 ##                        'redirect-broken-redirect-template') and \
-##                        i18n.twhas_key(targetPage.site().lang,
+##                        i18n.twhas_key(targetPage.site.lang,
 ##                                       'redirect-remove-loop'):
 ##                        pywikibot.output(u"Tagging redirect for deletion")
 ##                        # Delete the two redirects
-##                        content = i18n.translate(
-##                                      targetPage.site().lang,
+##                        content = i18n.twtranslate(
+##                                      targetPage.site.lang,
 ##                                      'redirect-broken-redirect-template'
 ##                                      ) + "\n" + content
-##                        summ = i18n.translate(
-##                                   targetPage.site().lang,
+##                        summ = i18n.twtranslate(
+##                                   targetPage.site.lang,
 ##                                   'redirect-remove-loop')
 ##                        targetPage.put(content, summ)
 ##                        redir.put(content, summ)
