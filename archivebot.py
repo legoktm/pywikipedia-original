@@ -53,22 +53,24 @@ key                  A secret key that (if valid) allows archives to not be
                      subpages of the page being archived.
 
 
-Options:
+Options (may be omitted):
   -h, --help            show this help message and exit
-  -f FILE, --file=FILE  load list of pages from FILE
-  -p PAGE, --page=PAGE  archive a single PAGE
-  -n NAMESPACE, --namespace=NAMESPACE
-                        only archive pages from a given namespace
-  -s SALT, --salt=SALT  specify salt
-  -F, --force           override security options
   -c PAGE, --calc=PAGE  calculate key for PAGE and exit
+  -f FILE, --file=FILE  load list of pages from FILE
+  -F, --force           override security options
   -l LOCALE, --locale=LOCALE
                         switch to locale LOCALE
   -L LANG, --lang=LANG  set the language code to work on
+  -n NAMESPACE, --namespace=NAMESPACE
+                        only archive pages from a given namespace
+  -p PAGE, --page=PAGE  archive a single PAGE
+  -s SALT, --salt=SALT  specify salt
+  -S --simulate         Do not change pages, just simulate
 """
 #
 # (C) Misza13, 2006-2010
-# (C) Pywikipedia bot team, 2007-2010
+# (C) xqt, 2009-2012
+# (C) Pywikipedia bot team, 2007-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -93,19 +95,24 @@ language = Site.language()
 def message(key, lang=Site.language()):
     return i18n.twtranslate(lang, key)
 
+
 class MalformedConfigError(pywikibot.Error):
     """There is an error in the configuration template."""
+
 
 class MissingConfigError(pywikibot.Error):
     """The config is missing in the header (either it's in one of the threads
     or transcluded from another page)."""
 
+
 class AlgorithmError(MalformedConfigError):
     """Invalid specification of archiving algorithm."""
+
 
 class ArchiveSecurityError(pywikibot.Error):
     """Archive is not a subpage of page being archived and key not specified
     (or incorrect)."""
+
 
 def str2time(str):
     """Accepts a string defining a time period:
@@ -190,6 +197,7 @@ def generateTransclusions(Site, template, namespaces=[], eicontinue=''):
         for page in generateTransclusions(Site, template, namespaces,
                                           eicontinue):
             yield page
+
 
 class DiscussionThread(object):
     """An object representing a discussion thread on a page, that is something of the form:
@@ -285,15 +293,14 @@ class DiscussionThread(object):
                 return message('archivebot-older-than') + ' ' + reT.group(1)
         return ''
 
+
 class DiscussionPage(pywikibot.Page):
     """A class that represents a single discussion page as well as an archive
     page. Feed threads to it and run an update() afterwards."""
 
     def __init__(self, title, archiver, vars=None):
         pywikibot.Page.__init__(self, Site, title, defaultNamespace=3)
-##        self.title = title
         self.threads = []
-##        self.Page = self
         self.full = False
         self.archiver = archiver
         self.vars = vars
@@ -312,17 +319,17 @@ class DiscussionPage(pywikibot.Page):
         self.archives = {}
         self.archivedThreads = 0
         lines = self.get().split('\n')
-        state = 0 #Reading header
+        found = False #Reading header
         curThread = None
         for line in lines:
             threadHeader = re.search('^== *([^=].*?) *== *$',line)
             if threadHeader:
-                state = 1 #Reading threads now
+                found = True #Reading threads now
                 if curThread:
                     self.threads.append(curThread)
                 curThread = DiscussionThread(threadHeader.group(1))
             else:
-                if state == 1:
+                if found:
                     curThread.feedLine(line)
                 else:
                     self.header += line + '\n'
@@ -355,6 +362,7 @@ class DiscussionPage(pywikibot.Page):
             summary += ' ' + message('archivebot-archive-full')
         self.put(newtext, minorEdit=True, comment=summary)
 
+
 class PageArchiver(object):
     """A class that encapsulates all archiving methods.
     __init__ expects a pywikibot.Page object.
@@ -385,6 +393,8 @@ class PageArchiver(object):
         return self.attributes.get(attr,[default])[0]
 
     def set(self, attr, value, out=True):
+        if attr = 'archive':
+            value = value.replace('_',' ')
         self.attributes[attr] = [value, out]
 
     def saveables(self):
@@ -404,25 +414,19 @@ class PageArchiver(object):
         return self.get('key') == s.hexdigest()
 
     def loadConfig(self):
-        hdrlines = self.Page.header.split('\n')
-        pywikibot.output(u'Looking for: %s in %s' % (self.tpl, self.Page.title()))
-        mode = 0
-        for line in hdrlines:
-            if mode == 0 and re.search('{{'+self.tpl,line):
-                mode = 1
-                continue
-            if mode == 1 and re.match('}}',line):
+        pywikibot.output(u'Looking for: {{%s}} in %s' % (self.tpl, self.Page))
+        found = False
+        for tpl in self.Page.templatesWithParams(thistxt=self.Page.header):
+            if tpl[0] == self.tpl:
+                for param in tpl[1]:
+                    item, value = param.split('=')
+                    self.set(item, value)
+                found = True
                 break
-            attRE = re.search(r'^\| *(\w+) *= *(.*?) *$',line)
-            if mode == 1 and attRE:
-                self.set(attRE.group(1),attRE.group(2))
-                continue
-
-        if mode == 0 or not self.get('algo',''):
-            raise MissingConfigError(u'Missing od malformed template or missing algo')
-
-        #Last minute fix:
-        self.set('archive', self.get('archive').replace('_',' '), True)
+        if not found:
+            raise MissingConfigError(u'Missing or malformed template')
+        if not self.get('algo', ''):
+            raise MissingConfigError(u'Missing algo')
 
     def feedArchive(self, archive, thread, maxArchiveSize, vars=None):
         """Feed the thread to one of the archives.
@@ -510,6 +514,7 @@ class PageArchiver(object):
                                         self.commentParams)
             self.Page.update(comment)
 
+
 def main():
     global Site, language
     from optparse import OptionParser
@@ -532,6 +537,8 @@ def main():
             help='current language code', metavar='lang')
     parser.add_option('-T', '--timezone', dest='timezone',
             help='switch timezone to TIMEZONE', metavar='TIMEZONE')
+    parser.add_option('-S', '--simulate', action='store_true', dest='simulate',
+            help='Do not change pages, just simulate')
     (options, args) = parser.parse_args()
 
     if options.locale:
@@ -566,6 +573,9 @@ def main():
     if options.lang:
         Site = pywikibot.getSite(options.lang)
         language = Site.language()
+
+    if options.simulate:
+        pywikibot.simulate = True
 
     if not args:
         pywikibot.output(u'NOTE: you must specify a template to run the bot')
