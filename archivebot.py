@@ -176,10 +176,7 @@ def txt2timestamp(txt, format):
 
 def generateTransclusions(Site, template, namespaces=[]):
     pywikibot.output(u'Fetching template transclusions...')
-    print namespaces, Site
-    transclusionPage = pywikibot.Page(Site,
-                                      "%s:%s" % (Site.namespace(10),
-                                                 template))
+    transclusionPage = pywikibot.Page(Site, template, defaultNamespace=10)
     gen = pagegenerators.ReferringPageGenerator(transclusionPage,
                                                 onlyTemplateInclusion=True)
     if namespaces:
