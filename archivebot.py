@@ -335,7 +335,7 @@ class DiscussionPage(pywikibot.Page):
                     self.header += line + '\n'
         if curThread:
             self.threads.append(curThread)
-        pywikibot.output(u'%d Threads found.' % len(self.threads))
+        pywikibot.output(u'%d Threads found on %s' % (len(self.threads), self))
 
     def feedThread(self, thread, maxArchiveSize=(250*1024,'B')):
         self.threads.append(thread)
@@ -360,7 +360,7 @@ class DiscussionPage(pywikibot.Page):
             newtext += t.toText()
         if self.full:
             summary += ' ' + message('archivebot-archive-full')
-        self.put(newtext, minorEdit=True, comment=summary)
+        self.put(newtext, comment=summary)
 
 
 class PageArchiver(object):
@@ -492,6 +492,7 @@ class PageArchiver(object):
                              % self.archivedThreads)
             return
         if whys:
+            pywikibot.output(u'Archiving %d thread(s).' % self.archivedThreads)
             #Save the archives first (so that bugs don't cause a loss of data)
             for a in sorted(self.archives.keys()):
                 self.commentParams['count'] = self.archives[a].archivedThreads
