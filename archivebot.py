@@ -174,29 +174,18 @@ def txt2timestamp(txt, format):
             pass
         return None
 
-def generateTransclusions(Site, template, namespaces=[], eicontinue=''):
-    qdata = {
-        'action' : 'query',
-        'list' : 'embeddedin',
-        'eititle' : template,
-        'einamespace' : '|'.join(namespaces),
-        'eilimit' : '100',
-        'format' : 'json',
-        }
-    if eicontinue:
-        qdata['eicontinue'] = eicontinue
-
+def generateTransclusions(Site, template, namespaces=[]):
     pywikibot.output(u'Fetching template transclusions...')
-    response, result = query.GetData(qdata, Site, back_response = True)
-
-    for page_d in result['query']['embeddedin']:
-        yield pywikibot.Page(Site, page_d['title'])
-
-    if 'query-continue' in result:
-        eicontinue = result['query-continue']['embeddedin']['eicontinue']
-        for page in generateTransclusions(Site, template, namespaces,
-                                          eicontinue):
-            yield page
+    print namespaces, Site
+    transclusionPage = pywikibot.Page(Site,
+                                      "%s:%s" % (Site.namespace(10),
+                                                 template))
+    gen = pagegenerators.ReferringPageGenerator(transclusionPage,
+                                                onlyTemplateInclusion=True)
+    if namespaces:
+        gen = pagegenerators.NamespaceFilterPageGenerator(gen, namespaces, Site)
+    for page in gen:
+        yield page
 
 
 class DiscussionThread(object):
