@@ -393,7 +393,7 @@ class PageArchiver(object):
         return self.attributes.get(attr,[default])[0]
 
     def set(self, attr, value, out=True):
-        if attr = 'archive':
+        if attr == 'archive':
             value = value.replace('_',' ')
         self.attributes[attr] = [value, out]
 
