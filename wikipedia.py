@@ -5508,6 +5508,10 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                     raise
             except Exception, e:
                 output(u'%s' %e)
+                if pywikibot.verbose:
+                    import traceback
+                    traceback.print_exc()
+
                 if config.retry_on_fail:
                     retry_attempt += 1
                     if retry_attempt > config.maxretries:
