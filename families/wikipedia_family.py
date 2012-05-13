@@ -285,7 +285,7 @@ class Family(family.Family):
             'sn': u'Wikipedia',
             'so': u'Wikipedia',
             'sq': u'Wikipedia',
-            'sr': u'Википедија',
+            'sr': [u'Википедија', u'Vikipedija'],
             'srn': u'Wikipedia',
             'ss': u'Wikipedia',
             'st': u'Wikipedia',
