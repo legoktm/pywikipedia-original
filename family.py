@@ -1,7 +1,7 @@
 # -*- coding: utf-8  -*-
 
 #
-# (C) Pywikipedia bot team, 2004-2011
+# (C) Pywikipedia bot team, 2004-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -201,7 +201,7 @@ class Family:
                 'mrj': u'Медиа',
                 'mt': [u'Medja', u'Midja'],
                 'myv': u'Медия',
-                'mzn': [u'مه‌دیا', u'مدیا'],
+                'mzn': [u'مدیا', u'مه‌دیا'],
                 'nah': u'Mēdiatl',
                 'ne': u'मीडिया',
                 'new': u'माध्यम',
@@ -1576,7 +1576,7 @@ class Family:
                 'mr': u'मिडियाविकी',
                 'mt': [u'MediaWiki', u'MedjaWiki'],
                 'mwl': u'Biqui',
-                'mzn': [u'مه‌دیاویکی', u'مه‌دیا ویکی', u'مدیاویکی'],
+                'mzn': [u'مدیاویکی', u'مه‌دیا ویکی', u'مه‌دیاویکی'],
                 'nah': u'Huiquimedia',
                 'ne': u'मीडियाविकि',
                 'new': u'मिडियाविकि',
