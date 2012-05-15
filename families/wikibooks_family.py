@@ -21,10 +21,7 @@ class Family(family.Family):
             'ast', 'ku', 'tk', 'uz', 'su', 'vo', 'mn', 'my',
         ]
 
-        if family.config.SSL_connection:
-            self.langs = dict([(lang, None) for lang in self.languages_by_size])
-        else:
-            self.langs = dict([(lang, '%s.wikibooks.org' % lang) for lang in self.languages_by_size])
+        self.langs = dict([(lang, '%s.wikibooks.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
@@ -495,14 +492,6 @@ class Family(family.Family):
         return ('commons', 'commons')
 
     if family.config.SSL_connection:
-        def hostname(self, code):
-            return 'secure.wikimedia.org'
 
         def protocol(self, code):
             return 'https'
-
-        def scriptpath(self, code):
-            return '/%s/%s/w' % (self.name, code)
-
-        def nicepath(self, code):
-            return '/%s/%s/wiki/' % (self.name, code)

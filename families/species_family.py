@@ -13,8 +13,6 @@ class Family(family.Family):
         self.langs = {
             'species': 'species.wikimedia.org',
         }
-        if family.config.SSL_connection:
-            self.langs['species'] = None
 
         self.namespaces[4] = {
             '_default': [u'Wikispecies', self.namespaces[4]['_default']],
@@ -34,14 +32,6 @@ class Family(family.Family):
         return ('commons', 'commons')
 
     if family.config.SSL_connection:
-        def hostname(self, code):
-            return 'secure.wikimedia.org'
 
         def protocol(self, code):
             return 'https'
-
-        def scriptpath(self, code):
-            return '/wikipedia/species/w'
-
-        def nicepath(self, code):
-            return '/wikipedia/species/wiki/'

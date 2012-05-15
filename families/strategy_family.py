@@ -13,8 +13,6 @@ class Family(family.Family):
         self.langs = {
             'strategy': 'strategy.wikimedia.org',
         }
-        if config.SSL_connection:
-            self.langs['strategy'] = None
 
         self.namespaces[4] = {
             '_default': [u'Strategic Planning', 'Project'],
@@ -38,14 +36,6 @@ class Family(family.Family):
         return ('commons', 'commons')
 
     if config.SSL_connection:
-        def hostname(self, code):
-            return 'secure.wikimedia.org'
 
         def protocol(self, code):
             return 'https'
-
-        def scriptpath(self, code):
-            return '/wikipedia/strategy/w'
-
-        def nicepath(self, code):
-            return '/wikipedia/strategy/wiki/'

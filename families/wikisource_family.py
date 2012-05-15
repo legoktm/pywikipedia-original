@@ -19,14 +19,9 @@ class Family(family.Family):
             'kn', 'mr', 'cy', 'zh-min-nan', 'sk', 'fo',
         ]
 
-        if family.config.SSL_connection:
-            for lang in self.languages_by_size:
-                self.langs[lang] = None
-            self.langs['-'] = None
-        else:
-            for lang in self.languages_by_size:
-                self.langs[lang] = '%s.wikisource.org' % lang
-            self.langs['-'] = 'wikisource.org'
+        for lang in self.languages_by_size:
+            self.langs[lang] = '%s.wikisource.org' % lang
+        self.langs['-'] = 'wikisource.org'
 
         # Override defaults
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
@@ -631,19 +626,6 @@ class Family(family.Family):
         return ('commons', 'commons')
 
     if family.config.SSL_connection:
-        def hostname(self, code):
-            return 'secure.wikimedia.org'
 
         def protocol(self, code):
             return 'https'
-
-        def scriptpath(self, code):
-            if code == '-':
-                return '/wikipedia/sources/w'
-
-            return '/%s/%s/w' % (self.name, code)
-
-        def nicepath(self, code):
-            if code == '-':
-                return '/wikipedia/sources/wiki/'
-            return '/%s/%s/wiki/' % (self.name, code)
