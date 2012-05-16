@@ -286,7 +286,7 @@ lists_name = {
     'tr': (BACK, u'Seçkin liste'),
     'uk': (BACK, u'Вибраний список'),
     'vi': (BACK, u'Sao danh sách chọn lọc'),
-    'zh': (BACK, u'Featured list'),
+    'zh': (BACK, u'特色列表'),
 }
 
 # Third parameter is the sort key indicating articles to hide from the given list
@@ -300,7 +300,7 @@ former_name = {
     'ru': (CAT, u"Википедия:Устаревшие избранные статьи"),
     'th': (CAT, u"บทความคัดสรรในอดีต"),
     'tr': (CAT, u"Vikipedi eski seçkin maddeler"),
-    'zh': (CAT, u"Wikipedia_former_featured_articles"),
+    'zh': (CAT, u"已撤销的特色条目"),
 }
 
 def featuredArticles(site, pType):
