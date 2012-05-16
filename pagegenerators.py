@@ -434,9 +434,6 @@ class GeneratorFactory(object):
             gen = AllpagesPageGenerator(firstPageTitle, namespace,
                                         includeredirects=False)
         elif arg.startswith('-start'):
-            if arg.startswith('-startxml'):
-                pywikibot.output(u'-startxml : wrong parameter')
-                sys.exit()
             firstPageTitle = arg[7:]
             if not firstPageTitle:
                 firstPageTitle = pywikibot.input(
