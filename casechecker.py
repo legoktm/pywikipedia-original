@@ -105,7 +105,7 @@ class CaseChecker( object ):
         u'^[' + romanNumChars + ']+[' + localLowerLtr + ']+$')
 
     whitelists = {
-        'ru': u'ВП:КЛ/Whitelist'
+        'ru': u'User:Rubinbot/Whitelist',
         }
 
     latLtr = u'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
