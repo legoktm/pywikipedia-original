@@ -619,7 +619,7 @@ if transliteration_target == 'not set':
         print "Please see http://www.mediawiki.org/wiki/Manual:Pywikipediabot/Windows"
     else:
         transliteration_target = None
-elif transliteration_target.lower() == 'none':
+elif transliteration_target in ('None', 'none'):
     transliteration_target = None
 
 # Save base_dir for use by other modules
