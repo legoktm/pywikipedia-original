@@ -2929,7 +2929,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
     def getCreator(self):
         """ Function to get the first editor and time stamp of a page """
-        inf = getVersionHistory(reverseOrder=True, revCount=1)[0]
+        inf = self.getVersionHistory(reverseOrder=True, revCount=1)[0]
         return inf[2], inf[1]
 
     def getLatestEditors(self, limit=1):
