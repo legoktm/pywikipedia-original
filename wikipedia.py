@@ -223,6 +223,8 @@ class Page(object):
     getVersionHistoryTable: Create a wiki table from the history data
     fullVersionHistory    : Return all past versions including wikitext
     contributingUsers     : Return set of users who have edited page
+    getCreator            : Function to get the first editor of a page
+    getLatestEditors      : Function to get the last editors of a page
     exists (*)            : True if the page actually exists, false otherwise
     isEmpty (*)           : True if the page has 4 characters or less content,
                             not counting interwiki and category links
@@ -1037,7 +1039,6 @@ not supported by PyWikipediaBot!"""
 
         """
         return self._editTime
-
 
     def previousRevision(self):
         """Return the revision id for the previous revision of this Page."""
@@ -2926,6 +2927,24 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         users = set([edit[2] for edit in edits])
         return users
 
+    def getCreator(self):
+        """ Function to get the first editor and time stamp of a page """
+        inf = getVersionHistory(reverseOrder=True, revCount=1)[0]
+        return inf[2], inf[1]
+
+    def getLatestEditors(self, limit=1):
+        """ Function to get the last editors of a page """
+        #action=query&prop=revisions&titles=API&rvprop=timestamp|user|comment
+        if hasattr(self, '_versionhistory'):
+            data = self.getVersionHistory(getAll=True, revCount=limit)
+        else:
+            data = self.getVersionHistory(revCount = limit)
+
+        result = []
+        for i in data:
+            result.append({'user':i[2], 'timestamp':i[1]})
+        return result
+
     def watch(self, unwatch=False):
         """Add this page to the watchlist"""
         if self.site().has_api:
@@ -3728,20 +3747,6 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             return False
         else:
             return new_text
-
-    def getLatestEditors(self, limit = 1):
-        """ Function to get the last editors of a page """
-        #action=query&prop=revisions&titles=API&rvprop=timestamp|user|comment
-        if hasattr(self, '_versionhistory'):
-            data = self.getVersionHistory(getAll=True, revCount = limit)
-        else:
-            data = self.getVersionHistory(revCount = limit)
-
-        result = []
-        for i in data:
-            result.append({'user':i[2],'timestamp':i[1]})
-
-        return result
 
 
 class ImagePage(Page):
