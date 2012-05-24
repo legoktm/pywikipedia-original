@@ -5773,7 +5773,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         # Note that the link of anonymous users (which doesn't exist at all
         # in Wikimedia sites) has the ID pt-anonuserpage, and thus won't be
         # found here.
-        userpageR = re.compile('<li id="pt-userpage"><a href=".+?">(?P<username>.+?)</a></li>')
+        userpageR = re.compile('<li id="pt-userpage".*?><a href=".+?".*?>(?P<username>.+?)</a></li>')
         m = userpageR.search(text)
         if m:
             self._isLoggedIn[index] = True
