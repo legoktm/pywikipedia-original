@@ -588,7 +588,8 @@ class RedirectRobot:
                             u"Warning: Redirect target %s doesn't exist."
                             % newRedir.title(asLink=True))
             except pywikibot.ServerError:
-                pywikibot.output(u'Skipping: Server Error')
+                pywikibot.output(u'Skipping due to server error: '
+                                 u'No textarea found')
                 break
             else:
                 pywikibot.output(
