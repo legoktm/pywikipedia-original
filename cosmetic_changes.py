@@ -295,14 +295,14 @@ class CosmeticChangesToolkit:
 
         # Adding categories
         if categories:
-            #Sorting categories in alphabetic order. beta test only on Persian Wikipedia
-            if self.site.language() == 'fa':
-                categories.sort()
-                #Taking main cats to top
-                for name in categories:
-                    if re.search(u"(.+?)\|(.{,1}?)",name.title()) or name.title()==name.title().split(":")[0]+title:
-                        categories.remove(name)
-                        categories.insert(0, name)
+            ##Sorting categories in alphabetic order. beta test only on Persian Wikipedia, TODO fix bug for sorting
+            #if self.site.language() == 'fa':
+            #   categories.sort()
+            ##Taking main cats to top
+            #   for name in categories:
+            #       if re.search(u"(.+?)\|(.{,1}?)",name.title()) or name.title()==name.title().split(":")[0]+title:
+            #            categories.remove(name)
+            #            categories.insert(0, name)
             text = pywikibot.replaceCategoryLinks(text, categories,
                                                   site=self.site)
         # Put the iw message back
@@ -443,7 +443,7 @@ class CosmeticChangesToolkit:
                         newLink = "[[%s]]" % label
                     # Check if we can create a link with trailing characters
                     # instead of a pipelink
-                    elif len(titleWithSection) <= len(label) and \
+                    elif self.site.sitename() != 'wikipedia:fa' and len(titleWithSection) <= len(label) and \
                          label[:len(titleWithSection)] == titleWithSection and \
                          re.sub(trailR, '',
                                 label[len(titleWithSection):]) == '':
@@ -707,6 +707,11 @@ class CosmeticChangesToolkit:
         pattern = re.compile(u'<[/]*?[^</]+?[/]*?>', re.UNICODE)
         exceptions.append(pattern)
         exceptions.append('table') #exclude tables for now
+        ##fixing pipe and trailing for fa. Thanks ZxxZxxZ
+        if self.site.lang=='fa':
+            faChrs = u'ءاآأإئؤبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیةيك' + u'ًٌٍَُِّْٓٔ'
+            text = re.sub(u'\[\[([^\]\|]*)]]([‌%s]+)' % faChrs, ur'[[\1|\1\2]]', text)
+            text = re.sub(u'\[\[([^\]\|]*)\|(.+?)]]([‌%s]+)' % faChrs, ur'[[\1|\2\3]]', text)
         for i in range(0,10):
             text = pywikibot.replaceExcept(text, str(i), new[i], exceptions)
         return text
