@@ -16,7 +16,7 @@ http://www.effbot.org/ for earlier versions). If not found, it falls back
 to the older method using regular expressions.
 """
 #
-# (C) Pywikipedia bot team, 2005-2010
+# (C) Pywikipedia bot team, 2005-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -62,12 +62,13 @@ class XmlEntry:
     """
     Represents a page.
     """
-    def __init__(self, title, id, text, username, ipedit, timestamp,
+    def __init__(self, title, ns, id, text, username, ipedit, timestamp,
                  editRestriction, moveRestriction, revisionid, comment,
                  redirect):
         # TODO: there are more tags we can read.
         self.title = title
-        self.id = id
+        self.ns = ns
+        self.id =id
         self.text = text
         self.username = username.strip()
         self.ipedit = ipedit
@@ -157,6 +158,9 @@ class MediaWikiXmlHandler(xml.sax.handler.ContentHandler):
         elif name == 'title':
             self.destination = 'title'
             self.title=u''
+        elif name == 'ns':
+            self.destination = 'ns'
+            self.ns = u''
         elif name == 'timestamp':
             self.destination = 'timestamp'
             self.timestamp=u''
@@ -193,7 +197,7 @@ class MediaWikiXmlHandler(xml.sax.handler.ContentHandler):
                          self.timestamp[17:19])
             self.title = self.title.strip()
             # Report back to the caller
-            entry = XmlEntry(self.title, self.id,
+            entry = XmlEntry(self.title, self.ns, self.id,
                              text, self.username,
                              self.ipedit, timestamp,
                              self.editRestriction, self.moveRestriction,
@@ -223,6 +227,8 @@ class MediaWikiXmlHandler(xml.sax.handler.ContentHandler):
             self.restrictions += data
         elif self.destination == 'title':
             self.title += data
+        elif self.destination == 'ns':
+            self.ns += data
         elif self.destination == 'username':
             self.username += data
         elif self.destination == 'timestamp':
@@ -358,6 +364,7 @@ Consider installing the python-celementtree package.''')
         # could get comment, minor as well
         text = revision.findtext("{%s}text" % self.uri)
         return XmlEntry(title=self.title,
+                        ns=self.ns,
                         id=self.pageid,
                         text=text or u'',
                         username=username or u'', #username might be deleted
@@ -382,6 +389,7 @@ Consider installing the python-celementtree package.''')
         Rpage = re.compile(
             '<page>\s*'+
             '<title>(?P<title>.+?)</title>\s*'+
+            '<ns>(?P<namespace>\d+?)</ns>\s*'+
             '<id>(?P<pageid>\d+?)</id>\s*'+
             '(<restrictions>(?P<restrictions>.+?)</restrictions>)?\s*'+
             '<revision>\s*'+
@@ -430,7 +438,8 @@ Consider installing the python-celementtree package.''')
                     else:
                         username = m.group('ip')
                         ipedit = True
-                    yield XmlEntry(title = m.group('title'),
+                    yield XmlEntry(title=m.group('title'),
+                                   ns=m.group('namespace'),
                                    id=m.group('pageid'), text=text,
                                    username=username, ipedit=ipedit,
                                    timestamp=m.group('timestamp'),
