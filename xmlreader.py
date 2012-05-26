@@ -102,6 +102,7 @@ class MediaWikiXmlHandler(xml.sax.handler.ContentHandler):
         # They are initialized here so they at least have some value when
         # asked for
         self.id = u''
+        self.ns = u''
         self.revisionid = u''
         self.comment = u''
         self.isredirect = False
