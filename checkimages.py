@@ -81,7 +81,7 @@ right parameter.
 # (C) Kyle/Orgullomoore, 2006-2007 (newimage.py)
 # (C) Siebrand Mazeland, 2007-2010
 # (C) Filnik, 2007-2011
-# (C) Pywikipedia team, 2007-2011
+# (C) Pywikipedia team, 2007-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -122,13 +122,13 @@ n_txt = {
 # Text that the bot will try to see if there's already or not. If there's a
 # {{ I'll use a regex to make a better check.
 # This will work so:
-# '{{nld' --> '\{\{(?:template:|)no[ _]license ?(?:\||\n|\}) ?' (case
+# '{{no license' --> '\{\{(?:template:|)no[ _]license ?(?:\||\n|\}) ?' (case
 # insensitive).
 # If there's not a {{ it will work as usual (if x in Text)
 txt_find =  {
     'commons':[u'{{no license', u'{{no license/en', u'{{nld', u'{{no permission', u'{{no permission since'],
     'ar':[u'{{لت', u'{{لا ترخيص'],
-    'de':[u'{{DÜP', u'{{Dateiüberprüfung'],
+    'de':[u'{{DÜP', u'{{Düp', u'{{Dateiüberprüfung'],
     'en':[u'{{nld', u'{{no license'],
     'fa':[u'{{حق تکثیر تصویر نامعلوم۲'],
     'ga':[u'{{Ceadúnas de dhíth', u'{{Ceadúnas de dhíth'],
@@ -294,7 +294,7 @@ nothing_notification = {
 # NOTE: YOUR Botnick is automatically added. It's not required to add it twice.
 bot_list = {
     'commons':[u'Siebot', u'CommonsDelinker', u'Filbot', u'John Bot', u'Sz-iwbot', u'ABFbot'],
-    'de'     :[u'ABFbot'],
+    #'de'     :[u'ABFbot'],
     'en'     :[u'OrphanBot'],
     'fa'     :[u'Amirobot'],
     'ga'     :[u'AllieBot'],
