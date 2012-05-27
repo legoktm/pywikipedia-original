@@ -347,6 +347,7 @@ Consider installing the python-celementtree package.''')
 
     def _headers(self, elem):
         self.title = elem.findtext("{%s}title" % self.uri)
+        self.ns = elem.findtext("{%s}ns" % self.uri)
         self.pageid = elem.findtext("{%s}id" % self.uri)
         self.restrictions = elem.findtext("{%s}restrictions" % self.uri)
         self.isredirect = elem.findtext("{%s}redirect" % self.uri) is not None
