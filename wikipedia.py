@@ -7761,6 +7761,7 @@ def handleArgs(*args):
     # the module name will be used for the filename of the log.
     moduleName = calledModuleName()
     nonGlobalArgs = []
+    username = None
     do_help = False
     for arg in args:
         arg = _decodeArg(arg)
@@ -7772,12 +7773,16 @@ def handleArgs(*args):
             default_family = arg[8:]
         elif arg.startswith('-lang:'):
             default_code = arg[6:]
+        elif arg.startswith("-user:"):
+            username = arg[len("-user:") : ]
         elif arg.startswith('-putthrottle:'):
             config.put_throttle = int(arg[len("-putthrottle:") : ])
             put_throttle.setDelay()
         elif arg.startswith('-pt:'):
             config.put_throttle = int(arg[len("-pt:") : ])
             put_throttle.setDelay()
+        elif arg.startswith("-maxlag:"):
+            config.maxlag = int(arg[len("-maxlag:") : ])
         elif arg == '-log':
             setLogfileStatus(True)
         elif arg.startswith('-log:'):
@@ -7808,6 +7813,9 @@ def handleArgs(*args):
             # the argument is not global. Let the specific bot script care
             # about it.
             nonGlobalArgs.append(arg)
+
+    if username:
+        config.usernames[config.family][config.mylang] = username
 
     # TEST for bug #3081100
     if unicode_error:
@@ -7851,6 +7859,8 @@ Global arguments available for all bots:
                   wikipedia, wiktionary, wikitravel, ...
                   This will override the configuration in user-config.py.
 
+-user:xyz         Log in as user 'xyz' instead of the default username.
+
 -daemonize:xyz    Immediately return control to the terminal and redirect
                   stdout and stderr to xyz (only use for bots that require
                   no input from stdin).
@@ -7861,6 +7871,10 @@ Global arguments available for all bots:
                   subdirectory.
 
 -log:xyz          Enable the logfile, using 'xyz' as the filename.
+
+-maxlag           Sets a new maxlag parameter to a number of seconds. Defer bot
+                  edits during periods of database server lag. Default is set by
+                  config.py
 
 -nolog            Disable the logfile (if it is enabled by default).
 
