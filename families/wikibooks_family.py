@@ -40,6 +40,7 @@ class Family(family.Family):
         self.namespaces[14]['tr'] = [u'Kategori', u'KAT']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[-2]['sr'] = [u'Медиј', u'Medija', u'Медија']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
@@ -51,6 +52,15 @@ class Family(family.Family):
         self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
         self.namespaces[12]['nl'] = [u'Help']
+        self.namespaces[10]['ky'] = [u'Калып']
+        self.namespaces[12]['ky'] = [u'Жардам']
+        self.namespaces[14]['ky'] = [u'Категория']
+        self.namespaces[6]['ky'] = [u'Файл']
+        self.namespaces[1]['ky'] = [u'Баарлашуу']
+        self.namespaces[3]['ky'] = [u'Колдонуучунун баарлашуулары']
+        self.namespaces[2]['ky'] = [u'Колдонуучу']
+        self.namespaces[-1]['ky'] = [u'Атайын']
+        self.namespaces[-2]['ky'] = [u'Медиа']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
@@ -161,7 +171,7 @@ class Family(family.Family):
             'ay': u'Wikibooks Discusión',
             'az': u'Wikibooks müzakirəsi',
             'ba': u'Wikibooks б-са фекер алышыу',
-            'be': u'Wikibooks размовы',
+            'be': [u'Размовы пра Wikibooks', u'Wikibooks размовы'],
             'bg': u'Уикикниги беседа',
             'bm': u'Discussion Wikibooks',
             'bn': [u'উইকিবই আলোচনা', u'উইকিবই আলাপ'],
@@ -202,7 +212,7 @@ class Family(family.Family):
             'kn': u'Wikibooks ಚರ್ಚೆ',
             'ko': u'위키책토론',
             'ku': u'Wikibooks nîqaş',
-            'ky': u'Wikibooks talk',
+            'ky': u'Wikibooks баарлашуу',
             'la': u'Disputatio Vicilibrorum',
             'lb': u'Wikibooks Diskussioun',
             'li': u'Euverlèk Wikibeuk',
