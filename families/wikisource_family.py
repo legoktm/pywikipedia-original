@@ -31,10 +31,12 @@ class Family(family.Family):
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
+        self.namespaces[-2]['sr'] = [u'Медиј', u'Medija', u'Медија']
         self.namespaces[12]['nl'] = [u'Help']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[6]['vec'] = [u'File', u'Imagine']
+        self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
         self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
@@ -46,7 +48,6 @@ class Family(family.Family):
         self.namespaces[12]['de'] = [u'Hilfe']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
-        self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -126,7 +127,7 @@ class Family(family.Family):
             'ang': u'Wicifruma talk',
             'ar': [u'نقاش ويكي مصدر', u'نو'],
             'az': u'VikiMənbə müzakirəsi',
-            'be': u'Размовы пра Вікікрыніцы',
+            'be': [u'Размовы пра Вікікрыніцы', u'Вікікрыніцы размовы'],
             'bg': u'Уикиизточник беседа',
             'bn': [u'উইকিসংকলন আলোচনা', u'উইকিসংকলন আলাপ'],
             'br': u'Kaozeadenn Wikimammenn',
