@@ -80,6 +80,7 @@ commonscatTemplates = {
                                   u'Commons+cat', u'Commonscategory',
                                   u'Commons and category', u'Commonscat-inline',
                                   u'Commons category-inline', u'Commons2',
+                                  u'Commons category multi',
                                   u'Cms-catlist-up', u'Catlst commons',
                                   u'Commonscat show2',
                                   u'Sister project links']),
@@ -128,9 +129,10 @@ commonscatTemplates = {
     'uk' : (u'Commonscat', [u'Commons cat', u'Category', u'Commonscat-inline']),
     'vi' : (u'Commonscat', [u'Commons2', u'Commons cat', u'Commons category',
                             u'Commons+cat']),
-    'zh' : (u'Commonscat', [u'Commons cat']),
+    'zh' : (u'Commonscat', [u'Commons cat', u'Commons category']),
     'zh-classical' : (u'共享類', [u'Commonscat']),
-    'zh-yue' : (u'同享類', [u'Commonscat', u'共享類 ', u'Commons cat']),
+    'zh-yue' : (u'同享類', [u'Commonscat', u'共享類 ', u'Commons cat',
+                           u'Commons category']),
 }
 
 ignoreTemplates = {
@@ -144,7 +146,8 @@ ignoreTemplates = {
             u'Bauwerk-funktion-kategorien', u'KsPuB',
             u'Kategoriesystem Augsburg-Infoleiste'],
     'en' : [u'Category redirect', u'Commons', u'Commonscat1A', u'Commoncats',
-            u'Commonscat4Ra', u'Sisterlinks', u'Sisterlinkswp',
+            u'Commonscat4Ra',
+            u'Sisterlinks', u'Sisterlinkswp', u'Sister project links',
             u'Tracking category', u'Template category', u'Wikipedia category'],
     'eo' : [u'Commons',
             (u'Projekto/box', 'commons='),
@@ -170,6 +173,11 @@ ignoreTemplates = {
     'simple': [u'Sisterlinks'],
     'ru' : [u'Навигация', u'Навигация для категорий'],
     'tt' : [u'Навигация'],
+    'zh' : [u'Category redirect', u'cr', u'Commons',
+            u'Sisterlinks', u'Sisterlinkswp',
+            u'Tracking category', u'Trackingcatu',
+            u'Template category', u'Wikipedia category'
+            u'分类重定向', u'追蹤分類', u'共享資源', u'追蹤分類'],
 }
 
 msg_change = {
@@ -185,6 +193,7 @@ msg_change = {
     'sk': u'Robot zmenil šablónu Commonscat z [[:Commons:Category:%(oldcat)s|%(oldcat)s]] na [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'uk': u'Бот: Зміна commonscat-посилання з [[:Commons:Category:%(oldcat)s|%(oldcat)s]] на [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'th': u'บอต: เปลี่ยนลิงก์หมวดหมู่คอมมอนส์จาก [[:Commons:Category:%(oldcat)s|%(oldcat)s]] เป็น [[:Commons:Category:%(newcat)s|%(newcat)s]]',
+    'zh': u'機器人：更改 commonscat 連結，從 %(oldcat)s 至 %(newcat)s',
 }
 
 class CommonscatBot:

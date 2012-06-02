@@ -353,7 +353,7 @@ referencesTemplates = {
                u'Примечания', u'Список примечаний',
                u'Сноска', u'Сноски'],
         'szl':[u'Przipisy', u'Připisy'],
-        'zh': [u'Reflist'],
+        'zh': [u'Reflist', u'RefFoot', u'NoteFoot'],
     },
 }
 
