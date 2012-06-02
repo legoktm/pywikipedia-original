@@ -179,7 +179,7 @@ class User(object):
         return pywikibot.Page(self.site(), self.name() + subpage,
                               defaultNamespace=3)
 
-    def sendMail(self, subject=u'', text=u'', ccMe = False):
+    def sendMail(self, subject=u'', text=u'', ccMe=False):
         """ Send an email to this user via mediawiki's email interface.
         Return True on success, False otherwise.
         This method can raise an UserActionRefuse exception in case this user
@@ -192,10 +192,12 @@ class User(object):
         @type text: unicode
         @param ccme: if True, sends a copy of this email to the bot
         @type ccme: bool
+
         """
         if not self.isEmailable():
             raise UserActionRefuse('This user is not mailable')
-        if not self.site().isAllowed('sendemail'):
+        if self.site().versionnumber() >= 16 and \
+           not self.site().isAllowed('sendemail'):
             raise UserActionRefuse('You don\'t have permission to send mail')
 
         if not self.site().has_api() or self.site().versionnumber() < 14:
