@@ -135,6 +135,7 @@ deprecatedTemplates = {
             (u'Belege', u'Belege fehlen\g<parameters>'),
             (u'Quelle', u'Belege fehlen\g<parameters>'),
             (u'Quellen', u'Belege fehlen\g<parameters>'),
+            (u'Quellen fehlen', u'Belege fehlen\g<parameters>'),
         ],
     }
 }
@@ -159,16 +160,18 @@ class CosmeticChangesToolkit:
             text = self.commonsfiledesc(text)
         text = self.fixSelfInterwiki(text)
         text = self.standardizePageFooter(text)
+        text = self.fixSyntaxSave(text)
         text = self.cleanUpLinks(text)
         text = self.cleanUpSectionHeaders(text)
         text = self.putSpacesInLists(text)
         text = self.translateAndCapitalizeNamespaces(text)
+##        text = self.translateMagicWords(text)
         text = self.replaceDeprecatedTemplates(text)
         text = self.resolveHtmlEntities(text)
         text = self.validXhtml(text)
         text = self.removeUselessSpaces(text)
         text = self.removeNonBreakingSpaceBeforePercent(text)
-        text = self.fixSyntaxSave(text)
+
         text = self.fixHtml(text)
         text = self.fixReferences(text)
         text = self.fixStyle(text)
@@ -245,7 +248,9 @@ class CosmeticChangesToolkit:
         # German Wikipedia. See
         # http://de.wikipedia.org/wiki/Hilfe_Diskussion:Personendaten/Archiv/1#Position_der_Personendaten_am_.22Artikelende.22
         # ignoring nn-wiki of cause of the comment line above iw section
-        if not self.template and not '{{Personendaten' in text:
+        if not self.template and not '{{Personendaten' in text and \
+           not '{{SORTIERUNG' in text and not '{{DEFAULTSORT' in text and \
+           not self.site.lang in ('et', 'it', 'bg', 'ru'):
             categories = pywikibot.getCategoryLinks(text, site = self.site)
 
         if not self.talkpage:# and pywikibot.calledModuleName() <> 'interwiki':
@@ -364,6 +369,23 @@ class CosmeticChangesToolkit:
                     r'\[\[\s*(' + '|'.join(namespaces) + \
                     ') *:(?P<nameAndLabel>.*?)\]\]', r'[[' + thisNs + \
                     ':\g<nameAndLabel>]]', exceptions)
+        return text
+
+    def translateMagicWords(self, text):
+        """
+        Makes sure that localized namespace names are used.
+        """
+        # not wanted at ru
+        # arz uses english stylish codes
+        if self.site.lang not in ['arz', 'ru']:
+            exceptions = ['nowiki', 'comment', 'math', 'pre']
+            for magicWord in ['img_thumbnail', 'img_left', 'img_center', 'img_right', 'img_none',
+                              'img_framed', 'img_frameless', 'img_border', 'img_upright',]:
+                aliases = self.site.siteinfo('magicwords').get(magicWord)
+                if not aliases: continue
+                text = pywikibot.replaceExcept(text, r'\[\[(?P<left>.+?:.+?\..+?\|) *(' + '|'.join(aliases) +') *(?P<right>(\|.*?)?\]\])',
+                                               r'[[\g<left>' + aliases[0] + '\g<right>',
+                                               exceptions)
         return text
 
     def cleanUpLinks(self, text):
@@ -590,19 +612,35 @@ class CosmeticChangesToolkit:
 
     #from fixes.py
     def fixSyntaxSave(self, text):
-        exceptions = ['nowiki', 'comment', 'math', 'pre', 'source', 'startspace']
+        exceptions = ['nowiki', 'comment', 'math', 'pre', 'source',
+                      'startspace']
+        # link to the wiki working on
+        ## TODO: disable this for difflinks and titled links
+        ## http://de.wikipedia.org/w/index.php?title=Wikipedia%3aVandalismusmeldung&diff=103109563&oldid=103109271
+##        text = pywikibot.replaceExcept(text,
+##                                       r'\[https?://%s\.%s\.org/wiki/(?P<link>\S+)\s+(?P<title>.+?)\s?\]'
+##                                       % (self.site.lang, self.site.family.name),
+##                                       r'[[\g<link>|\g<title>]]', exceptions)
         # external link in double brackets
-        text = pywikibot.replaceExcept(text, r'\[\[(?P<url>https?://[^\]]+?)\]\]', r'[\g<url>]', exceptions)
+        text = pywikibot.replaceExcept(text,
+                                       r'\[\[(?P<url>https?://[^\]]+?)\]\]',
+                                       r'[\g<url>]', exceptions)
         # external link starting with double bracket
-        text = pywikibot.replaceExcept(text, r'\[\[(?P<url>https?://.+?)\]', r'[\g<url>]', exceptions)
+        text = pywikibot.replaceExcept(text,
+                                       r'\[\[(?P<url>https?://.+?)\]',
+                                       r'[\g<url>]', exceptions)
         # external link and description separated by a dash, with
         # whitespace in front of the dash, so that it is clear that
         # the dash is not a legitimate part of the URL.
-        text = pywikibot.replaceExcept(text, r'\[(?P<url>https?://[^\|\] \r\n]+?) +\| *(?P<label>[^\|\]]+?)\]', r'[\g<url> \g<label>]', exceptions)
+        text = pywikibot.replaceExcept(text,
+                                       r'\[(?P<url>https?://[^\|\] \r\n]+?) +\| *(?P<label>[^\|\]]+?)\]',
+                                       r'[\g<url> \g<label>]', exceptions)
         # dash in external link, where the correct end of the URL can
         # be detected from the file extension. It is very unlikely that
         # this will cause mistakes.
-        text = pywikibot.replaceExcept(text, r'\[(?P<url>https?://[^\|\] ]+?(\.pdf|\.html|\.htm|\.php|\.asp|\.aspx|\.jsp)) *\| *(?P<label>[^\|\]]+?)\]', r'[\g<url> \g<label>]', exceptions)
+        text = pywikibot.replaceExcept(text,
+                                       r'\[(?P<url>https?://[^\|\] ]+?(\.pdf|\.html|\.htm|\.php|\.asp|\.aspx|\.jsp)) *\| *(?P<label>[^\|\]]+?)\]',
+                                       r'[\g<url> \g<label>]', exceptions)
         return text
 
     def fixHtml(self, text):
