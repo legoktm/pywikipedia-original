@@ -439,7 +439,7 @@ class CosmeticChangesToolkit:
 
                     # Remove unnecessary initial and final spaces from label.
                     # Please note that some editors prefer spaces around pipes.
-                    #(See [[en:Wikipedia:Semi-bots]]). We remove them anyway.
+                    # (See [[en:Wikipedia:Semi-bots]]). We remove them anyway.
                     if label is not None:
                         # Remove unnecessary leading spaces from label,
                         # but remember if we did this because we want
@@ -818,7 +818,7 @@ class CosmeticChangesBot:
             # Highlight the title in purple.
             pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
                              % page.title())
-            ccToolkit = CosmeticChangesToolkit(page.site(), debug=True,
+            ccToolkit = CosmeticChangesToolkit(page.site, debug=True,
                                                namespace=page.namespace(),
                                                pageTitle=page.title())
             changedText = ccToolkit.change(page.get())
@@ -883,8 +883,7 @@ def main():
                                        'cosmetic_changes-standalone')
     if pageTitle:
         site = pywikibot.getSite()
-        page = pywikibot.Page(site, ' '.join(pageTitle))
-        gen = iter([page])
+        gen = iter([pywikibot.Page(site, t) for t in pageTitle])
     if not gen:
         gen = genFactory.getCombinedGenerator()
     if not gen:
