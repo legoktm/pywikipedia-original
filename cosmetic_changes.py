@@ -57,12 +57,11 @@ your user-config.py:
 #
 __version__ = '$Id$'
 #
+import sys, re
 import wikipedia as pywikibot
 import isbn
 import pagegenerators
 from pywikibot import i18n
-import sys
-import re
 
 warning = """
 ATTENTION: You can run this script as a stand-alone for testing purposes.
