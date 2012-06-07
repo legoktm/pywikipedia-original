@@ -676,7 +676,8 @@ not supported by PyWikipediaBot!"""
             # * Old exceptions and contents do not apply any more
             # * Deleting _contents and _expandcontents to force reload
             for attr in ['_redirarg', '_getexception',
-                         '_contents', '_expandcontents']:
+                         '_contents', '_expandcontents',
+                         '_sections']:
                 if hasattr(self, attr):
                     delattr(self, attr)
         else:
@@ -998,6 +999,193 @@ not supported by PyWikipediaBot!"""
                         sysop=sysop, oldid=oldid,
                         change_edit_time=change_edit_time
                     )
+
+    ## @since   r10309 (ADDED)
+    #  @remarks needed by various bots
+    def getSections(self, minLevel=2, sectionsonly=False, force=False):
+        """Parses the page with API and return section information.
+           ADDED METHOD: needed by various bots
+
+           @param minLevel: The minimal level of heading for section to be reported.
+           @type  minLevel: int
+           @param sectionsonly: Report only the result from API call, do not assign
+                                the headings to wiki text (for compression e.g.).
+           @type  sectionsonly: bool
+           @param force: Use API for full section list resolution, works always but
+                         is extremely slow, since each single section has to be retrieved.
+           @type  force: bool
+
+           Returns a list with entries: (byteoffset, level, wikiline, line, anchor)
+           This list may be empty and if sections are embedded by template, the according
+           byteoffset and wikiline entries are None. The wikiline is the wiki text,
+           line is the parsed text and anchor ist the (unique) link label.
+        """
+        # replace 'byteoffset' ALWAYS by self calculated, since parsed does not match wiki text
+        # bug fix; JIRA: DRTRIGON-82
+
+        # was there already a call? already some info available?
+        if hasattr(self, '_sections'):
+            return self._sections
+
+        # Old exceptions and contents do not apply any more.
+        for attr in ['_sections']:
+            if hasattr(self, attr):
+                delattr(self,attr)
+
+        # call the wiki to get info
+        params = {
+            u'action' : u'parse',
+            u'page'   : self.title(),
+            u'prop'   : u'sections',
+        }
+
+        pywikibot.get_throttle()
+        pywikibot.output(u"Reading section info from %s via API..." % self.title(asLink=True))
+
+        result = query.GetData(params, self.site())
+        # JIRA: DRTRIGON-90; catch and convert error (convert it such that the whole page gets processed later)
+        try:
+            r = result[u'parse'][u'sections']
+        except KeyError:    # sequence of sometimes occuring "KeyError: u'parse'"
+            pywikibot.output(u'WARNING: Query result (gS): %r' % result)
+            raise pywikibot.Error('Problem occured during data retrieval for sections in %s!' % self.title(asLink=True))
+        #debug_data = str(r) + '\n'
+        debug_data = str(result) + '\n'
+
+        if not sectionsonly:
+            # assign sections with wiki text and section byteoffset
+            #pywikibot.output(u"  Reading wiki page text (if not already done).")
+
+            debug_data += str(len(self.__dict__.get('_contents',u''))) + '\n'
+            self.get()
+            debug_data += str(len(self._contents)) + '\n'
+            debug_data += self._contents + '\n'
+
+            # code debugging
+            if verbose:
+                debugDump( 'Page.getSections', self.site, err, debug_data.encode(config.textfile_encoding) )
+
+            for setting in [(0.05,0.95), (0.4,0.8), (0.05,0.8), (0.0,0.8)]:  # 0.6 is default upper border
+                try:
+                    pos = 0
+                    for i, item in enumerate(r):
+                        item[u'level'] = int(item[u'level'])
+                        # byteoffset may be 0; 'None' means template
+                        #if (item[u'byteoffset'] != None) and item[u'line']:
+                        # (empty index means also template - workaround for bug:
+                        # https://bugzilla.wikimedia.org/show_bug.cgi?id=32753)
+                        if (item[u'byteoffset'] != None) and item[u'line'] and item[u'index']:
+                            # section on this page and index in format u"%i"
+                            self._getSectionByteOffset(item, pos, force, cutoff=setting)    # raises 'Error' if not sucessfull !
+                            pos                 = item[u'wikiline_bo'] + len(item[u'wikiline'])
+                            item[u'byteoffset'] = item[u'wikiline_bo']
+                        else:
+                            # section embedded from template (index in format u"T-%i") or the
+                            # parser was not able to recongnize section correct (e.g. html) at all
+                            # (the byteoffset, index, ... may be correct or not)
+                            item[u'wikiline'] = None
+                        r[i] = item
+                    break
+                except pywikibot.Error:
+                    pos = None
+            if (pos == None):
+                raise  # re-raise
+
+        # check min. level
+        data = []
+        for item in r:
+            if (item[u'level'] < minLevel): continue
+            data.append( item )
+        r = data
+
+        # prepare resulting data
+        self._sections = [ (item[u'byteoffset'], item[u'level'], item[u'wikiline'], item[u'line'], item[u'anchor']) for item in r ]
+
+        return self._sections
+
+    ## @since   r10309 (ADDED)
+    #  @remarks needed by wikipedia.Page.getSections()
+    def _getSectionByteOffset(self, section, pos, force=False, cutoff=(0.05, 0.95)):
+        """determine the byteoffset of the given section (can be slow due another API call).
+           ADDED METHOD: needed by 'getSections'
+        """
+        wikitextlines = self._contents[pos:].splitlines()
+        possible_headers = []
+        #print section[u'line']
+
+        if not force:
+            # how the heading should look like (re)
+            l = section[u'level']
+            headers = [ u'^(\s*)%(spacer)s(.*?)%(spacer)s(\s*)((<!--(.*?)-->)?)(\s*)$' % {'line': section[u'line'], 'spacer': u'=' * l},
+                    u'^(\s*)<h%(level)i>(.*?)</h%(level)i>(.*?)$' % {'line': section[u'line'], 'level': l}, ]
+
+            # try to give exact match for heading (remove HTML comments)
+            for h in headers:
+                #ph = re.search(h, pywikibot.removeDisabledParts(self._contents[pos:]), re.M)
+                ph = re.search(h, self._contents[pos:], re.M)
+                if ph:
+                    ph = ph.group(0).strip()
+                    possible_headers += [ (ph, section[u'line']) ]
+
+            # how the heading could look like (difflib)
+            headers = [ u'%(spacer)s %(line)s %(spacer)s' % {'line': section[u'line'], 'spacer': u'=' * l},
+                    u'<h%(level)i>%(line)s</h%(level)i>' % {'line': section[u'line'], 'level': l}, ]
+
+            # give possible match for heading
+            # http://stackoverflow.com/questions/2923420/fuzzy-string-matching-algorithm-in-python
+            # http://docs.python.org/library/difflib.html
+            # (http://mwh.geek.nz/2009/04/26/python-damerau-levenshtein-distance/)
+            for h in headers:
+                ph = difflib.get_close_matches(h, wikitextlines, cutoff=cutoff[1])    # cutoff=0.6 (default)
+                possible_headers += [ (p, section[u'line']) for p in ph ]
+                #print h, possible_headers
+
+        if not possible_headers and section[u'index']:        # nothing found, try 'prop=revisions (rv)'
+            # call the wiki to get info
+            params = {
+                u'action'    : u'query',
+                u'titles'    : self.title(),
+                u'prop'      : u'revisions',
+                u'rvprop'    : u'content',
+                u'rvsection' : section[u'index'],
+            }
+
+            pywikibot.get_throttle()
+            pywikibot.output(u"  Reading section %s from %s via API..." % (section[u'index'], self.title(asLink=True)))
+
+            result = query.GetData(params, self.site())
+            # JIRA: DRTRIGON-90; catch and convert error (convert it such that the whole page gets processed later)
+            try:
+                r = result[u'query'][u'pages'].values()[0]
+                pl = r[u'revisions'][0][u'*'].splitlines()
+            except KeyError:    # sequence of sometimes occuring "KeyError: u'parse'"
+                pywikibot.output(u'WARNING: Query result (gSBO): %r' % result)
+                raise pywikibot.Error('Problem occured during data retrieval for sections in %s!' % self.title(asLink=True))
+
+            if pl:
+                possible_headers = [ (pl[0], pl[0]) ]
+
+        # find the most probable match for heading
+        #print possible_headers
+        best_match = (0.0, None)
+        for i, (ph, header) in enumerate(possible_headers):
+            #print u'    ', i, difflib.SequenceMatcher(None, header, ph).ratio(), header, ph
+            mr = difflib.SequenceMatcher(None, header, ph).ratio()
+            if mr >= best_match[0]: best_match = (mr, ph)
+            if (i in [0, 1]) and (mr >= cutoff[0]): break  # use first (exact; re) match directly (if good enough)
+        #print u'    ', best_match
+
+        # prepare resulting data
+        section[u'wikiline']    = best_match[1]
+        section[u'wikiline_mq'] = best_match[0]  # match quality
+        section[u'wikiline_bo'] = -1             # byteoffset
+        if section[u'wikiline']:
+            section[u'wikiline_bo'] = self._contents.find(section[u'wikiline'], pos)
+        if section[u'wikiline_bo'] < 0:          # nothing found, report/raise error !
+            #page._getexception = ...
+            raise pywikibot.Error('Problem occured during attempt to retrieve and resolve sections in %s!' % self.title(asLink=True))
+            #pywikibot.output(...)
+            # (or create a own error, e.g. look into interwiki.py)
 
     def permalink(self):
         """Return the permalink URL for current revision of this page."""

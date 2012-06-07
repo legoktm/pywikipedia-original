@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8  -*-
 
-"""Unit tests for userlib.py"""
+"""Unit tests for query.py"""
 __version__ = '$Id$'
 
 import unittest
