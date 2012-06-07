@@ -35,8 +35,14 @@ class InvalidUser(pywikibot.InvalidTitle):
     """The mediawiki API does not allow IP lookups."""
     pass
 
-ip_regexp = re.compile(r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}' \
-                       r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')
+ip_regexp = re.compile(r'^(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}'
+                       r'(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|'
+                       r'(((?=(?=(.*?(::)))\3(?!.+\4)))\4?|[\dA-F]{1,4}:)'
+                       r'([\dA-F]{1,4}(\4|:\b)|\2){5}'
+                       r'(([\dA-F]{1,4}(\4|:\b|$)|\2){2}|'
+                       r'(((2[0-4]|1\d|[1-9])?\d|25[0-5])\.?\b){4}))\Z',
+                       re.IGNORECASE)
+
 
 class User(object):
     """A class that represents a Wiki user.
