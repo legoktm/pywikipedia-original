@@ -1000,11 +1000,10 @@ not supported by PyWikipediaBot!"""
                         change_edit_time=change_edit_time
                     )
 
-    ## @since   r10309 (ADDED)
+    ## @since   r10309
     #  @remarks needed by various bots
     def getSections(self, minLevel=2, sectionsonly=False, force=False):
         """Parses the page with API and return section information.
-           ADDED METHOD: needed by various bots
 
            @param minLevel: The minimal level of heading for section to be reported.
            @type  minLevel: int
@@ -1103,11 +1102,10 @@ not supported by PyWikipediaBot!"""
 
         return self._sections
 
-    ## @since   r10309 (ADDED)
-    #  @remarks needed by wikipedia.Page.getSections()
+    ## @since   r10309
+    #  @remarks needed by Page.getSections()
     def _getSectionByteOffset(self, section, pos, force=False, cutoff=(0.05, 0.95)):
         """determine the byteoffset of the given section (can be slow due another API call).
-           ADDED METHOD: needed by 'getSections'
         """
         wikitextlines = self._contents[pos:].splitlines()
         possible_headers = []
@@ -1204,6 +1202,7 @@ not supported by PyWikipediaBot!"""
             if hasattr(self, '_getexception'):
                 raise self._getexception
         return int(self._permalink)
+
     def userName(self):
         """Return name or IP address of last user to edit page.
 
@@ -1211,6 +1210,42 @@ not supported by PyWikipediaBot!"""
 
         """
         return self._userName
+
+    ## @since   r10310
+    #  @remarks needed by various bots
+    def userNameHuman(self):
+        """Return name or IP address of last human/non-bot user to edit page.
+
+           Returns the most recent human editor out of the last revisions
+           (optimal used with getAll()). If it was not able to retrieve a
+           human user returns None.
+        """
+
+        # was there already a call? already some info available?
+        if hasattr(self, '_userNameHuman'):
+            return self._userNameHuman
+
+        # get history (use preloaded if available)
+        (revid, timestmp, username, comment) = self.getVersionHistory(revCount=1)[0][:4]
+
+        # is the last/actual editor already a human?
+        import botlist # like watchlist
+        if not botlist.isBot(username):
+            self._userNameHuman = username
+            return username
+
+        # search the last human
+        self._userNameHuman = None
+        for vh in self.getVersionHistory()[1:]:
+            (revid, timestmp, username, comment) = vh[:4]
+
+            if username and (not botlist.isBot(username)):
+                # user is a human (not a bot)
+                self._userNameHuman = username
+                break
+
+        # store and return info
+        return self._userNameHuman
 
     def isIpEdit(self):
         """Return True if last editor was unregistered.
@@ -3935,6 +3970,36 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             return False
         else:
             return new_text
+
+    ## @since   10310
+    #  @remarks needed by various bots
+    def purgeCache(self):
+        """Purges the page cache with API.
+           ( non-api purge can be done with Page.purge_address() )
+        """
+
+        # Make sure we re-raise an exception we got on an earlier attempt
+        if hasattr(self, '_getexception'):
+            return self._getexception
+
+        # call the wiki to execute the request
+        params = {
+            u'action'    : u'purge',
+            u'titles'    : self.title(),
+        }
+
+        pywikibot.get_throttle()
+        pywikibot.output(u"Purging page cache for %s." % self.title(asLink=True))
+
+        result = query.GetData(params, self.site())
+        r = result[u'purge'][0]
+
+        # store and return info
+        if (u'missing' in r):
+                self._getexception = pywikibot.NoPage
+                raise pywikibot.NoPage(self.site(), self.title(asLink=True),"Page does not exist. Was not able to purge cache!" )
+
+        return (u'purged' in r)
 
 
 class ImagePage(Page):
