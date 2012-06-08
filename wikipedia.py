@@ -211,8 +211,11 @@ class Page(object):
     toggleTalkPage        : Return the talk page (if this is one, return the
                             non-talk page)
     get (*)               : The text of the page
+    getSections (*)       : Retrieve page section heading and assign them to
+                            the byte offset
     latestRevision (*)    : The page's current revision id
     userName              : Last user to edit page
+    userNameHuman         : Last human (non-bot) user to edit page
     isIpEdit              : True if last editor was unregistered
     editTime              : Timestamp of the last revision to the page
     previousRevision (*)  : The revision id of the previous version
@@ -243,6 +246,7 @@ class Page(object):
     botMayEdit (*)        : True if bot is allowed to edit page
     put(newtext)          : Saves the page
     put_async(newtext)    : Queues the page to be saved asynchronously
+    append(newtext)       : Append to page section
     watch                 : Add the page to the watchlist
     unwatch               : Remove the page from the watchlist
     move                  : Move the page to another title
@@ -254,6 +258,7 @@ class Page(object):
     getDeletedRevision    : Return a particular deleted revision
     markDeletedRevision   : Mark a version to be undeleted, or not
     undelete              : Undelete past version(s) of the page
+    purgeCache            : Purge page from server cache
 
     (*) : This loads the page if it has not been loaded before; permalink might
           even reload it if it has been loaded before
