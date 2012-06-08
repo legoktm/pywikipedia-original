@@ -31,7 +31,6 @@ class Family(family.Family):
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
-        self.namespaces[-2]['sr'] = [u'Медиј', u'Medija', u'Медија']
         self.namespaces[12]['nl'] = [u'Help']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
@@ -43,11 +42,11 @@ class Family(family.Family):
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
+        self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'Benutzerin Diskussion']
         self.namespaces[13]['de'] = [u'Hilfe Diskussion']
         self.namespaces[12]['de'] = [u'Hilfe']
-        self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
