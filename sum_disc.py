@@ -127,11 +127,11 @@ bot_config = {    # unicode values
         # list values
         # which lists are regex to compile ('backlinks_list' are no regex)
         #'regex_compile':    [ 'checkedit_list', 'checksign_list', 'ignorepage_list', ],
-        #'regex_compile':    [ 'checkedit_list', 'ignorepage_list', 'ignorehead_list', ],
-        'regex_compile':     [ 'checkedit_list', 'ignorehead_list', ],
+        #'regex_compile':    [ 'checkedit_list', 'ignorepage_list', 'ignorehead_list', 'matchhead_list', ],
+        'regex_compile':     [ 'checkedit_list', 'ignorehead_list', 'matchhead_list', ],
         # which lists may contain variables to substitute
         #'vars_subst':       [ 'checkedit_list', 'checksign_list', 'ignorepage_list', 'backlinks_list', 'altsign_list' ],
-        'vars_subst':        [ 'checkedit_list', 'ignorepage_list', 'backlinks_list', 'altsign_list' ],    # + 'ignorehead_list' ?
+        'vars_subst':        [ 'checkedit_list', 'ignorepage_list', 'backlinks_list', 'altsign_list' ],    # + 'ignorehead_list', 'matchhead_list' ?
         # which lists should preserve/keep their defaults (instead of getting it overwritten by user settings)
         'default_keep':      [ 'checkedit_list', 'altsign_list' ],
         # which lists should be translated according to site's lang
@@ -199,8 +199,10 @@ bot_config = {    # unicode values
                     # (hidden)
                     #userResultPage: default is NOT DEFINED - this is a SPECIAL PARAM it is not
                     #         thought to be used explicit, it is defined by the page link (implicit).
-                    # (not published yet: LIST of HEADs to IGNORE, a LIST)
+                    # (not officially published yet: LIST of HEADs to IGNORE, a LIST)
                     'ignorehead_list':   [ u'(.*?) \(erl.\)', ],
+                    # (not published yet: LIST of HEADs to PROCESS ONLY, a LIST)
+                    'matchhead_list':    [],
 
                     # (hidden)
                     'notify_msg': {
@@ -1476,6 +1478,10 @@ class PageSections(object):
                 skip = False
                 for check in self._param['ignorehead_list']:
                     if check.search(wikiline):
+                        skip = True
+                        break
+                for check in self._param['matchhead_list']:
+                    if not check.search(wikiline):
                         skip = True
                         break
                 if skip: continue
