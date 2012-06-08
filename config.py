@@ -3,7 +3,7 @@
 # (C) Rob W.W. Hooft, 2003
 #     parts by holger@trillke.net 2002/03/18
 #     Purodha Blissenbach (Modifier), 2010
-# (C) Pywikipedia bot team, 2007-2012
+# (C) Pywikipedia bot team, 2003-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -46,16 +46,8 @@ mylang = 'language'
 usernames = {}
 sysopnames = {}
 
-# See section SOLVE_DISAMBIGUATION SETTINGS for details.
-disambiguation_comment = {}
-# This is currently not used anywhere:
-gdab_namespaces = {}
-# This is currently not used anywhere:
-account_global = False
-
 # Solve captchas in the webbrowser. Setting this to False will result in the
 # exception CaptchaError being thrown if a captcha is encountered.
-#TODO: allow more flexibility, such as runtime choices, skipping, and postponing
 solve_captcha = True
 
 # Some sites will require password authentication to access the HTML pages at
@@ -265,6 +257,7 @@ interwiki_contents_on_disk = False
 # disambiguation_comment['wikipedia']['en'] = \
 #    "Robot-assisted disambiguation ([[WP:DPL|you can help!]]): %s"
 
+disambiguation_comment = {}
 sort_ignore_case = False
 
 ############## IMAGE RELATED SETTINGS ##############
@@ -441,7 +434,7 @@ persistent_http = False
 socket_timeout = 120  # set a pretty long timeout just in case...
 
 
-############## FURTHER SETTINGS ##############
+############## COSMETIC CHANGES SETTINGS ##############
 # The bot can make some additional changes to each page it edits, e.g. fix
 # whitespace or positioning of interwiki and category links.
 
@@ -469,6 +462,9 @@ cosmetic_changes_enable = {}
 # dictionary. Please set your dict by adding such lines to your user-config.py:
 # cosmetic_changes_disable['wikipedia'] = ('de', 'en', 'fr')
 cosmetic_changes_disable = {}
+
+############## FURTHER SETTINGS ##############
+
 # Use the experimental disk cache to prevent huge memory usage
 use_diskcache = False
 
