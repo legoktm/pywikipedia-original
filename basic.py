@@ -23,6 +23,8 @@ and the bot will only work on that single page.
 __version__ = '$Id$'
 #
 
+import re
+
 import wikipedia as pywikibot
 import pagegenerators
 from pywikibot import i18n
@@ -50,8 +52,10 @@ class BasicBot:
         """
         self.generator = generator
         self.dry = dry
+        # init constants
+        self.site = pywikibot.getSite(code=pywikibot.default_code)
         # Set the edit summary message
-        self.summary = i18n.twtranslate(pywikibot.getSite(), 'basic-changing')
+        self.summary = i18n.twtranslate(self.site, 'basic-changing')
 
     def run(self):
         for page in self.generator:
@@ -127,6 +131,124 @@ u'Cannot change %s because of spam blacklist entry %s'
                     else:
                         return True
         return False
+
+class AutoBasicBot(BasicBot):
+    # Intended for usage e.g. as cronjob without prompting the user.
+
+    _REGEX_eol = re.compile(u'\n')
+
+    def __init__(self):
+        BasicBot.__init__(self, None, None)
+
+    ## @since   10326
+    #  @remarks needed by various bots
+    def save(self, page, text, comment=None, minorEdit=True, botflag=True):
+        pywikibot.output(u'\03{lightblue}Writing to wiki on %s...\03{default}' % page.title(asLink=True))
+
+        comment_output = comment or pywikibot.action
+        pywikibot.output(u'\03{lightblue}Comment: %s\03{default}' % comment_output)
+
+        #pywikibot.showDiff(page.get(), text)
+
+        for i in range(3): # try max. 3 times
+            try:
+                # Save the page
+                page.put(text, comment=comment, minorEdit=minorEdit, botflag=botflag)
+            except pywikibot.LockedPage:
+                pywikibot.output(u"\03{lightblue}Page %s is locked; skipping.\03{default}" % page.aslink())
+            except pywikibot.EditConflict:
+                pywikibot.output(u'\03{lightblue}Skipping %s because of edit conflict\03{default}' % (page.title()))
+            except pywikibot.SpamfilterError, error:
+                pywikibot.output(u'\03{lightblue}Cannot change %s because of spam blacklist entry %s\03{default}' % (page.title(), error.url))
+            else:
+                return True
+        return False
+
+    ## @since   10326
+    #  @remarks needed by various bots
+    def append(self, page, text, comment=None, minorEdit=True, section=None):
+        if section:
+            pywikibot.output(u'\03{lightblue}Appending to wiki on %s in section %s...\03{default}' % (page.title(asLink=True), section))
+
+            for i in range(3): # try max. 3 times
+                try:
+                    # Append to page section
+                    page.append(text, comment=comment, minorEdit=minorEdit, section=section)
+                except pywikibot.PageNotSaved, error:
+                    pywikibot.output(u'\03{lightblue}Cannot change %s because of %s\03{default}' % (page.title(), error))
+                else:
+                    return True
+        else:
+            content = self.load( page )     # 'None' if not existing page
+            if not content:                 # (create new page)
+                content = u''
+
+            content += u'\n\n'
+            content += text
+
+            return self.save(page, content, comment=comment, minorEdit=minorEdit)
+
+    ## @since   10326
+    #  @remarks needed by various bots
+    def loadTemplates(self, page, template, default={}):
+        """Get operating mode from page with template by searching the template.
+
+           @param page: The user (page) for which the data should be retrieved.
+
+           Returns a list of dict with the templates parameters found.
+        """
+
+        self._content = self.load(page) # 'None' if not existing page
+
+        templates = []
+        if not self._content:
+            return templates  # catch empty or not existing page
+
+        for tmpl in pywikibot.extract_templates_and_params(self._content):
+            if tmpl[0] == template:
+                param_default = {}
+                param_default.update(default)
+                param_default.update(tmpl[1])
+                templates.append( param_default )
+        return templates
+
+    ## @since   10326
+    #  @remarks common interface to bot job queue on wiki
+    def loadJobQueue(self, page, queue_security, reset=True):
+        """Check if the data queue security is ok to execute the jobs,
+           if so read the jobs and reset the queue.
+
+           @param page: Wiki page containing job queue.
+           @type  page: page
+           @param queue_security: This string must match the last edit
+                              comment, or else nothing is done.
+           @type  queue_security: string
+
+           Returns a list of jobs. This list may be empty.
+        """
+
+        try:    actual = page.getVersionHistory(revCount=1)[0]
+        except:    pass
+
+        secure = False
+        for item in queue_security[0]:
+            secure = secure or (actual[2] == item)
+
+        secure = secure and (actual[3] == queue_security[1])
+
+        if not secure: return []
+
+        data = self._REGEX_eol.split(page.get())
+        if reset:
+            pywikibot.output(u'\03{lightblue}Job queue reset...\03{default}')
+            
+            pywikibot.setAction(u'reset job queue')
+            page.put(u'', minorEdit = True)
+
+        queue = []
+        for line in data:
+            queue.append( line[1:].strip() )
+        return queue
 
 def main():
     # This factory is responsible for processing command line arguments

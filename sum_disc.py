@@ -77,15 +77,16 @@ __version__ = '$Id$'
 #
 
 
-import re, sys
-import time, codecs, os, calendar
-import threading
+import re, time, codecs, os, calendar
 import copy #, zlib
 import string, datetime, hashlib, locale
 import logging
+import urllib
+from xml.etree.cElementTree import XML
+# or if cElementTree not found, you can use BeautifulStoneSoup instead
 
 import config, pagegenerators, userlib
-import dtbext
+import basic
 # Splitting the bot into library parts
 import wikipedia as pywikibot
 from pywikibot import i18n, tools
@@ -240,7 +241,7 @@ docuReplacements = {
 }
 
 
-class SumDiscBot(dtbext.basic.BasicBot):
+class SumDiscBot(basic.AutoBasicBot):
     '''
     Robot which will check your latest edits for discussions and your old
     discussions against recent changes, pages to check are provided by a
@@ -249,18 +250,36 @@ class SumDiscBot(dtbext.basic.BasicBot):
     #http://de.wikipedia.org/w/index.php?limit=50&title=Spezial:Beiträge&contribs=user&target=DrTrigon&namespace=3&year=&month=-1
     #http://de.wikipedia.org/wiki/Spezial:Beiträge/DrTrigon
 
-    rollback       = 0
+    rollback           = 0
 
-    _param_default = bot_config['param_default']    # same ref, no copy
+    _param_default     = bot_config['param_default']    # same ref, no copy
 
-    _global_warn   = []
+    _global_warn       = []
+
+    _REGEX_subster_tag = u'<!--SUBSTER-%(var)s-->'
 
     def __init__(self):
         '''Constructor of SumDiscBot(); setup environment, initialize needed consts and objects.'''
 
         pywikibot.output(u'\03{lightgreen}* Initialization of bot:\03{default}')
 
-        dtbext.basic.BasicBot.__init__(self, bot_config, debug)
+        logging.basicConfig(level=logging.DEBUG if ('code' in debug) else logging.INFO)
+
+        basic.AutoBasicBot.__init__(self)
+
+        # modification of timezone to be in sync with wiki
+        os.environ['TZ'] = 'Europe/Amsterdam'
+        time.tzset()
+        pywikibot.output(u'Setting process TimeZone (TZ): %s' % str(time.tzname))    # ('CET', 'CEST')
+
+        # init constants
+        self._bot_config = bot_config
+        # convert e.g. namespaces to corret language
+        self._bot_config['TemplateName'] = pywikibot.Page(self.site, self._bot_config['TemplateName']).title()
+        self._template_regex = re.compile('\{\{' + self._bot_config['TemplateName'] + '(.*?)\}\}', re.S)
+
+        self._debug = debug
+
 
         lang = locale.locale_alias.get(self.site.lang, locale.locale_alias['en']).split('.')[0]
         locale.setlocale(locale.LC_TIME, lang)
@@ -291,14 +310,15 @@ class SumDiscBot(dtbext.basic.BasicBot):
 
         pywikibot.output(u'\03{lightred}** Receiving Job Queue (Maintenance Messages)\03{default}')
         page = pywikibot.Page(self.site, bot_config['maintenance_queue'])
-        self.maintenance_msg = self.loadJobQueue(page, bot_config['queue_security'])
+        self.maintenance_msg = self.loadJobQueue(page, bot_config['queue_security'],
+                                                 reset=('write2wiki' in self._debug))
 
         self._wday = time.gmtime().tm_wday
 
         # init variable/dynamic objects
 
         # code debugging
-        dtbext.pywikibot.debug = ('code' in debug)
+        pywikibot.debug = ('code' in debug)
 
     ## @todo re-write some functions to be pagegenerators and use pagegenerators.CombinedPageGenerator()
     #        and others to combine and use them
@@ -414,6 +434,46 @@ class SumDiscBot(dtbext.basic.BasicBot):
 
             pywikibot.output(u'\03{lightred}** History of %s compressed and written. (%s %%)\03{default}' % (user.name(), (end/begin)*100))
 
+    ## @since   10332
+    #  @remarks common interface to bot user settings on wiki
+    def loadUsersConfig(self, page):
+        """Get user list from wiki page, e.g. [[Benutzer:DrTrigonBot/Diene_Mir!]].
+
+           @param page: Wiki page containing user list and config.
+           @type  page: page
+
+           Returns a list with entries: (user, param)
+           This list may be empty.
+        """
+
+        #users = {}
+        final_users = []
+        #for item in self._REGEX_eol.split(page.get()):
+        for item in self._REGEX_eol.split(self.load(page)):
+            item = re.split(u',', item, maxsplit=1)
+            if (len(item) > 1):    # for compatibility with 'subster.py' (if needed)
+                #item[1] = re.compile((self._REGEX_subster_tag%{'var':'.*?','cont':'.*?'}), re.S | re.I).sub(u'', item[1])
+                item[1] = re.compile((self._REGEX_subster_tag%{u'var':u'.*?'}), re.S | re.I).sub(u'', item[1])
+            try:    param = eval(item[1])
+            except: param = {}
+            item = item[0]
+            try:
+                if not (item[0] == u'*'): continue
+            except: continue
+            item = item[1:]
+            item = re.sub(u'[\[\]]', u'', item)
+            item = re.split(u':', item, maxsplit=1)[-1] # remove 'Benutzer(in)?:', 'User:', ...
+            subitem = re.split(u'\/', item)             # recognize extended user entries with ".../..."
+            if len(subitem) > 1:                        #  "
+                param[u'userResultPage'] = item         # save extended user info (without duplicates)
+                item = subitem[0]
+            #users[item] = param            # drop duplicates directly
+            user = userlib.User(self.site, item)
+            user.param = param
+            final_users.append( user )
+
+        return final_users
+
     def setUser(self, user):
         '''
         set all internal user info
@@ -481,6 +541,42 @@ class SumDiscBot(dtbext.basic.BasicBot):
                 signs.add( check % {'ns':ns, 'usersig':'%(usersig)s'} )
         self._param['checksign_list'] = list(signs)
 
+    ## @since   10332
+    #  @remarks needed by sum_disc
+    def loadMode(self, page, regex_compile=False):
+        """Get operating mode from user's disc page by searching for the template.
+
+           @param page: The user (page) for which the data should be retrieved.
+           @param regex_compile: If True the value added to the ignore_list will
+                                         be compiled first.
+
+           Sets self._mode and self._tmpl_data which represent the settings how
+           to report news to the user. Sets self._content also which is the touched
+           page content to notify the user. The self._param is modified too.
+        """
+
+        templates = self.loadTemplates(page, self._bot_config['TemplateName'])
+
+        self._mode = False
+        self._tmpl_data = u''
+
+        if templates:
+            tmpl = templates[0]
+
+            # enhanced: with template
+            self._mode = True
+            self._tmpl_data = tmpl[u'data']
+            if regex_compile:
+                self._tmpl_data = re.compile(self._tmpl_data)
+            #if hasattr(self, '_param'):  # [JIRA: DRTRIGON-8, DRTRIGON-32]
+            self._param['ignorepage_list'].append( self._tmpl_data )
+
+            # update template and content
+            tmpl[u'timestamp'] = u'--~~~~'
+            tmpl_text = pywikibot.glue_template_and_params( (self._bot_config['TemplateName'], tmpl) )
+            tmpl_pos  = self._template_regex.search(self._content)
+            self._content = self._content[:tmpl_pos.start()] + tmpl_text + self._content[tmpl_pos.end():]
+
     ## @todo the error correctors 'old history' and 'notify tag error' can be removed if
     #        they do not appear in bot logs anymore!
     #        \n[ JIRA: e.g. DRTRIGON-68 ]
@@ -493,7 +589,7 @@ class SumDiscBot(dtbext.basic.BasicBot):
            Returns nothing, but feeds to self.pages class instance.
         """
 
-        buf = self.loadFile()
+        buf = self._loadFile()
         buf = bot_config['page_regex'].sub('[]', buf)
         buf = _REGEX_eol.split(buf)
         # modified due: http://de.wikipedia.org/wiki/Benutzer:DrTrigonBot/ToDo-Liste (id 17)
@@ -558,9 +654,43 @@ class SumDiscBot(dtbext.basic.BasicBot):
             buf[key] = data_dict[key].sum_disc_data
 
         # write new history
-        self.appendFile( str(buf).decode('latin-1') )
+        self._appendFile( str(buf).decode('latin-1') )
 
         pywikibot.output(u'\03{lightpurple}*** History updated\03{default}')
+
+    def _loadFile(self):
+        '''
+        load data (history) file
+
+        input:    self-objects
+        returns:  file content [string]
+        '''
+
+        # unicode text schreiben, danke an http://www.amk.ca/python/howto/unicode
+        try:
+            datfile = codecs.open(self._datfilename, encoding=config.textfile_encoding, mode='r')
+            #datfile = open(self._datfilename, mode='rb')
+            buf = datfile.read()
+            datfile.close()
+            return buf
+        except:    return u''
+
+    def _appendFile(self, data):
+        '''
+        append data (history) to file
+
+        input:    data
+                  self-objects
+        returns:  (appends data to the data/history file, nothing else)
+        '''
+
+        # könnte history dict mit pickle speichern (http://www.thomas-guettler.de/vortraege/python/einfuehrung.html#link_12.2)
+        # verwende stattdessen aber wiki format! (bleibt human readable und kann in wiki umgeleitet werden bei bedarf)
+        datfile = codecs.open(self._datfilename, encoding=config.textfile_encoding, mode='a+')
+        #datfile = codecs.open(self._datfilename, encoding='zlib', mode='a+b')
+        datfile.write(u'\n\n' + data)
+        #datfile.write(data)
+        datfile.close()
 
     def checkRecentEdits(self):
         """Check wiki on recent contributions of specific user.
@@ -776,8 +906,7 @@ class SumDiscBot(dtbext.basic.BasicBot):
             pywikibot.output(u'\03{lightyellow}=== ! DEBUG MODE TOOLSERVER ACCESS WILL BE SKIPPED ! ===\03{default}')
             globalnotify = []
         else:
-            dtbext.userlib.addAttributes(self._user)
-            globalnotify = self._user.globalnotifications()
+            globalnotify = self._globalnotifications()
 
         # check for GlobalWikiNotifications to report
         localinterwiki = self.site.language()
@@ -820,6 +949,74 @@ class SumDiscBot(dtbext.basic.BasicBot):
         if globalnotify:
             pywikibot.output(u'\03{lightpurple}*** %i Global wiki notifications checked\03{default}' % count)
 
+    ## @since   10332
+    #  @remarks due to http://de.wikipedia.org/wiki/Benutzer:DrTrigonBot/ToDo-Liste (id 38)
+    def _globalnotifications(self):
+        """Provides a list of results using the toolserver Merlissimo API (can also
+           be used for a Generator analog to UserContributionsGenerator).
+
+           Returns a tuple containing the page-object and an extradata dict.
+        """
+
+        request = 'http://toolserver.org/~merl/UserPages/query.php?user=%s&format=xml' %\
+                  urllib.quote(self._user.name().encode(self.site().encoding()))
+
+        pywikibot.get_throttle()
+        pywikibot.output(u"Reading global wiki notifications from toolserver (via 'API')...")
+
+        buf = self.site().getUrl( request, no_hostname = True )
+
+        tree = XML( buf.encode(self.site().encoding()) )
+        #import xml.etree.cElementTree
+        #print xml.etree.cElementTree.dump(tree)
+
+        for t in tree:
+            # get data in Element t
+            data = dict(t.items())
+
+            # get data in child Element c of Element t
+            for c in t.getchildren():
+                child_data = dict(c.items())
+                data.update(child_data)
+
+            # skip changes by user itself
+            #if data[u'user'] in [self.name(), u'DrTrigonBot']: continue
+            if data[u'user'] in [self._user.name()]:
+                continue
+
+            # process timestamp
+            data[u'timestamp'] =  str(pywikibot.Timestamp.fromtimestampformat(data[u'timestamp']))
+
+            # convert link to valid interwiki link
+            data[u'link'] = self._dblink2wikilink(self.site(), data[u'link'])
+
+            # return page object with additional data
+            try:
+                page = pywikibot.Page(self.site(), data[u'link'])
+                page.globalwikinotify = data
+                yield (page, data)
+            except pywikibot.exceptions.NoPage, e:
+                pywikibot.output(u'%s' %e)
+                
+    ## @since   10332
+    #  @remarks needed by various bots
+    def _dblink2wikilink(self, site, dblink):
+        """Return interwiki link to page.
+
+        You can use DB links like used on the toolserver and convert
+        them to valid interwiki links.
+        """
+
+        link = dblink
+        for family in site.fam().get_known_families(site).values():
+            title = link.replace(u'%s:' % family.decode('unicode_escape'), u':')    # e.g. 'dewiki:...' --> 'de:...'
+            if not (title == link):
+                dblink = u'%s:%s' % (family, title)
+                # [ 'wiki' in framework/interwiki is not the same as in TS DB / JIRA: DRTRIGON-60 ]
+                dblink = dblink.replace(u'wiki:', u'')  # may be better to use u'wikipedia:' or u'w:'
+
+        return dblink
+
     def AddMaintenanceMsg(self):
         """Check if there are any bot maintenance messages and add them to every users news.
 
@@ -830,7 +1027,6 @@ class SumDiscBot(dtbext.basic.BasicBot):
 
         for item in self.maintenance_msg:
             page = pywikibot.Page(self.site, bot_config['maintenance_page'] % "")
-            dtbext.pywikibot.addAttributes(page)
             tmst = time.strftime(pywikibot.Timestamp.ISO8601Format)
             page.sum_disc_data = ( self._param['notify_msg'][_PS_maintmsg],
                            None,
@@ -888,7 +1084,6 @@ class SumDiscBot(dtbext.basic.BasicBot):
                                                 days=self._param['cleanup_count'] ) + u'\n\n' + text
                     comment = head + clean % {'num':count}
                     self.save(page, text, comment=comment, minorEdit=minEd)
-                dtbext.pywikibot.addAttributes(self._userPage)
                 purge = self._userPage.purgeCache()
 
                 pywikibot.output(u'\03{lightpurple}*** Discussion updates added to: %s (purge: %s)\03{default}' % (self._userPage.title(asLink=True), purge))
@@ -1229,9 +1424,6 @@ class PageSections(object):
         # code debugging
         if 'code' in debug:
             pywikibot.output(page.title())
-
-        # enhance to dtbext.pywikibot.Page
-        dtbext.pywikibot.addAttributes(page)
 
         # get content and sections (content was preloaded earlier)
         #buf = page.get(force=True)
