@@ -1980,7 +1980,8 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             self._editrestriction = False
         # If no comment is given for the change, use the default
         comment = comment or action
-        if config.cosmetic_changes and not self.isTalkPage() and not calledModuleName() == 'cosmetic_changes':
+        if config.cosmetic_changes and not self.isTalkPage() and \
+           not calledModuleName() in ('cosmetic_changes', 'touch'):
             if config.cosmetic_changes_mylang_only:
                 cc = (self.site().family.name == config.family and self.site().lang == config.mylang) or \
                      self.site().family.name in config.cosmetic_changes_enable.keys() and \
