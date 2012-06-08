@@ -7,7 +7,7 @@ and return a unicode string.
 
 """
 #
-# (C) Pywikipedia bot team, 2004-2011
+# (C) Pywikipedia bot team, 2004-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -17,6 +17,7 @@ __version__ = '$Id$'
 import wikipedia as pywikibot
 import re
 from HTMLParser import HTMLParser
+import config
 
 def unescape(s):
     """Replace escaped HTML-special characters by their originals"""
@@ -60,7 +61,7 @@ def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
     exceptionRegexes = {
         'comment':     re.compile(r'(?s)<!--.*?-->'),
         # section headers
-        'header':      re.compile(r'\r\n=+.+=+ *\r\n'),
+        'header':      re.compile(r'\r?\n=+.+=+ *\r?\n'),
         # preformatted text
         'pre':         re.compile(r'(?ism)<pre>.*?</pre>'),
         'source':      re.compile(r'(?is)<source .*?</source>'),
@@ -531,8 +532,8 @@ def interwikiFormat(links, insite = None):
     if insite.lang in insite.family.interwiki_on_one_line:
         sep = u' '
     else:
-        sep = u'\r\n'
-    s=sep.join(s) + u'\r\n'
+        sep = config.line_separator
+    s=sep.join(s) + config.line_separator
     return s
 
 
@@ -614,7 +615,7 @@ def removeCategoryLinks(text, site=None, marker=''):
                          marker=marker)
     if marker:
         #avoid having multiple linefeeds at the end of the text
-        text = re.sub('\s*%s' % re.escape(marker), '\r\n' + marker,
+        text = re.sub('\s*%s' % re.escape(marker), config.LS + marker,
                       text.strip())
     return text.strip()
 
@@ -770,10 +771,10 @@ def categoryFormat(categories, insite = None):
     if insite.category_on_one_line():
         sep = ' '
     else:
-        sep = '\r\n'
+        sep = config.line_separator
     # Some people don't like the categories sorted
     #catLinks.sort()
-    return sep.join(catLinks) + '\r\n'
+    return sep.join(catLinks) + config.line_separator
 
 #---------------------------------------
 # Functions dealing with external links
