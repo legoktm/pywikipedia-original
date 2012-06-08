@@ -2,7 +2,7 @@
 # -*- coding: utf-8  -*-
 
 """Unit test framework for ip_regexp"""
-__version__ = '$Id: test_pywiki.py 9197 2011-04-25 08:57:30Z xqt $'
+__version__ = '$Id$'
 
 import unittest
 import test_utils
@@ -29,22 +29,6 @@ class PyWikiIpRegexCase(PyWikiTestCase):
             return
             print '"%s" match %s - OK' % (IP, bool(result))
         
-##{ 
-##  my($bool,$addr) = @_; 
-##  my($isit, $count); 
-##
-##  $isit = $addr =~ $theRE; # Test the RE here
-##  
-##  $numTested = $numTested+1;
-##  if ($isit == $bool) { print ("."); } 
-##  else { 
-##	print "\nFAILED: '$addr' should"; 
-##	print $bool ? " " : " not "; 
-##	print "be valid\n"; 
-##	$numFailed = $numFailed+1;
-##  } 
-##} 
-
     def test_IP(self):
         # test from http://download.dartware.com/thirdparty/test-ipv6-regex.pl
         self.ipv6test(not 1, "");# empty string 
