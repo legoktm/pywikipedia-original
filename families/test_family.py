@@ -155,14 +155,7 @@ class Family(family.Family):
         return ('commons', 'commons')
 
     if family.config.SSL_connection:
-        def hostname(self, code):
-            return 'secure.wikimedia.org'
-
         def protocol(self, code):
             return 'https'
 
-        def scriptpath(self, code):
-            return '/wikipedia/test/w'
 
-        def nicepath(self, code):
-            return '/wikipedia/test/wiki/'
