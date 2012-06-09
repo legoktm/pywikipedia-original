@@ -42,11 +42,11 @@ class Family(family.Family):
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
-        self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'Benutzerin Diskussion']
         self.namespaces[13]['de'] = [u'Hilfe Diskussion']
         self.namespaces[12]['de'] = [u'Hilfe']
+        self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -109,7 +109,7 @@ class Family(family.Family):
             'sl': u'Wikivir',
             'sr': [u'Викизворник', u'Wikisource'],
             'sv': u'Wikisource',
-            'ta': [u'Wikisource', u'விக்கிபீடியா'],
+            'ta': [u'விக்கிமூலம்', u'Wikisource', u'விக்கிபீடியா'],
             'te': u'Wikisource',
             'th': [u'วิกิซอร์ซ', u'Wikisource'],
             'tr': u'VikiKaynak',
@@ -177,7 +177,7 @@ class Family(family.Family):
             'sl': u'Pogovor o Wikiviru',
             'sr': [u'Разговор о Викизворнику', u'Razgovor o Викизворник'],
             'sv': u'Wikisourcediskussion',
-            'ta': [u'Wikisource பேச்சு', u'விக்கிபீடியா பேச்சு'],
+            'ta': [u'விக்கிமூலம் பேச்சு', u'விக்கிபீடியா பேச்சு'],
             'te': u'Wikisource చర్చ',
             'th': u'คุยเรื่องวิกิซอร์ซ',
             'tr': u'VikiKaynak tartışma',
