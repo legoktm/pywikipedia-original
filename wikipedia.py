@@ -1067,7 +1067,7 @@ not supported by PyWikipediaBot!"""
 
             # code debugging
             if verbose:
-                debugDump( 'Page.getSections', self.site, err, debug_data.encode(config.textfile_encoding) )
+                debugDump( 'Page.getSections', self.site, 'Page.getSections', debug_data.encode(config.textfile_encoding) )
 
             for setting in [(0.05,0.95), (0.4,0.8), (0.05,0.8), (0.0,0.8)]:  # 0.6 is default upper border
                 try:
