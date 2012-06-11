@@ -1079,7 +1079,12 @@ class SumDiscBot(basic.AutoBasicBot):
                     (page, text, minEd) = (tmplsite, buf, True) # 'True' is default
                 if (self._param['cleanup_count'] < 0):
                     # default mode, w/o cleanup
-                    self.append(page, text, comment=comment, minorEdit=minEd)
+                    try:
+                        self.append(page, text, comment=comment, minorEdit=minEd)
+                    except pywikibot.MaxTriesExceededError:
+                        logging.getLogger('sum_disc').warning(
+                              u'Problem MaxTriesExceededError occurred, thus skipping this user!')
+                        return  # skip history write
                 else:
                     # append with cleanup
                     text = self.cleanupDiscSum( self.load(page) or u'', 
