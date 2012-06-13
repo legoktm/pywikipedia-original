@@ -8092,7 +8092,7 @@ def handleArgs(*args):
             setLogfileStatus(True, arg[5:])
         elif arg == '-nolog':
             setLogfileStatus(False)
-        elif arg == '-verbose' or arg == "-v":
+        elif arg in ['-verbose', '-v']:
             verbose += 1
         elif arg == '-daemonize':
             import daemonize
@@ -8100,10 +8100,13 @@ def handleArgs(*args):
         elif arg.startswith('-daemonize:'):
             import daemonize
             daemonize.daemonize(redirect_std = arg[11:])
-        elif arg == '-cosmeticchanges' or arg == '-cc':
+        elif arg in ['-cosmeticchanges', '-cc']:
             config.cosmetic_changes = not config.cosmetic_changes
             output(u'NOTE: option cosmetic_changes is %s\n' % config.cosmetic_changes)
-        elif arg in ['-simulate', '-dry']:
+        elif arg == '-simulate':
+            simulate = True
+        elif arg == '-dry':
+            output(u"Usage of -dry is deprecated; use -simulate instead.")
             simulate = True
         # global debug option for development purposes. Normally does nothing.
         elif arg == '-debug':
