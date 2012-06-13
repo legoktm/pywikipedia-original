@@ -9,7 +9,9 @@ The following parameters are supported:
 
 &params;
 
--
+-summary:XYZ      Set the summary message text for the edit to XYZ, bypassing
+                  the predefined message texts with original and replacements
+                  inserted.
 
 All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
@@ -39,7 +41,7 @@ class BasicBot:
     # The file containing these messages should have the same name as the caller
     # script (i.e. basic.py in this case)
 
-    def __init__(self, generator, dry):
+    def __init__(self, generator, dry, summary):
         """
         Constructor. Parameters:
             @param generator: The page generator that determines on which pages
@@ -48,13 +50,18 @@ class BasicBot:
             @param dry: If True, doesn't do any real changes, but only shows
                         what would have been changed.
             @type dry: boolean.
+            @param summary: Set the summary message text for the edit.
+            @type summary: (unicode) string.
         """
         self.generator = generator
         self.dry = dry
         # init constants
         self.site = pywikibot.getSite(code=pywikibot.default_code)
         # Set the edit summary message
-        self.summary = i18n.twtranslate(self.site, 'basic-changing')
+        if summary:
+            self.summary = summary
+        else:
+            self.summary = i18n.twtranslate(self.site, 'basic-changing')
 
     def run(self):
         for page in self.generator:
@@ -137,7 +144,7 @@ class AutoBasicBot(BasicBot):
     _REGEX_eol = re.compile(u'\n')
 
     def __init__(self):
-        BasicBot.__init__(self, None, None)
+        BasicBot.__init__(self, None, None, None)
 
     ## @since   10326
     #  @remarks needed by various bots
@@ -259,13 +266,18 @@ def main():
     # This temporary array is used to read the page title if one single
     # page to work on is specified by the arguments.
     pageTitleParts = []
+    # summary message
+    editSummary = ''
 
     # Parse command line arguments
     for arg in pywikibot.handleArgs():
-        # check if a standard argument like
-        # -start:XYZ or -ref:Asdf was given.
-        if not genFactory.handleArg(arg):
-            pageTitleParts.append(arg)
+        if arg.startswith('-summary:'):
+            editSummary = arg[9:]
+        else:
+            # check if a standard argument like
+            # -start:XYZ or -ref:Asdf was given.
+            if not genFactory.handleArg(arg):
+                pageTitleParts.append(arg)
 
     if pageTitleParts != []:
         # We will only work on a single page.
@@ -279,7 +291,7 @@ def main():
         # The preloading generator is responsible for downloading multiple
         # pages from the wiki simultaneously.
         gen = pagegenerators.PreloadingGenerator(gen)
-        bot = BasicBot(gen, pywikibot.simulate)
+        bot = BasicBot(gen, pywikibot.simulate, editSummary)
         bot.run()
     else:
         pywikibot.showHelp()

@@ -8103,7 +8103,7 @@ def handleArgs(*args):
         elif arg == '-cosmeticchanges' or arg == '-cc':
             config.cosmetic_changes = not config.cosmetic_changes
             output(u'NOTE: option cosmetic_changes is %s\n' % config.cosmetic_changes)
-        elif arg == '-simulate':
+        elif arg in ['-simulate', '-dry']:
             simulate = True
         # global debug option for development purposes. Normally does nothing.
         elif arg == '-debug':
@@ -8188,8 +8188,10 @@ Global arguments available for all bots:
 -cc               user_config.py to its inverse and overrules it. All other
                   settings and restrictions are untouched.
 
--simulate         Disables writing to the server. Useful for testing
-                  and debugging of new code.
+-simulate         Disables writing to the server. Useful for testing and
+(-dry)            debugging of new code (if given, doesn't do any real
+                  changes, but only shows what would have been changed).
+                  DEPRECATED: please use -simulate instead of -dry
 '''# % moduleName
     output(globalHelp, toStdout=True)
     try:

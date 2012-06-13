@@ -228,7 +228,6 @@ bot_config = {    # unicode values
 # debug tools
 # (look at 'bot_control.py' for more info)
 debug = []                   # no write, all users
-#debug.append( 'write2wiki' ) # write to wiki (operational mode)
 #debug.append( 'user' )       # skip users
 #debug.append( 'page' )       # skip pages
 #debug.append( 'write2hist' ) # write history (operational mode)
@@ -313,7 +312,7 @@ class SumDiscBot(basic.AutoBasicBot):
         pywikibot.output(u'\03{lightred}** Receiving Job Queue (Maintenance Messages)\03{default}')
         page = pywikibot.Page(self.site, bot_config['maintenance_queue'])
         self.maintenance_msg = self.loadJobQueue(page, bot_config['queue_security'],
-                                                 reset=('write2wiki' in self._debug))
+                                                 reset=(not pywikibot.simulate))
 
         self._wday = time.gmtime().tm_wday
 
@@ -1054,48 +1053,45 @@ class SumDiscBot(basic.AutoBasicBot):
             pywikibot.output(u'===='*15 + u'\n' + buf + u'\n' + u'===='*15)
             pywikibot.output(u'[%i entries]' % count )
 
-            if 'write2wiki' in debug:
-                head  = i18n.twtranslate(self.site,
-                                         'thirdparty-drtrigonbot-sum_disc-summary-head') \
-                        + u' '
-                add   = i18n.twtranslate(self.site,
-                                         'thirdparty-drtrigonbot-sum_disc-summary-add')
-                mod   = i18n.twtranslate(self.site,
-                                         'thirdparty-drtrigonbot-sum_disc-summary-mod')
-                clean = i18n.twtranslate(self.site,
-                                         'thirdparty-drtrigonbot-sum_disc-summary-clean')
-                if not self._mode:
-                    # default: write direct to user disc page
-                    comment = head + add % {'num':count}
-                    #self.append(self._userPage, buf, comment=comment, minorEdit=False)
-                    (page, text, minEd) = (self._userPage, buf, False)
-                else:
-                    # enhanced (with template): update user disc page and write to user specified page
-                    tmplsite = pywikibot.Page(self.site, self._tmpl_data)
-                    comment = head + mod % {'num':count, 'page':tmplsite.title(asLink=True)}
-                    self.save(self._userPage, self._content, comment=comment, minorEdit=False)
-                    comment = head + add % {'num':count}
-                    #self.append(tmplsite, buf, comment=comment)
-                    (page, text, minEd) = (tmplsite, buf, True) # 'True' is default
-                if (self._param['cleanup_count'] < 0):
-                    # default mode, w/o cleanup
-                    try:
-                        self.append(page, text, comment=comment, minorEdit=minEd)
-                    except pywikibot.MaxTriesExceededError:
-                        logging.getLogger('sum_disc').warning(
-                              u'Problem MaxTriesExceededError occurred, thus skipping this user!')
-                        return  # skip history write
-                else:
-                    # append with cleanup
-                    text = self.cleanupDiscSum( self.load(page) or u'', 
-                                                days=self._param['cleanup_count'] ) + u'\n\n' + text
-                    comment = head + clean % {'num':count}
-                    self.save(page, text, comment=comment, minorEdit=minEd)
-                purge = self._userPage.purgeCache()
-
-                pywikibot.output(u'\03{lightpurple}*** Discussion updates added to: %s (purge: %s)\03{default}' % (self._userPage.title(asLink=True), purge))
+            head  = i18n.twtranslate(self.site,
+                                     'thirdparty-drtrigonbot-sum_disc-summary-head') \
+                    + u' '
+            add   = i18n.twtranslate(self.site,
+                                     'thirdparty-drtrigonbot-sum_disc-summary-add')
+            mod   = i18n.twtranslate(self.site,
+                                     'thirdparty-drtrigonbot-sum_disc-summary-mod')
+            clean = i18n.twtranslate(self.site,
+                                     'thirdparty-drtrigonbot-sum_disc-summary-clean')
+            if not self._mode:
+                # default: write direct to user disc page
+                comment = head + add % {'num':count}
+                #self.append(self._userPage, buf, comment=comment, minorEdit=False)
+                (page, text, minEd) = (self._userPage, buf, False)
             else:
-                pywikibot.output(u'\03{lightyellow}=== ! DEBUG MODE NOTHING WRITTEN TO WIKI ! ===\03{default}')
+                # enhanced (with template): update user disc page and write to user specified page
+                tmplsite = pywikibot.Page(self.site, self._tmpl_data)
+                comment = head + mod % {'num':count, 'page':tmplsite.title(asLink=True)}
+                self.save(self._userPage, self._content, comment=comment, minorEdit=False)
+                comment = head + add % {'num':count}
+                #self.append(tmplsite, buf, comment=comment)
+                (page, text, minEd) = (tmplsite, buf, True) # 'True' is default
+            if (self._param['cleanup_count'] < 0):
+                # default mode, w/o cleanup
+                try:
+                    self.append(page, text, comment=comment, minorEdit=minEd)
+                except pywikibot.MaxTriesExceededError:
+                    logging.getLogger('sum_disc').warning(
+                          u'Problem MaxTriesExceededError occurred, thus skipping this user!')
+                    return  # skip history write
+            else:
+                # append with cleanup
+                text = self.cleanupDiscSum( self.load(page) or u'', 
+                                            days=self._param['cleanup_count'] ) + u'\n\n' + text
+                comment = head + clean % {'num':count}
+                self.save(page, text, comment=comment, minorEdit=minEd)
+            purge = self._userPage.purgeCache()
+
+            pywikibot.output(u'\03{lightpurple}*** Discussion updates added to: %s (purge: %s)\03{default}' % (self._userPage.title(asLink=True), purge))
 
             if 'write2hist' in debug:
                 self.putHistory(self.pages.hist)
