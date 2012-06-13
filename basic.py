@@ -41,20 +41,16 @@ class BasicBot:
     # The file containing these messages should have the same name as the caller
     # script (i.e. basic.py in this case)
 
-    def __init__(self, generator, dry, summary):
+    def __init__(self, generator, summary):
         """
         Constructor. Parameters:
             @param generator: The page generator that determines on which pages
                               to work.
             @type generator: generator.
-            @param dry: If True, doesn't do any real changes, but only shows
-                        what would have been changed.
-            @type dry: boolean.
             @param summary: Set the summary message text for the edit.
             @type summary: (unicode) string.
         """
         self.generator = generator
-        self.dry = dry
         # init constants
         self.site = pywikibot.getSite(code=pywikibot.default_code)
         # Set the edit summary message
@@ -114,28 +110,27 @@ class BasicBot:
             # show what was changed
             pywikibot.showDiff(page.get(), text)
             pywikibot.output(u'Comment: %s' %comment)
-            if not self.dry:
-                choice = pywikibot.inputChoice(
-                    u'Do you want to accept these changes?',
-                    ['Yes', 'No'], ['y', 'N'], 'N')
-                if choice == 'y':
-                    try:
-                        # Save the page
-                        page.put(text, comment=comment or self.comment,
-                                 minorEdit=minorEdit, botflag=botflag)
-                    except pywikibot.LockedPage:
-                        pywikibot.output(u"Page %s is locked; skipping."
-                                         % page.title(asLink=True))
-                    except pywikibot.EditConflict:
-                        pywikibot.output(
-                            u'Skipping %s because of edit conflict'
-                            % (page.title()))
-                    except pywikibot.SpamfilterError, error:
-                        pywikibot.output(
+            choice = pywikibot.inputChoice(
+                u'Do you want to accept these changes?',
+                ['Yes', 'No'], ['y', 'N'], 'N')
+            if choice == 'y':
+                try:
+                    # Save the page
+                    page.put(text, comment=comment or self.comment,
+                             minorEdit=minorEdit, botflag=botflag)
+                except pywikibot.LockedPage:
+                    pywikibot.output(u"Page %s is locked; skipping."
+                                     % page.title(asLink=True))
+                except pywikibot.EditConflict:
+                    pywikibot.output(
+                        u'Skipping %s because of edit conflict'
+                        % (page.title()))
+                except pywikibot.SpamfilterError, error:
+                    pywikibot.output(
 u'Cannot change %s because of spam blacklist entry %s'
-                            % (page.title(), error.url))
-                    else:
-                        return True
+                        % (page.title(), error.url))
+                else:
+                    return True
         return False
 
 class AutoBasicBot(BasicBot):
@@ -144,7 +139,7 @@ class AutoBasicBot(BasicBot):
     _REGEX_eol = re.compile(u'\n')
 
     def __init__(self):
-        BasicBot.__init__(self, None, None, None)
+        BasicBot.__init__(self, None, None)
 
     ## @since   10326
     #  @remarks needed by various bots
@@ -291,7 +286,7 @@ def main():
         # The preloading generator is responsible for downloading multiple
         # pages from the wiki simultaneously.
         gen = pagegenerators.PreloadingGenerator(gen)
-        bot = BasicBot(gen, pywikibot.simulate, editSummary)
+        bot = BasicBot(gen, editSummary)
         bot.run()
     else:
         pywikibot.showHelp()
