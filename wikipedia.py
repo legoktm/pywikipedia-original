@@ -5727,6 +5727,15 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         body of the response.
 
         """
+        if ('action' in predata) and pywikibot.simulate and \
+           (predata['action'] in pywikibot.config.actions_to_block):
+            pywikibot.output(u'\03{lightyellow}SIMULATION: %s action blocked.\03{default}'%\
+                             predata['action'])
+            import StringIO
+            f_dummy = StringIO.StringIO()
+            f_dummy.__dict__.update({u'code': 0, u'msg': u''})
+            return f_dummy, u''
+
         data = self.urlEncode(predata)
         try:
             if cookies:
@@ -8095,9 +8104,6 @@ def handleArgs(*args):
             config.cosmetic_changes = not config.cosmetic_changes
             output(u'NOTE: option cosmetic_changes is %s\n' % config.cosmetic_changes)
         elif arg == '-simulate':
-            if not getSite().has_api():
-                raise NotImplementedError(
-                    '-simulate option is implemented for API only')
             simulate = True
         # global debug option for development purposes. Normally does nothing.
         elif arg == '-debug':
@@ -8183,7 +8189,7 @@ Global arguments available for all bots:
                   settings and restrictions are untouched.
 
 -simulate         Disables writing to the server. Useful for testing
-                  and debugging of new code. (API only)
+                  and debugging of new code.
 '''# % moduleName
     output(globalHelp, toStdout=True)
     try:
