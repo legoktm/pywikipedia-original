@@ -35,8 +35,6 @@ This script understands various command-line arguments:
 
 -quiet            no corresponding pages are displayed.
 
--dry              for debug purposes. No changes will be made.
-
 usage: featured.py [-interactive] [-nocache] [-top] [-after:zzzz] [-fromlang:xx,yy--zz|-fromall]
 
 """
@@ -561,7 +559,6 @@ def main(*args):
     doAll = False
     part  = False
     quiet = False
-    dry = False
     for arg in pywikibot.handleArgs():
         if arg == '-interactive':
             interactive=1
@@ -586,8 +583,6 @@ def main(*args):
             processType = 'former'
         elif arg == '-quiet':
             quiet = True
-        elif arg == '-dry':
-            dry = True
 
     if part:
         try:
@@ -657,7 +652,8 @@ def main(*args):
                 break
             elif  fromsite != pywikibot.getSite():
                 featuredWithInterwiki(fromsite, pywikibot.getSite(),
-                                      template_on_top, processType, quiet, dry)
+                                      template_on_top, processType, quiet,
+                                      pywikibot.simulate)
     except KeyboardInterrupt:
         pywikibot.output('\nQuitting program...')
     finally:

@@ -9,8 +9,7 @@ not be run by other users without prior contact.
 
 The following parameters are supported:
 
--dry              If given, doesn't do any real changes, but only shows
-                  what would have been changed.
+-
 
 All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
@@ -283,19 +282,14 @@ u'Cannot change %s because of spam blacklist entry %s'
         return False
 
 def main():
-    # If dry is True, doesn't do any real changes, but only show
-    # what would have been changed.
-    dry = show = False
+    show = False
 
     # Parse command line arguments
     for arg in pywikibot.handleArgs():
-        if arg == "-dry":
-            dry = True
-        else:
-            show = True
+        show = True
 
     if not show:
-        bot = BlockreviewBot(dry)
+        bot = BlockreviewBot(pywikibot.simulate)
         bot.run()
     else:
         pywikibot.showHelp()

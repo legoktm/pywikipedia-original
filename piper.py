@@ -20,9 +20,6 @@ The following parameters are supported:
 
 &params;
 
-    -dry           If given, doesn't do any real changes, but only shows
-                   what would have been changed.
-
     -always        Always commit changes without asking you to accept them
 
     -filter:       Filter the article text through this program, can be
@@ -65,17 +62,17 @@ class PiperBot:
         'nl': u'Bot: paginatekst door %s geleid'
     }
 
-    def __init__(self, generator, debug, filters, always):
+    def __init__(self, generator, dry, filters, always):
         """
         Constructor. Parameters:
             * generator - The page generator that determines on which pages
                           to work on.
-            * debug     - If True, doesn't do any real changes, but only shows
+            * dry       - If True, doesn't do any real changes, but only shows
                           what would have been changed.
             * always    - If True, don't prompt for changes
         """
         self.generator = generator
-        self.dry = debug
+        self.dry = dry
         self.always = always
         self.filters = filters
 
@@ -173,9 +170,6 @@ def main():
     # This temporary array is used to read the page title if one single
     # page to work on is specified by the arguments.
     pageTitleParts = []
-    # If dry is True, doesn't do any real changes, but only show
-    # what would have been changed.
-    dry = False
     # will become True when the user uses the -always flag.
     always = False
     # The program to pipe stuff through
@@ -183,9 +177,7 @@ def main():
 
     # Parse command line arguments
     for arg in pywikibot.handleArgs():
-        if arg.startswith("-dry"):
-            dry = True
-        elif arg.startswith("-filter:"):
+        if arg.startswith("-filter:"):
             prog = arg[8:]
             filters.append(prog)
         elif arg.startswith("-always"):
@@ -208,7 +200,7 @@ def main():
         # The preloading generator is responsible for downloading multiple
         # pages from the wiki simultaneously.
         gen = pagegenerators.PreloadingGenerator(gen)
-        bot = PiperBot(gen, dry, filters, always)
+        bot = PiperBot(gen, pywikibot.simulate, filters, always)
         bot.run()
     else:
         pywikibot.showHelp()

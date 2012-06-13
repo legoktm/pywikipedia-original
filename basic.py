@@ -9,8 +9,7 @@ The following parameters are supported:
 
 &params;
 
--dry              If given, doesn't do any real changes, but only shows
-                  what would have been changed.
+-
 
 All other parameters will be regarded as part of the title of a single page,
 and the bot will only work on that single page.
@@ -260,19 +259,13 @@ def main():
     # This temporary array is used to read the page title if one single
     # page to work on is specified by the arguments.
     pageTitleParts = []
-    # If dry is True, doesn't do any real changes, but only show
-    # what would have been changed.
-    dry = False
 
     # Parse command line arguments
     for arg in pywikibot.handleArgs():
-        if arg.startswith("-dry"):
-            dry = True
-        else:
-            # check if a standard argument like
-            # -start:XYZ or -ref:Asdf was given.
-            if not genFactory.handleArg(arg):
-                pageTitleParts.append(arg)
+        # check if a standard argument like
+        # -start:XYZ or -ref:Asdf was given.
+        if not genFactory.handleArg(arg):
+            pageTitleParts.append(arg)
 
     if pageTitleParts != []:
         # We will only work on a single page.
@@ -286,7 +279,7 @@ def main():
         # The preloading generator is responsible for downloading multiple
         # pages from the wiki simultaneously.
         gen = pagegenerators.PreloadingGenerator(gen)
-        bot = BasicBot(gen, dry)
+        bot = BasicBot(gen, pywikibot.simulate)
         bot.run()
     else:
         pywikibot.showHelp()

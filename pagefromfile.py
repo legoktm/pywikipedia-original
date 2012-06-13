@@ -33,8 +33,6 @@ Specific arguments:
 -autosummary    Use MediaWikis autosummary when creating a new page,
                 overrides -summary in this case
 -minor          set minor edit flag on page edits
--dry            Do not really upload pages, just check and report
-                messages
 
 If the page to be uploaded already exists:
 -safe           do nothing (default)
@@ -146,14 +144,14 @@ class PageFromFileRobot:
     }
 
     def __init__(self, reader, force, append, summary, minor, autosummary,
-                 debug,nocontents):
+                 dry, nocontents):
         self.reader = reader
         self.force = force
         self.append = append
         self.summary = summary
         self.minor = minor
         self.autosummary = autosummary
-        self.dry = debug
+        self.dry = dry
 	self.nocontents=nocontents
 
     def run(self):
@@ -318,7 +316,6 @@ def main():
     summary = None
     minor = False
     autosummary = False
-    dry = False
 
     for arg in pywikibot.handleArgs():
         if arg.startswith("-start:"):
@@ -335,8 +332,6 @@ def main():
             append = "Bottom"
         elif arg == "-force":
             force=True
-        elif arg == "-dry":
-            dry = True
         elif arg == "-safe":
             force = False
             append = None
@@ -358,8 +353,10 @@ def main():
             pywikibot.output(u"Disregarding unknown argument %s." % arg)
 
     reader = PageFromFileReader(filename, pageStartMarker, pageEndMarker,
-                                titleStartMarker, titleEndMarker, include, notitle)
-    bot = PageFromFileRobot(reader, force, append, summary, minor, autosummary, dry,nocontents)
+                                titleStartMarker, titleEndMarker, include,
+                                notitle)
+    bot = PageFromFileRobot(reader, force, append, summary, minor, autosummary,
+                            pywikibot.simulate, nocontents)
     bot.run()
 
 if __name__ == "__main__":
