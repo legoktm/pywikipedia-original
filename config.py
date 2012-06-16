@@ -476,7 +476,7 @@ retry_on_fail = True
 # servers. Allows simulation runs of bots to be carried out without changing any
 # page on the server side. This setting may be overridden in user_config.py.
 actions_to_block = ['edit', 'watch', 'move', 'delete', 'undelete', 'protect',
-                    'emailuser']
+                    'emailuser', 'submit']    # 'submit' is for non-API
 
 # How many pages should be put to a queue in asynchroneous mode.
 # If maxsize is <= 0, the queue size is infinite.

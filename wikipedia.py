@@ -5728,7 +5728,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
 
         """
         if ('action' in predata) and pywikibot.simulate and \
-           (predata['action'] in pywikibot.config.actions_to_block):
+           (predata['action'] in pywikibot.config.actions_to_block) and \
+           (address not in [self.export_address()]):
             pywikibot.output(u'\03{lightyellow}SIMULATION: %s action blocked.\03{default}'%\
                              predata['action'])
             import StringIO
