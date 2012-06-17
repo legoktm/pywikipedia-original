@@ -88,7 +88,7 @@ commonscatTemplates = {
                             u'Commonscat-inline']),
     'eu' : (u'Commonskat', [u'Commonscat']),
     'fa' : (u'ویکی‌انبار-رده', [u'Commonscat', u'Commons cat',
-                           u'انبار رده', u'Commons category',u'انبار-رده',u'جعبه پیوند به پروژه‌های خواهر',u'در پروژه‌های خواهر']),
+                           u'انبار رده', u'Commons category',u'انبار-رده',u'جعبه پیوند به پروژه‌های خواهر',u'در پروژه‌های خواهر',u'پروژه‌های خواهر']),
     'fr' : (u'Commonscat', [u'CommonsCat', u'Commons cat',
                             u'Commons category']),
     'frp' : (u'Commonscat', [u'CommonsCat']),
