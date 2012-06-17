@@ -552,7 +552,7 @@ class Family(family.Family):
         }
 
         self.namespaces[110] = {
-            'en': u'Wikisaurus',
+            'en': [u'Wikisaurus', u'WS'],
             'is': u'Samheitasafn',
             'ko': u'미주알고주알',
         }
