@@ -754,7 +754,7 @@ class Family:
                 'fiu-vro': u'Pruukja',
                 'fo': u'Brúkari',
                 'fr': [u'Utilisateur', u'Utilisatrice'],
-                'frp': [u'Usanciér', u'Utilisator'],
+                'frp': [u'Utilisator', u'Usanciér'],
                 'frr': [u'Benutzer', u'Benutzerin'],
                 'fur': u'Utent',
                 'fy': [u'Meidogger', u'Brûker'],
