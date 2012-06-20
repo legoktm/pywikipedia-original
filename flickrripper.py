@@ -140,40 +140,43 @@ def getFlinfoDescription(photo_id = 0):
 
     return rawDescription.decode('utf-8')
 
-def getFilename(photoInfo=None, site=pywikibot.getSite(u'commons', u'commons'),
-                project=u'Flickr'):
-    ''' Build a good filename for the upload based on the username and the
+def getFilename(photoInfo=None, site=None, project=u'Flickr'):
+    """ Build a good filename for the upload based on the username and the
     title. Prevents naming collisions.
 
-    '''
+    """
+    if not site:
+        site = pywikibot.getSite(u'commons', u'commons')
     username = photoInfo.find('photo').find('owner').attrib['username']
     title = photoInfo.find('photo').find('title').text
     if title:
-        title =  cleanUpTitle(title)
-    else:
-        title = u''
+        title = cleanUpTitle(title)
 
-    if title == u'':
+    if not title:
+        #find the max length for a mw title
+        maxBytes = 240 - len(project.encode('utf-8')) \
+                       - len(username.encode('utf-8'))
         description = photoInfo.find('photo').find('description').text
         if description:
-            if len(description)>120:
-                description = description[0 : 120]
-            title =  cleanUpTitle(description)
+            descBytes = len(description.encode('utf-8'))
+            if descBytes > maxBytes:
+                # maybe we cut more than needed, anyway we do it
+                items = max(0, len(description) - maxBytes + descBytes)
+                description = description[:items]
+            title = cleanUpTitle(description)
         else:
             title = u''
             # Should probably have the id of the photo as last resort.
-        
 
     if pywikibot.Page(site, u'File:%s - %s - %s.jpg'
-                      % (title, project, username) ).exists():
+                      % (title, project, username)).exists():
         i = 1
         while True:
-            if (pywikibot.Page(site, u'File:%s - %s - %s (%s).jpg'
-                               % (title, project, username, str(i))).exists()):
-                i = i + 1
+            if (pywikibot.Page(site, u'File:%s - %s - %s (%d).jpg'
+                               % (title, project, username, i)).exists()):
+                i += 1
             else:
-                return u'%s - %s - %s (%s).jpg' % (title, project, username,
-                                                   str(i))
+                return u'%s - %s - %s (%d).jpg' % (title, project, username, i)
     else:
         return u'%s - %s - %s.jpg' % (title, project, username)
 
