@@ -18,7 +18,7 @@ def _join_to_(result, join):
         if x not in result:
             result.append(x)
 
-def translate(page, hints = None, auto = True, removebrackets = False, site = None, family = None):
+def translate(page, hints=None, auto=True, removebrackets=False, site=None, family=None):
     """
     Goes through all entries in 'hints'. Returns a list of pages.
 
@@ -32,11 +32,11 @@ def translate(page, hints = None, auto = True, removebrackets = False, site = No
     """
     result = []
     if site is None and page:
-       site = page.site()
+        site = page.site
     if family is None and site:
-       family = site.family
+        family = site.family
     if site:
-       sitelang = site.language()
+        sitelang = site.language()
     if hints:
         for h in hints:
             if ':' not in h:
@@ -135,7 +135,7 @@ def getPoisonedLinks(pl):
     """
     result = []
     pywikibot.output(u'getting poisoned links for %s' % pl.title())
-    dictName, value = date.getAutoFormat(pl.site().language(), pl.title())
+    dictName, value = date.getAutoFormat(pl.site.language(), pl.title())
     if dictName is not None:
         pywikibot.output( u'date found in %s' % dictName )
         # errors in year BC
