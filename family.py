@@ -4030,15 +4030,17 @@ class Family:
         # to not break family files.
         return '1.20wmf4'
 
-    def versionnumber(self, code):
+    def versionnumber(self, code, version=None):
         """Return an int identifying MediaWiki version.
 
         Currently this is implemented as returning the minor version
         number; i.e., 'X' in version '1.X.Y'
 
+        if version is given (e.g. from a mw page), extract that number
+
         """
         R = re.compile(r"(\d+).(\d+)")
-        M = R.search(self.version(code))
+        M = R.search(version or self.version(code))
         if not M:
             # Version string malformatted; assume it should have been 1.10
             return 10
