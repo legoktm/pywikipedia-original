@@ -156,8 +156,7 @@ def getFilename(photoInfo=None, site=None, project=u'Flickr'):
         #find the max length for a mw title
         maxBytes = 240 - len(project.encode('utf-8')) \
                        - len(username.encode('utf-8'))
-        description = pywikibot.html2unicode(
-            photoInfo.find('photo').find('description').text)
+        description = photoInfo.find('photo').find('description').text
         if description:
             descBytes = len(description.encode('utf-8'))
             if descBytes > maxBytes:
