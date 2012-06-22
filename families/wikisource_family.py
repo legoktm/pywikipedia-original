@@ -47,6 +47,7 @@ class Family(family.Family):
         self.namespaces[12]['de'] = [u'Hilfe']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
+        self.namespaces[12]['ml'] = [u'സഹായം', u'H', u'സ']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.

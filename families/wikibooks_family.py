@@ -201,7 +201,7 @@ class Family(family.Family):
             'km': u'ការពិភាក្សាអំពីWikibooks',
             'kn': u'Wikibooks ಚರ್ಚೆ',
             'ko': u'위키책토론',
-            'ku': u'Wikibooks nîqaş',
+            'ku': u'Gotûbêja Wîkîpirtûkê',
             'ky': u'Wikibooks баарлашуу',
             'la': u'Disputatio Vicilibrorum',
             'lb': u'Wikibooks Diskussioun',
