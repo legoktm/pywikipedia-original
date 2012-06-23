@@ -1044,26 +1044,23 @@ class Family(family.Family):
         self.disambiguationTemplates = {
             # If no templates are given, retrieve names from  the live wiki
             # ([[MediaWiki:Disambiguationspage]])
-            '_default': [u'Disambig'],
-            'ang': [u'Disambig', u'Geodis'],
-            'arc': [u'ܕ'],
-            'ast': [u'Dixebra'],
+            # first char must be in uppercase
+            '_default': [u'Disambig'], # for default MediaWiki message only
+            'arc': [u'ܬ.ܐ.', u'ܕ', u'Disambig'],
             'az':  [u'Dəqiqləşdirmə'],
             'ba':  [u'Күп мәғәнәлелек'],
-            'bcl': [u'Clarip'],
             'bn':  [u'দ্ব্যর্থতা নিরসন', u'Disambig'],
-            'cdo': [u'Gì-ngiê'],
-            'ext': [u'Desambiguáncia'],
+            'cdo': [u'Gì-ngiê', u'Disambig'],
             'fo':  [u'Fleiri týdningar'],
-            'frp': [u'Homonimos'],
+            'frp': [u'Homonimos', u'Disambig'],
             'fur': [u'Disambiguazion', u'Disambig'],
             'fy':  [u'Tfs', u'Neibetsjuttings'],
-            'gan': [u'扤清楚', u'Disambig'],
             'gd':  [u'Soilleireachadh'],
             'haw': [u'Huaʻōlelo puana like'],
-            'hr':  [u'Preusmjerenje u razdvojbu', u'Razdvojba', u'razdvojba1',
+            'hr':  [u'Preusmjerenje u razdvojbu', u'Razdvojba', u'Razdvojba1',
                     u'Nova razdvojba'],
-            'hy':  [u'Երկիմաստ', u'Բազմիմաստություն', u'Բազմանշանակ', u'Disambig'],
+            'hy':  [u'Երկիմաստ', u'Բազմիմաստություն', u'Բազմանշանակ',
+                    u'Disambig'],
             'kg':  [u'Bisongidila'],
             'krc': [u'Кёб магъаналы', u'Disambig'],
             'la':  [u'Discretiva', u'Disnomen'], #{{Disambig}} is not a disambig
@@ -1100,7 +1097,7 @@ class Family(family.Family):
             'vls': [u'Db', u'Dp', u'Dpintro'],
             'wo':  [u'Bokktekki'],
             'yi':  [u'באדייטען'],
-            'zea': [u'dp', u'Deurverwiespagina'],
+            'zea': [u'Dp', u'Deurverwiespagina'],
             'zh':  [u'Disambig', u'消歧义', u'消歧义页', u'消歧義', u'消歧義頁',
                     u'Letter disambig', u'Isomerdab'],
             'zh-classical':  [u'Disambig', u'釋義', u'消歧義'],
