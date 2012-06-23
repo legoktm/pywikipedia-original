@@ -28,6 +28,7 @@ import traceback
 import re
 import sys
 import codecs
+import datetime
 
 import urllib, urllib2, time
 import date, catlib, userlib, query
@@ -1130,6 +1131,22 @@ def RegexFilterPageGenerator(generator, regex, inverse=False, ignore_namespace=T
                 if r.match(title):
                     yield page
                     break
+
+def EdittimeFilterPageGenerator(generator, begintime=datetime.datetime.min, endtime=datetime.datetime.max):
+    """
+    Wraps around another generator. Yields only those pages which were changed
+    between begintime and endtime.
+
+    @param generator: A generator object
+    @param begintime: A datetime object. Only pages after this time will be returned.
+    @param endtime: A datetime object Only pages before this time will be returned.
+    """
+    for page in generator:
+        if page.editTime(datetime=True)==None:
+            # FIXME: The page object should probably handle this
+            page.get()
+        if page.editTime(datetime=True) and begintime < page.editTime(datetime=True) and page.editTime(datetime=True) < endtime:
+            yield page
 
 def CombinedPageGenerator(generators):
     """
