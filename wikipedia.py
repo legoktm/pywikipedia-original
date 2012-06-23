@@ -418,7 +418,7 @@ not supported by PyWikipediaBot!"""
             self._permalink = None
             self._userName = None
             self._ipedit = None
-            self._editTime = '0'
+            self._editTime = None
             self._startTime = '0'
             # For the Flagged Revisions MediaWiki extension
             self._revisionId = None
@@ -1260,12 +1260,16 @@ not supported by PyWikipediaBot!"""
         """
         return self._ipedit
 
-    def editTime(self):
+    def editTime(self, datetime=False):
         """Return timestamp (in MediaWiki format) of last revision to page.
 
-        Returns None if last edit time is unknown.
+        Returns None unless page was retrieved with getAll() or _getEditPage().
 
         """
+        if self._editTime and datetime:
+            import datetime
+            return datetime.datetime.strptime(str(self._editTime), '%Y%m%d%H%M%S')
+          
         return self._editTime
 
     def previousRevision(self):
