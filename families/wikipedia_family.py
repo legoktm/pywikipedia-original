@@ -631,22 +631,6 @@ class Family(family.Family):
             'hu': u'Összefoglaló-vita',
         }
 
-        self.namespaces[442] = {
-            'en': u'Course',
-        }
-
-        self.namespaces[443] = {
-            'en': u'Course talk',
-        }
-
-        self.namespaces[444] = {
-            'en': u'Institution',
-        }
-
-        self.namespaces[445] = {
-            'en': u'Institution talk',
-        }
-
         self.namespaces[100] = {
             'af': u'Portaal',
             'als': u'Portal',
