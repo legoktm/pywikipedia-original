@@ -208,10 +208,10 @@ class CosmeticChangesToolkit:
         old instances standardizeInterwiki and standardizeCategories
         The page footer has the following section in that sequence:
         1. categories
-        2a TODO:template beyond categories
-        2. additional information depending on local site policy
-        3. stars templates for featured and good articles
-        4. interwiki links
+        2. ## TODO: template beyond categories ##
+        3. additional information depending on local site policy
+        4. stars templates for featured and good articles
+        5. interwiki links
         """
         starsList = [
             u'bueno',
@@ -279,8 +279,6 @@ class CosmeticChangesToolkit:
                                    % star, re.I)
                 found = regex.findall(starstext)
                 if found != []:
-                    if pywikibot.verbose:
-                        print found
                     text = regex.sub('', text)
                     allstars += found
 
@@ -296,8 +294,6 @@ class CosmeticChangesToolkit:
             regex = re.compile(iw_reg)
             found = regex.findall(text)
             if found:
-                if pywikibot.verbose:
-                    print found
                 hasCommentLine = True
                 text = regex.sub('', text)
 
@@ -319,7 +315,7 @@ class CosmeticChangesToolkit:
             self.site.language() == 'nn' or
             (interwikiLinks and hasCommentLine) and
             self.site.language() == 'fr'):
-            text = text + '\r\n\r\n' + iw_msg
+            text += '\r\n\r\n' + iw_msg
         # Adding stars templates
         if allstars:
             text = text.strip()+self.site.family.interwiki_text_separator
@@ -731,7 +727,7 @@ class CosmeticChangesToolkit:
         old = digits[digits.keys()[0]]
         # do not change inside file links
         namespaces = list(self.site.namespace(6, all=True))
-        pattern = re.compile(u'\[\[(' + '|'.join(namespaces) + '):.+?\.\w+? *(\|[^\[]*?(\[\[[^\[]*?\]\][^\[]*?)?)?\]\]',
+        pattern = re.compile(u'\[\[(' + '|'.join(namespaces) + '):.+?\.\w+? *(\|((\[\[.*?\]\])|.)*)?\]\]',
                              re.UNICODE)
         exceptions.append(pattern)
         text = pywikibot.replaceExcept(text, u',', u'،', exceptions)
@@ -744,7 +740,7 @@ class CosmeticChangesToolkit:
         text = pywikibot.replaceExcept(text, u'ك', u'ک', exceptions)
         text = pywikibot.replaceExcept(text, ur'[ىي]', u'ی', exceptions)
         # replace persian/arabic digits
-        for i in xrange(0,10):
+        for i in xrange(0, 10):
             text = pywikibot.replaceExcept(text, old[i], new[i], exceptions)
         # do not change digits in class, style and table params
         pattern = re.compile(u'\w+=(".+?"|\d+)', re.UNICODE)
