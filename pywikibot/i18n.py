@@ -396,10 +396,13 @@ def twntranslate(code, twtitle, parameters=None):
             # maybe we should implement this to i18n.translate()
             # TODO: check against plural_rules[lang]['nplurals']
             try:
-                plural_func = plural_rules[lang]['plural']
+                index = plural_rules[lang]['plural'](num)
             except KeyError:
-                plural_func = plural_rules['_default']['plural']
-        repl = variants.split('|')[plural_func(num)]
+                index = plural_rules['_default']['plural'](num)
+            except TypeError:
+                # we got an int
+                index = plural_rules[lang]['plural']
+        repl = variants.split('|')[index]
         trans = re.sub(PATTERN, repl, trans)
     if param:
         try:
