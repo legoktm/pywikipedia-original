@@ -145,6 +145,12 @@ class Family(family.Family):
         self.namespaces[1199] = {
             '_default': u'Translations talk',
         }
+        self.namespaces[2500] = {
+            '_default': u'VisualEditor',
+        }
+        self.namespaces[2501] = {
+            '_default': u'VisualEditor talk',
+        }
         self.interwiki_forward = 'wikipedia'
         self.cross_projects = [
             'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews', 'wikiversity',

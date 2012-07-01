@@ -52,11 +52,23 @@ class Family(family.Family):
         self.namespaces[105] = {
             '_default': u'API talk',
         }
+        self.namespaces[106] = {
+            '_default': u'Skin',
+        }
+        self.namespaces[107] = {
+            '_default': u'Skin talk',
+        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }
         self.namespaces[1199] = {
             '_default': u'Translations talk',
+        }
+        self.namespaces[2500] = {
+            '_default': u'VisualEditor',
+        }
+        self.namespaces[2501] = {
+            '_default': u'VisualEditor talk',
         }
         self.cross_projects = [
             'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',

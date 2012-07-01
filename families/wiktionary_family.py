@@ -11,29 +11,29 @@ class Family(family.Family):
         self.name = 'wiktionary'
 
         self.languages_by_size = [
-            'en', 'fr', 'mg', 'zh', 'lt', 'ru', 'ko', 'el', 'tr', 'pl', 'ta',
-            'sv', 'vi', 'de', 'kn', 'io', 'nl', 'fi', 'hu', 'pt', 'no', 'my',
+            'en', 'fr', 'mg', 'zh', 'lt', 'ru', 'el', 'ko', 'tr', 'pl', 'ta',
+            'sv', 'vi', 'de', 'kn', 'nl', 'io', 'fi', 'hu', 'pt', 'no', 'my',
             'id', 'it', 'li', 'ml', 'et', 'ja', 'es', 'fa', 'ku', 'ar', 'ro',
-            'lo', 'gl', 'cs', 'ca', 'uk', 'eu', 'bg', 'eo', 'te', 'vo', 'br',
+            'lo', 'cs', 'gl', 'ca', 'uk', 'eu', 'bg', 'eo', 'te', 'vo', 'br',
             'oc', 'hr', 'is', 'th', 'simple', 'scn', 'sr', 'af', 'cy', 'fy',
             'sw', 'tl', 'ast', 'fj', 'ur', 'he', 'la', 'wa', 'sq', 'da', 'hy',
             'sl', 'zh-min-nan', 'tt', 'hi', 'az', 'lv', 'ka', 'pnb', 'nn', 'lb',
             'tk', 'hsb', 'kk', 'bs', 'nah', 'mk', 'km', 'be', 'wo', 'ga', 'ang',
             'co', 'ms', 'gn', 'mr', 'csb', 'sk', 'st', 'nds', 'ia', 'si', 'sh',
-            'sd', 'tg', 'ug', 'ky', 'kl', 'an', 'zu', 'mn', 'gu', 'fo', 'ps',
-            'kw', 'rw', 'ss', 'ie', 'sa', 'qu', 'gv', 'om', 'roa-rup', 'iu',
-            'bn', 'so', 'chr', 'su', 'za', 'gd', 'am', 'mt', 'tpi', 'mi', 'ik',
-            'yi', 'ln', 'or', 'uz', 'sm', 'ti', 'sg', 'jv', 'na', 'pa', 'tn',
-            'jbo', 'dv', 'ne', 'ha', 'ks', 'ay', 'ts',
+            'sd', 'tg', 'ug', 'ky', 'kl', 'an', 'zu', 'mn', 'gu', 'sa', 'ps',
+            'fo', 'kw', 'rw', 'ss', 'ie', 'qu', 'gv', 'om', 'roa-rup', 'iu',
+            'bn', 'chr', 'so', 'su', 'za', 'gd', 'am', 'mt', 'mi', 'tpi', 'ik',
+            'yi', 'or', 'ln', 'uz', 'sm', 'ti', 'jbo', 'sg', 'jv', 'na', 'pa',
+            'tn', 'dv', 'ne', 'ha', 'ks', 'ay', 'ts',
         ]
 
         self.langs = dict([(lang, '%s.wiktionary.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[12]['nl'] = [u'Help']
         self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Vikipediista diskuto', u'Uzula diskuto']
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
-        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
-        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
+        self.namespaces[3]['qu'] = [u'Ruraq rimanakuy']
+        self.namespaces[2]['qu'] = [u'Ruraq']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
@@ -44,6 +44,8 @@ class Family(family.Family):
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[3]['nah'] = [u'Tlatequitiltilīlli tēixnāmiquiliztli', u'Usuario Discusión']
+        self.namespaces[2]['nah'] = [u'Tlatequitiltilīlli', u'Usuario']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
@@ -54,8 +56,14 @@ class Family(family.Family):
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
         self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
         self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
-        self.namespaces[12]['nl'] = [u'Help']
+        self.namespaces[3]['gn'] = [u'Puruhára myangekõi']
+        self.namespaces[2]['gn'] = [u'Puruhára']
+        self.namespaces[3]['an'] = [u'Descusión usuario']
+        self.namespaces[2]['an'] = [u'Usuario']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
+        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
 
