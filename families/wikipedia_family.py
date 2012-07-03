@@ -568,7 +568,7 @@ class Family(family.Family):
             'su': u'Obrolan Wikipedia',
             'sv': u'Wikipediadiskussion',
             'sw': [u'Majadiliano ya Wikipedia', u'Wikipedia majadiliano'],
-            'szl': u'Dyskusja Wikipedyjo',
+            'szl': [u'Dyskusyjo Wikipedyjo', u'Dyskusja Wikipedyjo'],
             'ta': [u'விக்கிப்பீடியா பேச்சு', u'Wikipedia talk', u'விக்கிபீடியா பேச்சு'],
             'te': [u'వికీపీడియా చర్చ', u'Wikipedia talk'],
             'tet': u'Diskusaun Wikipedia',
