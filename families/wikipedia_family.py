@@ -841,6 +841,7 @@ class Family(family.Family):
             'fa': u'کتاب',
             'fi': u'Metasivu',
             'fr': u'Projet',
+            'frr': u'Seite',
             'gl': u'Libro',
             'hr': u'Dodatak',
             'ia': u'Appendice',
@@ -870,6 +871,7 @@ class Family(family.Family):
             'fa': u'بحث کتاب',
             'fi': u'Keskustelu metasivusta',
             'fr': u'Discussion Projet',
+            'frr': u'Seite Diskussion',
             'gl': u'Conversa libro',
             'hr': u'Razgovor o dodatku',
             'ia': u'Discussion Appendice',
@@ -894,6 +896,7 @@ class Family(family.Family):
             'es': u'Anexo',
             'fi': u'Kirja',
             'fr': u'Référence',
+            'frr': u'Index',
             'lt': u'Sąrašas',
             'pt': u'Livro',
             'ru': u'Проект',
@@ -905,6 +908,7 @@ class Family(family.Family):
             'es': u'Anexo Discusión',
             'fi': u'Keskustelu kirjasta',
             'fr': u'Discussion Référence',
+            'frr': u'Index Diskussion',
             'lt': u'Sąrašo aptarimas',
             'pt': u'Livro Discussão',
             'ru': u'Обсуждение проекта',
@@ -912,11 +916,13 @@ class Family(family.Family):
 
         self.namespaces[106] = {
             'als': u'Text',
+            'frr': u'Text',
             'ru': u'Арбитраж',
         }
 
         self.namespaces[107] = {
             'als': u'Text Diskussion',
+            'frr': u'Text Diskussion',
             'ru': u'Обсуждение арбитража',
         }
 
