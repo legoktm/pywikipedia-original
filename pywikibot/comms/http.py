@@ -31,6 +31,30 @@ import wikipedia as pywikibot
 useragent   = pywikibot.useragent
 MyURLopener = pywikibot.MyURLopener
 
+class buffered_addinfourl(object):
+    """
+    Buffered transparent addinfourl wrapper to enable re-reading of all
+    attributes.
+    """
+    def __init__(self, addinfourl):
+        self._parent = addinfourl
+        self._buffer = {}
+    def __getattr__(self, name):
+        # raise same exception as parent if attribute does not exist
+        attr = getattr(self._parent, name)
+        if callable(attr):
+            # return caller to myself enhanced with method to call
+            return lambda *args, **kwds: self._call(name, attr, *args, **kwds)
+        else:
+            # do call to buffer data from parent and return
+            return self._call(name, attr, *args, **kwds)
+    def _call(self, name, attr, *args, **kwds):
+        if name not in self._buffer:
+            # buffer data from parent
+            self._buffer[name] = attr(*args, **kwds)
+        # return buffered data
+        return self._buffer[name]
+
 def request(site, uri, retry = None, sysop = False, data = None, compress = True,
             no_hostname = False, cookie_only=False, refer=None, back_response=False):
     """
@@ -84,7 +108,7 @@ def request(site, uri, retry = None, sysop = False, data = None, compress = True
     while True:
         try:
             req = urllib2.Request(url, data, headers)
-            f = MyURLopener.open(req)
+            f = buffered_addinfourl(MyURLopener.open(req))
 
             # read & info can raise socket.error
             text = f.read()
