@@ -118,7 +118,7 @@ class User(object):
         return
 
     def registrationTime(self, force=False):
-        if not hasattr(self, '_registrationTime') or force:
+        if self._registrationTime < 0 or force:
             self._load()
         return self._registrationTime
 
