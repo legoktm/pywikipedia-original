@@ -90,6 +90,18 @@ class User(object):
     def username(self):
         return self._name
 
+    def isRegistered(self, force=False):
+        """ Return True if a user with this name is registered on this site,
+        False otherwise.
+
+        @param force: if True, forces reloading the data from API
+        @type force: bool
+        """
+        if self.isAnonymous():
+            return False
+        else:
+            return self.registrationTime(force) != -1
+
     def isAnonymous(self):
         return ip_regexp.match(self.username) is not None
 
@@ -578,6 +590,8 @@ class _GetAllUI(object):
                 try:
                     x = data[uj.name()]
                 except KeyError:
+                    break
+                if 'missing' in x:
                     break
                 uj._editcount = x['editcount']
                 if 'groups' in x:
