@@ -6842,7 +6842,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             'list'      : 'recentchanges',
             'rcdir'     : rcdir,
             'rctype'    : rctype,
-            'rcprop'    : ['user','comment','timestamp','title','ids','loginfo','sizes'],    #','flags','redirect','patrolled']
+            'rcprop'    : ['user', 'comment', 'timestamp', 'title', 'ids',
+                           'loginfo', 'sizes'], #', 'flags', 'redirect', 'patrolled'],
             'rcnamespace' : namespace,
             'rclimit'   : int(number),
             }
@@ -8133,7 +8134,7 @@ def handleArgs(*args):
             nonGlobalArgs.append(arg)
 
     if username:
-        config.usernames[config.family][config.mylang] = username
+        config.usernames[default_family][default_code] = username
 
     # TEST for bug #3081100
     if unicode_error:
