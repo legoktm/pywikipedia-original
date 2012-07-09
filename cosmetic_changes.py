@@ -178,8 +178,8 @@ class CosmeticChangesToolkit:
         text = self.fixReferences(text)
         text = self.fixStyle(text)
         text = self.fixTypo(text)
-        if self.site.lang in ['ckb', 'fa']:
-            text = self.fixArabicLetters(text)
+##        if self.site.lang in ['ckb', 'fa']:
+##            text = self.fixArabicLetters(text)
         try:
             text = isbn.hyphenateIsbnNumbers(text)
         except isbn.InvalidIsbnException, error:
