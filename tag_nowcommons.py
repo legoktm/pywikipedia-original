@@ -5,7 +5,7 @@ Bot tag tag files available at Commons with the Nowcommons template.
 """
 #
 # (C) Multichill, 2011
-# (C) xqt,2011
+# (C) xqt, 2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -22,36 +22,37 @@ from nowcommons import nowCommons
 from pywikibot import i18n
 
 
-skips = {}
-skips['wikipedia'] = {}
-skips['wikipedia']['en'] = [u'NowCommons',
-			    u'CommonsNow',
-			    u'Nowcommons',
-			    u'NowCommonsThis',
-			    u'Nowcommons2',
-			    u'NCT',
-			    u'Nowcommonsthis',
-			    u'Moved to commons',
-			    u'Now Commons',
-			    u'Now at commons',
-			    u'Db-nowcommons',
-			    u'WikimediaCommons',
-			    u'Now commons',
-			    u'Do not move to Commons',
-			    u'KeepLocal',
-			    u'Keeplocal',
-			    u'NoCommons',
-			    u'Nocommons',
-			    u'NotMovedToCommons',
-			    u'Nmtc',
-			    u'Not moved to Commons',
-			    u'Notmovedtocommons',
-			    ]
-skips['wikipedia']['fy'] = [u'NowCommons',
-			    u'Nowcommons',
-			    ]
-skips['_default'] = [u'NowCommons']
-
+skips = {
+    '_default': [u'NowCommons'],
+    'wikipedia': {
+        'en': [u'NowCommons',
+               u'CommonsNow',
+               u'Nowcommons',
+               u'NowCommonsThis',
+               u'Nowcommons2',
+               u'NCT',
+               u'Nowcommonsthis',
+               u'Moved to commons',
+               u'Now Commons',
+               u'Now at commons',
+               u'Db-nowcommons',
+               u'WikimediaCommons',
+               u'Now commons',
+               u'Do not move to Commons',
+               u'KeepLocal',
+               u'Keeplocal',
+               u'NoCommons',
+               u'Nocommons',
+               u'NotMovedToCommons',
+               u'Nmtc',
+               u'Not moved to Commons',
+               u'Notmovedtocommons',
+               ],
+        'fy': [u'NowCommons',
+               u'Nowcommons',
+               ],
+    },
+}
 
 
 class NoEnoughData(pywikibot.Error):
@@ -67,10 +68,10 @@ def tagNowCommons(page):
     
     if not imagepage.fileIsOnCommons():
 
-        if skips.get(family) and skips.get(family).get(language):
-            localskips = skips.get(family).get(language)
+        if family in skips and language in skips[family]:
+            localskips = skips[family][language]
         else:
-            localskips = skips.get('_default')
+            localskips = skips['_default']
             
         for template in imagepage.templates():
             #FIXME: Move the templates list to a lib.
