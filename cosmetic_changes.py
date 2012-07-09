@@ -178,8 +178,8 @@ class CosmeticChangesToolkit:
         text = self.fixReferences(text)
         text = self.fixStyle(text)
         text = self.fixTypo(text)
-##        if self.site.lang in ['ckb', 'fa']:
-##            text = self.fixArabicLetters(text)
+        if self.site.lang in ['ckb', 'fa']:
+            text = self.fixArabicLetters(text)
         try:
             text = isbn.hyphenateIsbnNumbers(text)
         except isbn.InvalidIsbnException, error:
@@ -515,6 +515,13 @@ class CosmeticChangesToolkit:
         text = pywikibot.replaceExcept(text, linkR, handleOneLink,
                                        ['comment', 'math', 'nowiki', 'pre',
                                         'startspace'])
+        ##fixing pipe and trailing for fa. Thanks ZxxZxxZ
+        if self.site.lang == 'fa':
+            faChrs = u'ءاآأإئؤبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیةيك' + u'ًٌٍَُِّْٓٔ'
+            text = re.sub(u'\[\[([^\]\|]*)]]([‌%s]+)' % faChrs,
+                          ur'[[\1|\1\2]]', text)
+            text = re.sub(u'\[\[([^\]\|]*)\|(.+?)]]([‌%s]+)' % faChrs,
+                          ur'[[\1|\2\3]]', text)
         return text
 
     def resolveHtmlEntities(self, text):
@@ -739,7 +746,9 @@ class CosmeticChangesToolkit:
             text = pywikibot.replaceExcept(text, u'ه', u'ھ', exceptions)
         text = pywikibot.replaceExcept(text, u'ك', u'ک', exceptions)
         text = pywikibot.replaceExcept(text, ur'[ىي]', u'ی', exceptions)
+        return text
         # replace persian/arabic digits
+        ## deactivated due to bug #3539407
         for i in xrange(0, 10):
             text = pywikibot.replaceExcept(text, old[i], new[i], exceptions)
         # do not change digits in class, style and table params
@@ -752,11 +761,6 @@ class CosmeticChangesToolkit:
         # replace digits
         for i in xrange(0, 10):
             text = pywikibot.replaceExcept(text, str(i), new[i], exceptions)
-        ##fixing pipe and trailing for fa. Thanks ZxxZxxZ
-        if self.site.lang=='fa':
-            faChrs = u'ءاآأإئؤبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیةيك' + u'ًٌٍَُِّْٓٔ'
-            text = re.sub(u'\[\[([^\]\|]*)]]([‌%s]+)' % faChrs, ur'[[\1|\1\2]]', text)
-            text = re.sub(u'\[\[([^\]\|]*)\|(.+?)]]([‌%s]+)' % faChrs, ur'[[\1|\2\3]]', text)
         return text
 
     # Retrieved from "http://commons.wikimedia.org/wiki/Commons:Tools/pywiki_file_description_cleanup"
