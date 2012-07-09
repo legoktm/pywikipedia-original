@@ -48,7 +48,7 @@ Please fix these if you are capable and motivated:
 #
 # (C) Wikipedian, 2006-2007
 # (C) Siebrand Mazeland, 2007-2008
-# (C) xqt,2010-2011
+# (C) xqt,2010-2012
 # (C) Pywikipedia bot team, 2006-2011
 #
 # Distributed under the terms of the MIT license.
@@ -62,28 +62,6 @@ import pagegenerators
 import image
 # only for nowCommonsMessage
 from imagetransfer import nowCommonsMessage
-
-autonomous = False
-replace = False
-replacealways = False
-replaceloose = False
-replaceonly = False
-use_hash = False
-
-for arg in pywikibot.handleArgs():
-    if arg == '-autonomous':
-        autonomous = True
-    if arg == '-replace':
-        replace = True
-    if arg == '-replacealways':
-        replace = True
-        replacealways = True
-    if arg == '-replaceloose':
-        replaceloose = True
-    if arg == '-replaceonly':
-        replaceonly = True
-    if arg == '-hash':
-        use_hash = True
 
 nowCommons = {
     '_default': [
@@ -435,6 +413,30 @@ class NowCommonsDeleteBot:
 
 
 def main():
+    global autonomous
+    global replace, replacealways, replaceloose, replaceonly
+    global use_hash
+    autonomous = False
+    replace = False
+    replacealways = False
+    replaceloose = False
+    replaceonly = False
+    use_hash = False
+
+    for arg in pywikibot.handleArgs():
+        if arg == '-autonomous':
+            autonomous = True
+        if arg == '-replace':
+            replace = True
+        if arg == '-replacealways':
+            replace = True
+            replacealways = True
+        if arg == '-replaceloose':
+            replaceloose = True
+        if arg == '-replaceonly':
+            replaceonly = True
+        if arg == '-hash':
+            use_hash = True
     bot = NowCommonsDeleteBot()
     bot.run()
 
