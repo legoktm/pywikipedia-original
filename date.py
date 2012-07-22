@@ -10,7 +10,7 @@ lists which are required by some other programs.
 # © Andre Engels, 2004-2005
 # © Yuri Astrakhan, 2005-2006  FirstnameLastname@gmail.com
 #       (years/decades/centuries/millenniums  str <=> int  conversions)
-# © Pywikipedia bot team, 2004-2011
+# © Pywikipedia bot team, 2004-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -701,7 +701,7 @@ formats = {
         'fa' :      lambda v: dh_yearBC( v, u'%d (پیش از میلاد)' ),
         'fi' :      lambda v: dh_yearBC( v, u'%d eaa.' ),
         'fo' :      lambda v: dh_yearBC( v, u'%d f. Kr.' ),
-        'fr' :      lambda v: dh_yearBC( v, u'-%d' ),
+        'fr' :      lambda v: dh_yearBC( v, u'%d av. J.-C.'),
         'gl' :      lambda v: dh_yearBC( v, u'-%d' ),
         'he' :      lambda v: dh_yearBC( v, u'%d לפני הספירה' ),
         'hr' :      lambda v: dh_yearBC( v, u'%d. pr. Kr.' ),
@@ -712,7 +712,7 @@ formats = {
         'it' :      lambda v: dh_yearBC( v, u'%d a.C.' ),
         'ka' :      lambda v: dh_yearBC( v, u'ძვ. წ. %d' ),
         'ko' :      lambda v: dh_yearBC( v, u'기원전 %d년' ),
-        'ksh':      lambda v: dh_yearBC( v,u'Joohr %d füür Krėßtůß'),
+        'ksh':      lambda v: dh_yearBC( v, u'Joohr %d füür Krėßtůß'),
         'la' :      lambda v: dh_yearBC( v, u'%d a.C.n.' ),
         'lb' :      lambda v: dh_yearBC( v, u'-%d' ),
         'lt' :      lambda v: dh_yearBC( v, u'%d m. pr. m. e.'),
@@ -1742,7 +1742,7 @@ def getAutoFormat( lang, title, ignoreFirstLetterCase = True ):
     for dictName, dict in formats.iteritems():
         try:
             year = dict[ lang ]( title )
-            return (dictName, year)
+            return dictName, year
         except:
             pass
     # sometimes the title may begin with an upper case while its listed as lower case, or the other way around
@@ -1756,7 +1756,7 @@ def getAutoFormat( lang, title, ignoreFirstLetterCase = True ):
             return getAutoFormat(lang, title, ignoreFirstLetterCase = False)
         except:
             pass
-    return (None, None)
+    return None, None
 
 
 class FormatDate(object):
