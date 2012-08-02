@@ -345,13 +345,14 @@ import sys, copy, re, os
 import time
 import codecs
 import socket
+import webbrowser
 import wikipedia as pywikibot
 import config
 import catlib
 import pagegenerators
 from pywikibot import i18n
-import titletranslate, interwiki_graph
-import webbrowser
+import interwiki_graph
+import titletranslate
 
 docuReplacements = {
     '&pagegenerators_help;': pagegenerators.parameterHelp
