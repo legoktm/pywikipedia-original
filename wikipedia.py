@@ -140,18 +140,7 @@ from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup, SoupStrainer
 import weakref
 # Splitting the bot into library parts
 from pywikibot import *
-
-# Set the locale to system default. This will ensure correct string
-# handling for non-latin characters on Python 2.3.x. For Python 2.4.x it's no
-# longer needed.
-locale.setlocale(locale.LC_ALL, '')
-
 import config, login, query, version
-
-try:
-    set # introduced in Python2.4: faster and future
-except NameError:
-    from sets import Set as set
 
 # Check Unicode support (is this a wide or narrow python build?)
 # See http://www.python.org/doc/peps/pep-0261/
