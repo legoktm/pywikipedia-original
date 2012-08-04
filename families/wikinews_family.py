@@ -43,7 +43,7 @@ class Family(family.Family):
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': self.namespaces[4]['_default'],
-            'ar': [u'ويكي الأخبار', u'Wikinews'],
+            'ar': [u'ويكي الأخبار', u'وخ'],
             'bg': [u'Уикиновини', u'Wikinews'],
             'bs': [u'Wikivijesti', u'Wikinews'],
             'ca': [u'Viquinotícies', u'Wikinews'],
@@ -78,7 +78,7 @@ class Family(family.Family):
         }
         self.namespaces[5] = {
             '_default': self.namespaces[5]['_default'],
-            'ar': u'نقاش ويكي الأخبار',
+            'ar': [u'نقاش ويكي الأخبار', u'نو'],
             'bg': u'Уикиновини беседа',
             'bs': u'Razgovor s Wikivijestima',
             'ca': u'Viquinotícies Discussió',

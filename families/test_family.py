@@ -139,6 +139,12 @@ class Family(family.Family):
         self.namespaces[133] = {
             '_default': u'نقاش المساعدة',
         }
+        self.namespaces[710] = {
+            '_default': u'TimedText',
+        }
+        self.namespaces[711] = {
+            '_default': u'TimedText',
+        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }
