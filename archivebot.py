@@ -230,6 +230,9 @@ class DiscussionThread(object):
 # 14:23, 12. Jan. 2009 (UTC)
             pat = re.compile(r'(\d\d):(\d\d), (\d\d?)\. (\S+)\.? (\d\d\d\d) \((?:UTC|CES?T)\)')
             TM = pat.search(line)
+# ro.wiki: 4 august 2012 13:01 (EEST)
+        if not TM:
+            TM = re.search(r'(\d\d?) (\S+) (\d\d\d\d) (\d\d):(\d\d) \(.*?\)', line)
         if TM:
             TIME = txt2timestamp(TM.group(0),"%d. %b %Y kl. %H:%M (%Z)")
             if not TIME:
@@ -252,6 +255,8 @@ class DiscussionThread(object):
                 TIME = txt2timestamp(TM.group(0),"%H:%M, %B %d, %Y (%Z)")
             if not TIME:
                 TIME = txt2timestamp(TM.group(0),"%d. %Bta %Y kello %H.%M (%Z)")
+            if not TIME:
+                TIME = txt2timestamp(TM.group(0),"%d %B %Y %H:%M (%Z)")
             if not TIME:
                 TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)), "%H:%M, %d. %b. %Y")
             if TIME:
