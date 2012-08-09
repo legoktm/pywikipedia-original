@@ -40,7 +40,7 @@ python lonelypages.py -enable:User:Bot/CheckBot -always
 #
 # (C) Pietrodn, it.wiki 2006-2007
 # (C) Filnik, it.wiki 2007
-# (C) Pywikipedia bot team, 2008-2011
+# (C) Pywikipedia bot team, 2008-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -65,46 +65,46 @@ docuReplacements = {
 
 # Template to add in the orphan pages
 Template = {
-            'ar':u'{{يتيمة|تاريخ={{نسخ:اسم_شهر}} {{نسخ:عام}}}}',
-            'ca':u'{{Orfe|date={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
-            'en':u'{{Orphan|date={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
-            'it':u'{{O||mese={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
-            'ja':u'{{孤立|{{subst:DATE}}}}',
-            'zh':u'{{subst:Orphan/auto}}',
-            }
+    'ar': u'{{يتيمة|تاريخ={{نسخ:اسم_شهر}} {{نسخ:عام}}}}',
+    'ca': u'{{Orfe|date={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
+    'en': u'{{Orphan|date={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
+    'it': u'{{O||mese={{subst:CURRENTMONTHNAME}} {{subst:CURRENTYEAR}}}}',
+    'ja': u'{{孤立|{{subst:DATE}}}}',
+    'zh': u'{{subst:Orphan/auto}}',
+}
 
 # Comment that the Bot will use to put the template
 commento = {
-            'ar':u'بوت: صفحة يتيمة، إضافة قالب',
-            'ca':u'Bot:Pàgina orfe, afegint plantilla',
-            'en':u'Robot: Orphan page, add template',
-            'it':u'Bot: Voce orfana, aggiungo template {{O}}',
-            'ja':u'ロボットによる: 孤立したページへのテンプレート貼付け',
-            'zh':u'機器人: 本頁的鏈入頁面太少',
-           }
+    'ar': u'بوت: صفحة يتيمة، إضافة قالب',
+    'ca': u'Bot:Pàgina orfe, afegint plantilla',
+    'en': u'Robot: Orphan page, add template',
+    'it': u'[[Project:Bot|Bot]]: Voce orfana, aggiungo template {{O}}',
+    'ja': u'ロボットによる: 孤立したページへのテンプレート貼付け',
+    'zh': u'機器人: 本頁的鏈入頁面太少',
+}
 
 # When you add a disambig to the list of disambig pages
 #(if you set disambigPage to None, you can put here nothing)
 commenttodisambig = {
-           'ar':u'بوت: إضافة صفحة توضيح',
-           'ca':u'Bot; Afegint una desambiguació',
-           'en':u'Robot: Adding a disambig page',
-           'it':u'Bot: Aggiungo una disambigua',
-           'ja':u'ロボットによる: 曖昧さ回避の追加',
-           'zh':u'機器人: 增加消歧義頁面',
-           }
+    'ar': u'بوت: إضافة صفحة توضيح',
+    'ca': u'Bot; Afegint una desambiguació',
+    'en': u'Robot: Adding a disambig page',
+    'it': u'[[Project:Bot|Bot]]: Aggiungo una disambigua',
+    'ja': u'ロボットによる: 曖昧さ回避の追加',
+    'zh': u'機器人: 增加消歧義頁面',
+}
 
 # Use regex to prevent to put the same template twice!
-# If you need help with regex, ask on botwiki ( http://botwiki.sno.cc )
 # Warning: put always "()" inside the regex, so the bot will find "something"
 exception = {
-            'ar': [ur'\{\{(?:قالب:|)(يتيمة)[\|\}]'],
-            'ca': [r'\{\{(?:template:|)(orfe)[\|\}]'],
-            'en': [r'\{\{(?:template:|)(orphan)[\|\}]', r'\{\{(?:template:|)(wi)[\|\}]'],
-            'it': [r'\{\{(?:template:|)(o)[\|\}]'],
-            'ja': [ur'\{\{(?:template:|)(孤立)[\|\}]'],
-            'zh': [r'\{\{(?:template:|)(orphan)[\|\}]'],
-            }
+    'ar': [ur'\{\{(?:قالب:|)(يتيمة)[\|\}]'],
+    'ca': [r'\{\{(?:template:|)(orfe)[\|\}]'],
+    'en': [r'\{\{(?:template:|)(orphan)[\|\}]',
+           r'\{\{(?:template:|)(wi)[\|\}]'],
+    'it': [r'\{\{(?:template:|)(o|a)[\|\}]'],
+    'ja': [ur'\{\{(?:template:|)(孤立)[\|\}]'],
+    'zh': [r'\{\{(?:template:|)(orphan)[\|\}]'],
+}
 
 # ************* Modify only above! ************* #
 
@@ -271,6 +271,7 @@ def main():
                     except pywikibot.EditConflict:
                         pywikibot.output(u'Edit Conflict! Skip...')
                         continue
+
 if __name__ == '__main__':
     try:
         main()
