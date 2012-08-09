@@ -13,7 +13,7 @@ Example:
 """
 #
 # (C) Rob W.W. Hooft, 2003
-# (C) Pywikipedia bot team, 2003-2010
+# (C) Pywikipedia bot team, 2003-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -64,6 +64,7 @@ class WarnfileReader:
         f.close()
         return hints, removeHints
 
+
 class WarnfileRobot:
     def __init__(self, warnfileReader):
         self.warnfileReader = warnfileReader
@@ -99,31 +100,33 @@ class WarnfileRobot:
                         del new[site]
                     except KeyError:
                         pass
-            mods, adding, removing, modifying = interwiki.compareLanguages(old,
+            mods, mcomment, adding, removing, modifying = interwiki.compareLanguages(old,
                                                                            new,
                                                                            insite=page.site())
             if mods:
                 pywikibot.output(page.title(asLink=True) + mods)
                 oldtext = page.get()
                 newtext = pywikibot.replaceLanguageLinks(oldtext, new)
-                if 1:
-                    pywikibot.showDiff(oldtext, newtext)
-                    try:
-                        status, reason, data = page.put(newtext,
-                                                        comment='warnfile '+mods)
-                    except pywikibot.LockedPage:
-                        pywikibot.output(u"Page is locked. Skipping.")
-                        continue
-                    except pywikibot.SpamfilterError, e:
-                        pywikibot.output(
-                            u'Cannot change %s because of blacklist entry %s'
-                            % (page.title(), e.url))
-                        continue
-                    except pywikibot.Error:
-                        pywikibot.output(u"Error while saving page.")
-                        continue
-                    if str(status) != '302':
-                        print status, reason
+
+                pywikibot.showDiff(oldtext, newtext)
+                try:
+                    #TODO: special warnfile comment needed like in previous releases?
+                    status, reason, data = page.put(newtext,
+                                                    comment=mcomment)
+                except pywikibot.LockedPage:
+                    pywikibot.output(u"Page is locked. Skipping.")
+                    continue
+                except pywikibot.SpamfilterError, e:
+                    pywikibot.output(
+                        u'Cannot change %s because of blacklist entry %s'
+                        % (page.title(), e.url))
+                    continue
+                except pywikibot.Error:
+                    pywikibot.output(u"Error while saving page.")
+                    continue
+                if str(status) != '302':
+                    print status, reason
+
 
 def main():
     filename = None
