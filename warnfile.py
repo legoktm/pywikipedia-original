@@ -121,9 +121,6 @@ class WarnfileRobot:
                         u'Cannot change %s because of blacklist entry %s'
                         % (page.title(), e.url))
                     continue
-                except pywikibot.Error:
-                    pywikibot.output(u"Error while saving page.")
-                    continue
                 if str(status) != '302':
                     print status, reason
 
