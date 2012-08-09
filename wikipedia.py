@@ -3584,12 +3584,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                         self._deletedRevs[parsetime2stamp(y['timestamp'])] = [y['timestamp'], y['user'], y['comment'] , y['*'], False]
 
                 if 'query-continue' in data:
-                    # get the continue key for backward compatibility
-                    # with pre 1.20wmf8
-                    contKey = data['query-continue']['deletedrevs'].keys()[0]
-                    if data['query-continue']['deletedrevs'][contKey].split(
+                    if data['query-continue']['deletedrevs'].values()[0].split(
                         '|')[1] == self.title(withNamespace=False):
-                        params[contKey] = data['query-continue']['deletedrevs'][contKey]
+                        params.update(data['query-continue']['deletedrevs'])
                     else: break
                 else:
                     break
@@ -7120,9 +7117,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 if count >= config.special_page_limit:
                     break
             if 'query-continue' in data and count < params['aplimit']:
-                # get the continue key for backward compatibility with pre 1.20wmf8
-                contKey = data['query-continue']['allpages'].keys()[0]
-                params[contKey] = data['query-continue']['allpages'][contKey]
+                params.update(data['query-continue']['allpages'])
             else:
                 break
 
