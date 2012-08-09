@@ -190,7 +190,7 @@ class RedirectGenerator:
                     if done: break
                     yield x['pageid']
                 if not done and 'query-continue' in data:
-                    params['apfrom'] = data['query-continue']['allpages']['apfrom']
+                    params.update(data['query-continue']['allpages'])
                 else:
                     break
 
