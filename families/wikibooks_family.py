@@ -40,6 +40,8 @@ class Family(family.Family):
         self.namespaces[14]['tr'] = [u'Kategori', u'KAT']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[3]['lt'] = [u'Naudotojo aptarimas', u'Naudotojos aptarimas']
+        self.namespaces[2]['lt'] = [u'Naudotojas', u'Naudotoja']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']

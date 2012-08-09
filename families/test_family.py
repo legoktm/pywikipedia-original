@@ -143,7 +143,7 @@ class Family(family.Family):
             '_default': u'TimedText',
         }
         self.namespaces[711] = {
-            '_default': u'TimedText',
+            '_default': u'TimedText talk',
         }
         self.namespaces[1198] = {
             '_default': u'Translations',
