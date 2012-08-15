@@ -1343,7 +1343,7 @@ not supported by PyWikipediaBot!"""
                     break
 
             if 'query-continue' in data and count < tllimit:
-                params["tlcontinue"] = data["query-continue"]["templates"]["tlcontinue"]
+                params.update(data["query-continue"]["templates"])
             else:
                 break
 
@@ -1684,10 +1684,10 @@ not supported by PyWikipediaBot!"""
 
             if 'query-continue' in datas:
                 if 'backlinks' in datas['query-continue']:
-                    params['blcontinue'] = datas['query-continue']['backlinks']['blcontinue']
+                    params.update(datas['query-continue']['backlinks'])
 
                 if 'embeddedin' in datas['query-continue']:
-                    params['eicontinue'] = datas['query-continue']['embeddedin']['eicontinue']
+                    params.update(datas['query-continue']['embeddedin'])
             else:
                 allDone = True
 
@@ -2632,7 +2632,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
                 if 'query-continue' in datas:
                     if 'categories' in datas['query-continue']:
-                        params['clcontinue'] = datas['query-continue']['categories']['clcontinue']
+                        params.update(datas['query-continue']['categories'])
                 else:
                     allDone = True
             return cats
@@ -2974,7 +2974,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                     raise BadTitle('BadTitle: %s' % self)
 
             if 'query-continue' in result and getAll:
-                params['rvstartid'] = result['query-continue']['revisions']['rvstartid']
+                params.update(result['query-continue']['revisions'])
             else:
                 thisHistoryDone = True
 
@@ -3143,7 +3143,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                     raise BadTitle('BadTitle: %s' % self)
 
             if 'query-continue' in result and getAll:
-                params['rvstartid'] = result['query-continue']['revisions']['rvstartid']
+                params.update(result['query-continue']['revisions'])
             else:
                 thisHistoryDone = True
 
@@ -4120,7 +4120,7 @@ class ImagePage(Page):
                         break
 
                 if 'query-continue' in data and limit != 1:
-                    params['iistart'] = data['query-continue']['imageinfo']['iistart']
+                    params.update(data['query-continue']['imageinfo'])
                 else:
                     break
         except KeyError:
@@ -4284,7 +4284,7 @@ class ImagePage(Page):
                 yield Page(self.site(), iu['title'], defaultNamespace=iu['ns'])
 
             if 'query-continue' in data:
-                params['iucontinue'] = data['query-continue']['imageusage']['iucontinue']
+                params.update(data['query-continue']['imageusage'])
             else:
                 break
 
@@ -4345,7 +4345,7 @@ class ImagePage(Page):
                             yield Page(site, gu['title'])
 
             if 'query-continue' in data:
-                params['gucontinue'] = data['query-continue']['globalusage']['gucontinue']
+                params.update(data['query-continue']['globalusage'])
             else:
                 break
 
@@ -6514,7 +6514,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 if nbresults >= number:
                     break
             if 'query-continue' in result and nbresults < number:
-                params['lestart'] = result['query-continue']['logevents']['lestart']
+                params.update(result['query-continue']['logevents'])
             elif repeat:
                 nbresults = 0
                 try:
@@ -7313,7 +7313,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                             break
 
                     if 'query-continue' in data and count < limit:
-                            params['euoffset'] = data[u'query-continue'][u'exturlusage'][u'euoffset']
+                            params.update(data[u'query-continue'][u'exturlusage'])
                     else:
                             break
         else:

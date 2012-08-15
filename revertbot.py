@@ -4,7 +4,7 @@
 """
 #
 # (C) Bryan Tong Minh, 2008
-# (C) Pywikipedia bot team, 2008-2010
+# (C) Pywikipedia bot team, 2008-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -47,7 +47,7 @@ class BaseRevertBot(object):
                 if 'error' in data:
                     raise RuntimeError(data['error'])
                 if 'query-continue' in data:
-                    predata['uccontinue'] = data['query-continue']['usercontribs']
+                    predata.update(data['query-continue']['usercontribs'])
                 else:
                     never_continue = True
                 iterator = iter(data['query']['usercontribs'])

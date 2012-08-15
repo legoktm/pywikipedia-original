@@ -13,18 +13,19 @@ def xuniqueCombinations(items, n):
     if n==0: yield []
     else:
         for i in xrange(len(items)):
-            for cc in xuniqueCombinations(items[i+1:],n-1):
-                yield [items[i]]+cc
+            for cc in xuniqueCombinations(items[i+1:], n-1):
+                yield [items[i]] + cc
+
 # End of permutation code
 #
-# (C) Pywikipedia bot team, 2006-2011
+# (C) Pywikipedia bot team, 2006-2012
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 
 #
-# Windows Concose colors
+# Windows Concole colors
 # This code makes this script Windows ONLY!!!
 # Feel free to adapt it to another platform
 #
@@ -257,10 +258,9 @@ class CaseChecker( object ):
                     # Get data
                     self.params['gapfrom'] = self.apfrom
                     data = query.GetData(self.params, self.site)
-                    try:
-                        self.apfrom = data['query-continue'] \
-                                          ['allpages']['gapfrom']
-                    except:
+                    if 'query-continue' in data:
+                        self.params.update(data['query-continue']['allpages'])
+                    else:
                         self.apfrom = None
 
                     # Process received data
@@ -411,7 +411,7 @@ u"* Error: Could not save updated page [[:%s]] (%s)" % (title, coloredMsg))
 
                 self.apfrom = u''    # Restart apfrom for other namespaces
 
-            print "***************************** Done"
+            print "*" * 29, "Done"
 
         except:
             if self.apfrom is not None:
@@ -591,7 +591,6 @@ u"* Error: Could not save updated page [[:%s]] (%s)" % (title, coloredMsg))
                 if not dst.exists():
                     # choice = pywikibot.inputChoice(u'Move %s to %s?' % (title, newTitle), ['Yes', 'No'], ['y', 'n'])
                     return newTitle
-
         return None
 
     def ColorCodeWord(self, word, toScreen = False):
@@ -622,9 +621,9 @@ u"* Error: Could not save updated page [[:%s]] (%s)" % (title, coloredMsg))
         if toScreen: SetColor(FOREGROUND_WHITE)
         else: return res + self.suffixClr + u"</b>"
 
-
     def MakeLink(self, title):
         return u"[[:%s|««« %s »»»]]" % (title, self.ColorCodeWord(title))
+
 
 if __name__ == "__main__":
     try:

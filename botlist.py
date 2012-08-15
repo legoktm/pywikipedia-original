@@ -9,6 +9,7 @@ data.
 
 # (C) Daniel Herding, 2005
 # (C) Dr. Trigon, 2009-2010
+# (C) Pywikipedia bot team, 2010-2012
 #
 # DrTrigonBot: http://de.wikipedia.org/wiki/Benutzer:DrTrigonBot
 #
@@ -81,7 +82,7 @@ def refresh(site, sysop=False, witheditsonly=True):
         botlist.extend([w['name'] for w in data['query']['allusers']])
 
         if 'query-continue' in data:
-            params['aufrom'] = data['query-continue']['allusers']['aufrom']
+            params.update(data['query-continue']['allusers'])
         else:
             break
 

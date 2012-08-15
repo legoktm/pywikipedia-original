@@ -87,7 +87,7 @@ def refresh(site, sysop=False):
         watchlist.extend([w['title'] for w in data['query']['watchlist']])
 
         if 'query-continue' in data:
-            params['wlstart'] = data['query-continue']['watchlist']['wlstart']
+            params.update(data['query-continue']['watchlist'])
         else:
             break
 

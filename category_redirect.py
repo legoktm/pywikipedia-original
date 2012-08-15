@@ -14,7 +14,7 @@ are taken into account.
 """
 
 #
-# (C) Pywikipedia team, 2008-2011
+# (C) Pywikipedia team, 2008-2012
 #
 __version__ = '$Id$'
 #
@@ -262,11 +262,6 @@ class CategoryRedirectBot(object):
                 assert len(result['query-continue'].keys()) == 1, \
                        "More than one query-continue key returned: %s" \
                        % result['query-continue'].keys()
-                query_type = result['query-continue'].keys()[0]
-                assert (query_type in querydata.keys()
-                        or query_type in querydata.values()), \
-                       "Site returned unknown query-continue type '%s'"\
-                       % query_type
                 querydata.update(result['query-continue'][query_type])
             else:
                 return

@@ -23,6 +23,7 @@ TODO:
 """
 #
 # (C) Bináris, 2012
+# (C) Pywikipedia bot team, 2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -237,13 +238,7 @@ class Blocks(object):
         blocklist = result['query']['blocks']
         #Todo: handle possible errors (they will cause KeyError at this time)
         while 'query-continue' in result:
-            try:
-                self.params['bkstart'] = \
-                            result['query-continue']['blocks']['bkstart']
-            except KeyError:
-                print 'Error in key, has API format changed?'
-                print result['query-continue']
-                break
+            self.params.update(result['query-continue']['blocks'])
             result = query.GetData(self.params)
             blocklist += result['query']['blocks']
         #Finally we remove possible duplicates. This piece of code may be
