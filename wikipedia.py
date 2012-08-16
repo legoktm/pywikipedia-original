@@ -2942,20 +2942,22 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             return self._versionhistory[:revCount]
         return self._versionhistory
 
-    def _getVersionHistory(self, getAll=False, skipFirst=False, reverseOrder=False,
-                           revCount=500):
+    def _getVersionHistory(self, getAll=False, skipFirst=False,
+                           reverseOrder=False, revCount=500, rvprop=None):
         """Load history informations by API query.
            Internal use for self.getVersionHistory(), don't use this function directly.
         """
         if not self.site().has_api() or self.site().versionnumber() < 8:
-            return self._getVersionHistoryOld(reExist, getAll, skipFirst, reverseOrder, revCount)
+            return self._getVersionHistoryOld(reExist, getAll, skipFirst,
+                                              reverseOrder, revCount)
         dataQ = []
         thisHistoryDone = False
+        
         params = {
             'action': 'query',
             'prop': 'revisions',
             'titles': self.title(),
-            'rvprop': 'ids|timestamp|flags|comment|user|size|tags',
+            'rvprop': rvprop or 'ids|timestamp|user|comment|size|tags',
             'rvlimit': revCount,
         }
         while not thisHistoryDone:
@@ -2982,30 +2984,31 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 skipFirst = False
             else:
                 for r in pageInfo['revisions']:
-                    c = ''
-                    if 'comment' in r:
-                        c = r['comment']
-                    #revision id, edit date/time, user name, edit summary
-                    (revidStrr, timestampStrr, userStrr) = (None, None, None)
+                    # set defaults
+                    values = {
+                        'ids': None,
+                        'timestamp': None,
+                        'user': None,
+                        'flags': None,
+                        'comment': u'',
+                        'size': -1,
+                        'tags': [],
+                        'content': u'',
+                    }
+                    values.update(r)
                     if 'revid' in r:
-                        revidStrr = r['revid']
-                    if 'timestamp' in r:
-                        timestampStrr = r['timestamp']
-                    if 'user' in r:
-                        userStrr = r['user']
-                    s=-1 #Will return -1 if not found
-                    if 'size' in r:
-                        s = r['size']
-                    tags=[]
-                    if 'tags' in r:
-                        tags = r['tags']
-                    dataQ.append((revidStrr, timestampStrr, userStrr, c, s, tags))
+                        values['ids'] = r['revid']
+                    if '*' in r:
+                        values['content'] = r['*']
+                    elements = params['rvprop'].split('|')
+                    row = [values[e] for e in elements]
+                    dataQ.append(tuple(row))
                 if len(result['query']['pages'].values()[0]['revisions']) < revCount:
                     thisHistoryDone = True
         return dataQ
 
-    def _getVersionHistoryOld(self, getAll = False, skipFirst = False,
-                               reverseOrder = False, revCount=500):
+    def _getVersionHistoryOld(self, getAll=False, skipFirst=False,
+                              reverseOrder=False, revCount=500):
         """Load the version history page and return history information.
            Internal use for self.getVersionHistory(), don't use this function directly.
         """
@@ -3117,58 +3120,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                     for match in r.finditer(data)  ]
 
         # Load history informations by API query.
-
-        dataQ = []
-        thisHistoryDone = False
-        params = {
-            'action': 'query',
-            'prop': 'revisions',
-            'titles': self.title(),
-            'rvprop': 'ids|timestamp|user|content',
-            'rvlimit': revCount,
-        }
-        while not thisHistoryDone:
-            if reverseOrder:
-                params['rvdir'] = 'newer'
-
-            result = query.GetData(params, self.site())
-            if 'error' in result:
-                raise RuntimeError("%s" % result['error'])
-            pageInfo = result['query']['pages'].values()[0]
-            if result['query']['pages'].keys()[0] == "-1":
-                if 'missing' in pageInfo:
-                    raise NoPage(self.site(), unicode(self),
-                                 "Page does not exist.")
-                elif 'invalid' in pageInfo:
-                    raise BadTitle('BadTitle: %s' % self)
-
-            if 'query-continue' in result and getAll:
-                params.update(result['query-continue']['revisions'])
-            else:
-                thisHistoryDone = True
-
-            if skipFirst:
-                skipFirst = False
-            else:
-                for r in pageInfo['revisions']:
-                    c = ''
-                    if 'comment' in r:
-                        c = r['comment']
-                    #revision id, edit date/time, user name, edit summary
-                    (revidStrr, timestampStrr, userStrr) = (None, None, None)
-                    if 'revid' in r:
-                        revidStrr = r['revid']
-                    if 'timestamp' in r:
-                        timestampStrr = r['timestamp']
-                    if 'user' in r:
-                        userStrr = r['user']
-                    s='' #Will return -1 if not found
-                    if '*' in r:
-                        s = r['*']
-                    dataQ.append((revidStrr, timestampStrr, userStrr, s))
-                if len(result['query']['pages'].values()[0]['revisions']) < revCount:
-                    thisHistoryDone = True
-        return dataQ
+        return self._getVersionHistory(getAll=getAll, skipFirst=skipFirst,
+                                       reverseOrder=reverseOrder, revCount=revCount,
+                                       rvprop='ids|timestamp|user|content')
 
     def contributingUsers(self, step=None, total=None):
         """Return a set of usernames (or IPs) of users who edited this page.
