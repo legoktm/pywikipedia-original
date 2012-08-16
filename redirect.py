@@ -51,7 +51,6 @@ and arguments can be:
 -always        Don't prompt you for each replacement.
 
 """
-from __future__ import generators
 #
 # (C) Daniel Herding, 2004.
 # (C) Purodha Blissenbach, 2009.

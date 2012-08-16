@@ -159,7 +159,6 @@ talk about HTTP, where the typo has become part of the standard:
 
 Please type "replace.py -help | more" if you can't read the top of the help.
 """
-from __future__ import generators
 #
 # (C) Daniel Herding & the Pywikipedia team, 2004-2012
 #

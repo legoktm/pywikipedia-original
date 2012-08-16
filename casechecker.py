@@ -7,7 +7,6 @@ with mixed latin and cyrilic alphabets.
 #
 # Permutations code was taken from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/190465
 #
-from __future__ import generators
 
 def xuniqueCombinations(items, n):
     if n==0: yield []

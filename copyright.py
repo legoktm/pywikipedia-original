@@ -82,7 +82,6 @@ You can include also the text to examine directly on the command line:
 # Distributed under the terms of the MIT license.
 #
 
-from __future__ import generators
 import re, codecs, os, time, urllib, urllib2, httplib
 import wikipedia as pywikibot
 import pagegenerators, config

@@ -113,7 +113,6 @@ stopme(): Put this on a bot when it is not or not communicating with the Wiki
     and thus not slow down other bot threads anymore.
 
 """
-from __future__ import generators
 #
 # (C) Pywikipedia bot team, 2003-2012
 #
