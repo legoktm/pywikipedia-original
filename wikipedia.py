@@ -1847,9 +1847,7 @@ not supported by PyWikipediaBot!"""
         #    restrictions = {}
         #else:
         restrictions = { 'edit': None, 'move': None }
-        try:
-            api_url = self.site().api_address()
-        except NotImplementedError:
+        if not self.site().has_api():
             return restrictions
 
         predata = {
