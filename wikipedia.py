@@ -6476,8 +6476,11 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 break
         return
 
-    def newpages(self, number = 10, get_redirect = False, repeat = False, namespace = 0, rcshow = ['!bot','!redirect'], user = None, returndict = False):
-        """Yield new articles (as Page objects) from Special:Newpages.
+    @deprecate_arg("get_redirect", None) #20120822
+    def newpages(self, user=None, returndict=False,
+                 number=10, repeat=False, namespace=0,
+                 rcshow = ['!bot','!redirect']):
+        """Yield new articles (as Page objects) from recent changes.
 
         Starts with the newest article and fetches the number of articles
         specified in the first argument. If repeat is True, it fetches
@@ -6485,42 +6488,35 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         one, sleeping between subsequent fetches of Newpages.
 
         The objects yielded are dependent on parmater returndict.
-        When true, it yields a tuple composed of a Page object and a dict of attributes.
+        When true, it yields a tuple composed of a Page object and a dict of
+        attributes.
         When false, it yields a tuple composed of the Page object,
         timestamp (unicode), length (int), an empty unicode string, username
         or IP address (str), comment (unicode).
 
         """
-        # TODO: in recent MW versions Special:Newpages takes a namespace parameter,
-        #       and defaults to 0 if not specified.
+        # TODO: in recent MW versions Special:Newpages takes a namespace
+        #       parameter, and defaults to 0 if not specified.
         # TODO: Detection of unregistered users is broken
         # TODO: Repeat mechanism doesn't make much sense as implemented;
         #       should use both offset and limit parameters, and have an
         #       option to fetch older rather than newer pages
-        seen = set()
-        while True:
-            if self.has_api() and self.versionnumber() >= 10:
-                params = {
-                    'action': 'query',
-                    'list': 'recentchanges',
-                    'rctype': 'new',
-                    'rcnamespace': namespace,
-                    'rclimit': int(number),
-                    'rcprop': ['ids','title','timestamp','sizes','user','comment'],
-                    'rcshow': rcshow,
-                }
-                if user: params['rcuser'] = user
-                data = query.GetData(params, self)['query']['recentchanges']
 
-                for np in data:
-                    if np['pageid'] not in seen:
-                        seen.add(np['pageid'])
-                        page = Page(self, np['title'], defaultNamespace=np['ns'])
-                        if returndict:
-                            yield page, np
-                        else:
-                            yield page, np['timestamp'], np['newlen'], u'', np['user'], np['comment']
-            else:
+        # N.B. API still provides no way to access Special:Newpages content
+        # directly, so we get new pages indirectly through 'recentchanges'
+        if self.has_api() and self.versionnumber() >= 10:
+            gen = self.recentchanges(number=number, rcshow=rcshow, rctype='new',
+                                     namespace=namespace, repeat=repeat,
+                                     user=user, returndict=True)
+            for newpage, pageitem in gen:
+                if returndict:
+                    yield (newpage, pageitem)
+                else:
+                    yield (newpage, pageitem['timestamp'], pageitem['newlen'],
+                           u'', pageitem['user'], pageitem['comment'])
+        else:
+            seen = set()
+            while True:
                 path = self.newpages_address(n=number, namespace=namespace)
                 # The throttling is important here, so always enabled.
                 get_throttle()
@@ -6542,8 +6538,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                         seen.add(title)
                         page = Page(self, title)
                         yield page, date, length, loggedIn, username, comment
-            if not repeat:
-                break
+                if not repeat:
+                    break
 
     def longpages(self, number = 10, repeat = False):
         """Yield Pages from Special:Longpages.
@@ -6797,6 +6793,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         if rcshow: params['rcshow'] = rcshow
         if rctype: params['rctype'] = rctype
 
+        seen = set()
         while True:
             data = query.GetData(params, self, encodeTitle = False)
             if 'error' in data:
@@ -6807,14 +6804,16 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 raise ServerError("The APIs don't return data, the site may be down")
 
             for i in rcData:
-                page = Page(self, i['title'], defaultNamespace=i['ns'])
-                if returndict:
-                    yield page, i
-                else:
-                    comment = ''
-                    if 'comment' in i:
-                        comment = i['comment']
-                    yield page, i['timestamp'], i['newlen'], True, i['user'], comment
+                if i['pageid'] not in seen:
+                    seen.add(i['pageid'])
+                    page = Page(self, i['title'], defaultNamespace=i['ns'])
+                    if returndict:
+                        yield page, i
+                    else:
+                        comment = u''
+                        if 'comment' in i:
+                            comment = i['comment']
+                        yield page, i['timestamp'], i['newlen'], True, i['user'], comment
             if not repeat:
                 break
 
