@@ -558,16 +558,16 @@ def LogpagesPageGenerator(number=500, mode='', user=None, repeat=False,
                               repeat=repeat, namespace=namespace):
         yield page[0]
 
-def NewpagesPageGenerator(number=100, get_redirect=False, repeat=False, site=None,
-                          namespace=0):
+@deprecate_arg("get_redirect", None) #20120822
+def NewpagesPageGenerator(number=100, repeat=False, site=None, namespace=0):
     """
     Iterate Page objects for all new titles in a single namespace.
     """
     # defaults to namespace 0 because that's how Special:Newpages defaults
     if site is None:
         site = pywikibot.getSite()
-    for item in site.newpages(number=number, get_redirect=get_redirect,
-                              repeat=repeat, namespace=namespace):
+    for item in site.newpages(number=number, repeat=repeat, namespace=namespace,
+                              rcshow=['!redirect']):
         yield item[0]
 
 def RecentchangesPageGenerator(number=100, site=None):
