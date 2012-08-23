@@ -1,7 +1,6 @@
 # -*- coding: utf-8  -*-
 
-import urllib
-import family, config
+import family
 
 __version__ = '$Id$'
 

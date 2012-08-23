@@ -12,10 +12,10 @@ class Family(family.Family):
 
         self.languages_by_size = [
             'fr', 'en', 'de', 'ru', 'it', 'zh', 'pt', 'pl', 'he', 'es', 'sv',
-            'fa', 'hu', 'ar', 'ca', 'cs', 'ko', 'sl', 'ro', 'fi', 'vi', 'te',
-            'sa', 'el', 'bn', 'sr', 'th', 'hr', 'hy', 'no', 'nl', 'la', 'ml',
+            'fa', 'hu', 'ar', 'cs', 'ca', 'ko', 'sl', 'ro', 'fi', 'vi', 'te',
+            'sa', 'el', 'bn', 'sr', 'th', 'hr', 'hy', 'no', 'nl', 'ml', 'la',
             'vec', 'tr', 'ja', 'yi', 'br', 'uk', 'id', 'mk', 'ta', 'is', 'eo',
-            'da', 'be', 'li', 'bs', 'bg', 'gu', 'et', 'sah', 'mr', 'az', 'gl',
+            'da', 'be', 'li', 'et', 'gu', 'bs', 'bg', 'sah', 'mr', 'az', 'gl',
             'lt', 'kn', 'cy', 'zh-min-nan', 'sk', 'fo',
         ]
 
@@ -34,8 +34,6 @@ class Family(family.Family):
         self.namespaces[12]['nl'] = [u'Help']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
-        self.namespaces[3]['lt'] = [u'Naudotojo aptarimas', u'Naudotojos aptarimas']
-        self.namespaces[2]['lt'] = [u'Naudotojas', u'Naudotoja']
         self.namespaces[6]['vec'] = [u'File', u'Imagine']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']

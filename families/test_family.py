@@ -5,7 +5,6 @@ __version__ = '$Id$'
 import family
 
 # The test wikipedia family
-
 class Family(family.Family):
     def __init__(self):
         family.Family.__init__(self)

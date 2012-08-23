@@ -12,19 +12,19 @@ class Family(family.Family):
 
         self.languages_by_size = [
             'en', 'fr', 'mg', 'zh', 'lt', 'ru', 'el', 'ko', 'tr', 'pl', 'ta',
-            'sv', 'vi', 'de', 'kn', 'nl', 'io', 'fi', 'hu', 'pt', 'no', 'my',
+            'sv', 'vi', 'nl', 'de', 'kn', 'io', 'fi', 'hu', 'pt', 'no', 'my',
             'id', 'it', 'li', 'ml', 'et', 'ja', 'es', 'fa', 'ku', 'ar', 'ro',
-            'cs', 'lo', 'gl', 'ca', 'uk', 'eu', 'bg', 'eo', 'br', 'te', 'hr',
+            'cs', 'lo', 'gl', 'ca', 'eu', 'uk', 'bg', 'eo', 'br', 'te', 'hr',
             'vo', 'oc', 'is', 'th', 'simple', 'scn', 'sr', 'af', 'sw', 'cy',
-            'fy', 'tl', 'ast', 'fj', 'ur', 'he', 'la', 'zh-min-nan', 'wa', 'sq',
-            'da', 'hy', 'sl', 'tt', 'hi', 'az', 'nn', 'lv', 'ka', 'pnb', 'lb',
-            'tk', 'hsb', 'kk', 'bs', 'nah', 'km', 'mk', 'be', 'wo', 'ga', 'ang',
-            'co', 'ms', 'sm', 'gn', 'mr', 'csb', 'st', 'nds', 'sk', 'ia', 'si',
-            'sh', 'sd', 'tg', 'ug', 'ky', 'kl', 'an', 'zu', 'sa', 'jbo', 'mn',
-            'gu', 'ps', 'rw', 'fo', 'kw', 'ss', 'gv', 'ie', 'qu', 'om',
+            'fy', 'tl', 'ast', 'nn', 'fj', 'ur', 'he', 'zh-min-nan', 'la', 'wa',
+            'da', 'sq', 'hy', 'sl', 'hi', 'tt', 'az', 'lv', 'ka', 'pnb', 'lb',
+            'tk', 'hsb', 'bs', 'kk', 'nah', 'km', 'mk', 'be', 'wo', 'ga', 'ang',
+            'ms', 'co', 'sm', 'gn', 'mr', 'csb', 'sk', 'st', 'nds', 'ia', 'si',
+            'sh', 'sd', 'tg', 'ug', 'ky', 'kl', 'an', 'jbo', 'zu', 'mn', 'sa',
+            'gu', 'ps', 'rw', 'fo', 'kw', 'gv', 'ss', 'ie', 'qu', 'om',
             'roa-rup', 'iu', 'bn', 'am', 'chr', 'so', 'su', 'za', 'gd', 'mt',
-            'mi', 'jv', 'tpi', 'ik', 'yi', 'ln', 'or', 'uz', 'ti', 'sg', 'na',
-            'pa', 'tn', 'dv', 'ne', 'ha', 'ks', 'ay', 'ts',
+            'jv', 'mi', 'tpi', 'ik', 'yi', 'ln', 'or', 'uz', 'ti', 'sg', 'na',
+            'pa', 'dv', 'tn', 'ne', 'ha', 'ks', 'ay', 'ts',
         ]
 
         self.langs = dict([(lang, '%s.wiktionary.org' % lang) for lang in self.languages_by_size])
@@ -44,8 +44,6 @@ class Family(family.Family):
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[3]['lt'] = [u'Naudotojo aptarimas', u'Naudotojos aptarimas']
-        self.namespaces[2]['lt'] = [u'Naudotojas', u'Naudotoja']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']

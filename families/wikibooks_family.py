@@ -13,12 +13,12 @@ class Family(family.Family):
         self.languages_by_size = [
             'en', 'de', 'fr', 'hu', 'ja', 'pt', 'nl', 'pl', 'it', 'es', 'vi',
             'he', 'sq', 'fi', 'ca', 'id', 'ru', 'cs', 'zh', 'hr', 'sv', 'tr',
-            'da', 'th', 'gl', 'ta', 'no', 'ko', 'fa', 'sr', 'ar', 'tl', 'mk',
+            'da', 'th', 'gl', 'ta', 'no', 'fa', 'ko', 'sr', 'ar', 'tl', 'mk',
             'is', 'tt', 'lt', 'ka', 'az', 'eo', 'ro', 'bg', 'el', 'uk', 'hy',
             'sl', 'sk', 'si', 'li', 'la', 'ang', 'ia', 'cv', 'et', 'ur', 'mr',
-            'bn', 'ms', 'hi', 'oc', 'kk', 'ml', 'eu', 'fy', 'ie', 'ne', 'te',
+            'bn', 'ms', 'hi', 'oc', 'ml', 'kk', 'eu', 'fy', 'ie', 'ne', 'te',
             'af', 'sa', 'tg', 'pa', 'bs', 'ky', 'mg', 'cy', 'be', 'zh-min-nan',
-            'ku', 'uz', 'su',
+            'ku', 'uz',
         ]
 
         self.langs = dict([(lang, '%s.wikibooks.org' % lang) for lang in self.languages_by_size])
@@ -40,8 +40,6 @@ class Family(family.Family):
         self.namespaces[14]['tr'] = [u'Kategori', u'KAT']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[3]['lt'] = [u'Naudotojo aptarimas', u'Naudotojos aptarimas']
-        self.namespaces[2]['lt'] = [u'Naudotojas', u'Naudotoja']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']

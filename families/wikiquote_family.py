@@ -13,8 +13,8 @@ class Family(family.Family):
         self.languages_by_size = [
             'en', 'pl', 'it', 'ru', 'fr', 'de', 'pt', 'es', 'sk', 'cs', 'bg',
             'bs', 'tr', 'sl', 'he', 'eo', 'lt', 'el', 'uk', 'zh', 'id', 'fa',
-            'hu', 'fi', 'sv', 'nl', 'li', 'no', 'nn', 'ja', 'az', 'ca', 'hy',
-            'et', 'ar', 'hr', 'cy', 'ko', 'ka', 'gl', 'ml', 'sr', 'ro', 'ku',
+            'hu', 'fi', 'li', 'sv', 'nl', 'no', 'nn', 'ja', 'az', 'ca', 'hy',
+            'ar', 'et', 'hr', 'cy', 'ko', 'ka', 'gl', 'ml', 'sr', 'ro', 'ku',
             'te', 'th', 'is', 'eu', 'da', 'af', 'sq', 'vi', 'ta', 'hi', 'la',
             'br', 'be', 'mr', 'uz', 'ur', 'zh-min-nan', 'gu', 'su', 'kn', 'wo',
             'ky', 'am',
@@ -34,8 +34,6 @@ class Family(family.Family):
         self.namespaces[12]['de'] = [u'Hilfe']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[3]['lt'] = [u'Naudotojo aptarimas', u'Naudotojos aptarimas']
-        self.namespaces[2]['lt'] = [u'Naudotojas', u'Naudotoja']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
