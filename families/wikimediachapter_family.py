@@ -9,8 +9,8 @@ class Family(family.Family):
     def __init__(self):
         family.Family.__init__(self)
         self.name = 'wikimediachapter'
-        self.countries = [ 'ar', 'bd', 'dk', 'fi', 'mk', 'mx', 'nl', 'no', 'nyc', 'pl', 'rs', 'ru', 'se', 'ua', 'uk', 've' ]
-        self.countrylangs = { 'ar': 'es', 'bd': 'bn', 'dk': 'da', 'fi': 'fi', 'mk': 'mk', 'mx': 'es', 'nl': 'nl', 'no': 'no', 'nyc': 'en', 'pl': 'pl', 'rs': 'sr', 'ru': 'ru', 'se': 'sv', 'ua': 'uk', 'uk': 'en-gb', 've': 'en' }
+        self.countries = [ 'ar', 'bd', 'co', 'dk', 'fi', 'mk', 'mx', 'nl', 'no', 'nyc', 'pl', 'rs', 'ru', 'se', 'ua', 'uk', 've' ]
+        self.countrylangs = { 'ar': 'es', 'bd': 'bn', 'co': 'es', 'dk': 'da', 'fi': 'fi', 'mk': 'mk', 'mx': 'es', 'nl': 'nl', 'no': 'no', 'nyc': 'en', 'pl': 'pl', 'rs': 'sr', 'ru': 'ru', 'se': 'sv', 'ua': 'uk', 'uk': 'en-gb', 've': 'en' }
         self.langs = dict([(country, '%s.wikimedia.org' % country) for country in self.countries])
 
         for country in self.countries:
@@ -29,13 +29,14 @@ class Family(family.Family):
         self.namespaces[5] = {
             '_default':  self.namespaces[5]['_default'],
             'bd': u'উইকিমিডিয়া বাংলাদেশ আলোচনা',
-            'dk': 'Wikimedia diskussion',
+            'co': u'Wikimedia discusión',
+            'dk': u'Wikimedia diskussion',
             'mk': u'Разговор за Викимедија',
             'mx': u'Wikimedia discusión',
             'nl': u'Overleg Wikimedia',
-            'no': 'Wikimedia-diskusjon',
-            'nyc': 'Wikimedia talk',
-            'pl': 'Dyskusja Wikimedia',
+            'no': u'Wikimedia-diskusjon',
+            'nyc': u'Wikimedia talk',
+            'pl': u'Dyskusja Wikimedia',
             'ru': u'Обсуждение Викимедиа',
             'rs': u'Разговор о Викимедија',
             'se': u'Wikimediadiskussion',
