@@ -55,6 +55,12 @@ class Family(family.Family):
         self.namespaces[106] = {
             '_default': u'Skin',
         }
+        self.namespaces[828] = {
+            '_default': u'Module',
+        }
+        self.namespaces[829] = {
+            '_default': u'Module talk',
+        }
         self.namespaces[107] = {
             '_default': u'Skin talk',
         }
