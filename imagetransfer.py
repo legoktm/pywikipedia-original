@@ -26,13 +26,13 @@ used on a page reachable via interwiki links.
 """
 #
 # (C) Andre Engels, 2004
-# (C) Pywikipedia bot team, 2004-2011
+# (C) Pywikipedia bot team, 2004-2012
 #
 # Distributed under the terms of the MIT license.
 #
 __version__='$Id$'
 
-import re, sys, md5, urllib
+import re, sys
 import wikipedia as pywikibot
 import upload, config, pagegenerators
 
@@ -177,10 +177,12 @@ class ImageTransferBot:
            and uploads it to another wikipedia.
            Returns the filename which was used to upload the image
            This function is used by imagetransfer.py and by copy_table.py
+
         """
         sourceSite = sourceImagePage.site()
-        if debug: print "-" * 50
-        if debug: print "Found image: %s"% imageTitle
+        if debug:
+            print "-" * 50
+            print "Found image: %s"% imageTitle
         url = sourceImagePage.fileUrl().encode('utf-8')
         pywikibot.output(u"URL should be: %s" % url)
         # localize the text that should be printed on the image description page
@@ -188,7 +190,8 @@ class ImageTransferBot:
             description = sourceImagePage.get()
             # try to translate license templates
             if (sourceSite.sitename(), self.targetSite.sitename()) in licenseTemplates:
-                for old, new in licenseTemplates[(sourceSite.sitename(), self.targetSite.sitename())].iteritems():
+                for old, new in licenseTemplates[(sourceSite.sitename(),
+                                                  self.targetSite.sitename())].iteritems():
                     new = '{{%s}}' % new
                     old = re.compile('{{%s}}' % old)
                     description = pywikibot.replaceExcept(description, old, new,
@@ -202,10 +205,10 @@ class ImageTransferBot:
             if sourceSite.family == self.targetSite.family:
                 description += "\r\n\r\n" + unicode(sourceImagePage)
         except pywikibot.NoPage:
-            description=''
+            description = ''
             print "Image does not exist or description page is empty."
         except pywikibot.IsRedirectPage:
-            description=''
+            description = ''
             print "Image description page is redirect."
         else:
             bot = upload.UploadRobot(url=url, description=description,
@@ -239,7 +242,7 @@ class ImageTransferBot:
         for i in range(len(imagelist)):
             image = imagelist[i]
             #sourceSite = sourceImagePage.site()
-            print "-"*60
+            print "-" * 60
             pywikibot.output(u"%s. Found image: %s"
                              % (i, image.title(asLink=True)))
             try:
@@ -257,7 +260,7 @@ class ImageTransferBot:
                     targetImage.get(throttle=False)
                     pywikibot.output(u"Image with this name is already on %s."
                                      % self.targetSite)
-                    print "-"*60
+                    print "-" * 60
                     pywikibot.output(targetImage.get(throttle=False))
                     sys.exit()
                 except pywikibot.NoPage:
@@ -321,7 +324,7 @@ def main():
         if arg == '-interwiki':
             interwiki = True
         elif arg.startswith('-keepname'):
-            keepname = True
+            keep_name = True
         elif arg.startswith('-tolang:'):
             targetLang = arg[8:]
         elif arg.startswith('-tofamily:'):
