@@ -266,25 +266,25 @@ class SpeedyRobot:
                 },
             'en': {
                 u'_default':      u'Deleting candidate for speedy deletion per [[WP:CSD|CSD]]',
-                u'Db-author':     u'Deleting page per [[WP:CSD|CSD]] G7: Author requests deletion and is its only editor.',
-                u'Db-nonsense':   u'Deleting page per [[WP:CSD|CSD]] G1: Page is patent nonsense or gibberish.',
-                u'Db-test':       u'Deleting page per [[WP:CSD|CSD]] G2: Test page.',
-                u'Db-nocontext':  u'Deleting page per [[WP:CSD|CSD]] A1: Short article that provides little or no context.',
-                u'Db-empty':      u'Deleting page per [[WP:CSD|CSD]] A1: Empty article.',
-                u'Db-attack':     u'Deleting page per [[WP:CSD|CSD]] G10: Page that exists solely to attack its subject.',
-                u'Db-catempty':   u'Deleting page per [[WP:CSD|CSD]] C1: Empty category.',
-                u'Db-band':       u'Deleting page per [[WP:CSD|CSD]] A7: Article about a non-notable band.',
-                u'Db-banned':     u'Deleting page per [[WP:CSD|CSD]] G5: Page created by a banned user.',
-                u'Db-bio':        u'Deleting page per [[WP:CSD|CSD]] A7: Article about a non-notable person.',
-                u'Db-notenglish': u'Deleting page per [[WP:CSD|CSD]] A2: Article isn\'t written in English.',
-                u'Db-copyvio':    u'Deleting page per [[WP:CSD|CSD]] G12: Page is a blatant copyright violation.',
-                u'Db-repost':     u'Deleting page per [[WP:CSD|CSD]] G4: Recreation of previously deleted material.',
-                u'Db-vandalism':  u'Deleting page per [[WP:CSD|CSD]] G3: Blatant vandalism.',
-                u'Db-talk':       u'Deleting page per [[WP:CSD|CSD]] G8: Talk page of a deleted or non-existent page.',
-                u'Db-spam':       u'Deleting page per [[WP:CSD|CSD]] G11: Blatant advertising.',
-                u'Db-disparage':  u'Deleting page per [[WP:CSD|CSD]] T1: Divisive or inflammatory template.',
-                u'Db-r1':         u'Deleting page per [[WP:CSD|CSD]] R1: Redirect to a deleted or non-existent page.',
-                u'Db-experiment': u'Deleting page per [[WP:CSD|CSD]] G2: Page was created as an experiment.',
+                u'db-author':     u'Deleting page per [[WP:CSD|CSD]] G7: Author requests deletion and is its only editor.',
+                u'db-nonsense':   u'Deleting page per [[WP:CSD|CSD]] G1: Page is patent nonsense or gibberish.',
+                u'db-test':       u'Deleting page per [[WP:CSD|CSD]] G2: Test page.',
+                u'db-nocontext':  u'Deleting page per [[WP:CSD|CSD]] A1: Short article that provides little or no context.',
+                u'db-empty':      u'Deleting page per [[WP:CSD|CSD]] A1: Empty article.',
+                u'db-attack':     u'Deleting page per [[WP:CSD|CSD]] G10: Page that exists solely to attack its subject.',
+                u'db-catempty':   u'Deleting page per [[WP:CSD|CSD]] C1: Empty category.',
+                u'db-band':       u'Deleting page per [[WP:CSD|CSD]] A7: Article about a non-notable band.',
+                u'db-banned':     u'Deleting page per [[WP:CSD|CSD]] G5: Page created by a banned user.',
+                u'db-bio':        u'Deleting page per [[WP:CSD|CSD]] A7: Article about a non-notable person.',
+                u'db-notenglish': u'Deleting page per [[WP:CSD|CSD]] A2: Article isn\'t written in English.',
+                u'db-copyvio':    u'Deleting page per [[WP:CSD|CSD]] G12: Page is a blatant copyright violation.',
+                u'db-repost':     u'Deleting page per [[WP:CSD|CSD]] G4: Recreation of previously deleted material.',
+                u'db-vandalism':  u'Deleting page per [[WP:CSD|CSD]] G3: Blatant vandalism.',
+                u'db-talk':       u'Deleting page per [[WP:CSD|CSD]] G8: Talk page of a deleted or non-existent page.',
+                u'db-spam':       u'Deleting page per [[WP:CSD|CSD]] G11: Blatant advertising.',
+                u'db-disparage':  u'Deleting page per [[WP:CSD|CSD]] T1: Divisive or inflammatory template.',
+                u'db-r1':         u'Deleting page per [[WP:CSD|CSD]] R1: Redirect to a deleted or non-existent page.',
+                u'db-experiment': u'Deleting page per [[WP:CSD|CSD]] G2: Page was created as an experiment.',
                 },
             'fa': {
                 u'_default': u'ربات: حذف سریع بر اساس [[وپ:محس|معیارهای حذف سریع]]',
@@ -307,23 +307,22 @@ class SpeedyRobot:
                 },
             'zh':{
                 u'_default':u'[[WP:CSD]]',
-                u'Advert': 'ad',
-                u'Db-blanked': 'auth',
-                u'Db-spam':u'[[WP:CSD#G11|CSD G11]]: 廣告、宣傳頁面',
-                u'Db-rediruser':u'[[WP:CSD#O1|CSD O6]] 沒有在使用的討論頁',
-                u'Notchinese':u'[[WP:CSD#G7|CSD G7]]: 非中文條目且長時間未翻譯',
-                u'Db-vandalism': 'vand',
+                u'advert': 'ad',
+                u'db-blanked': 'auth',
+                u'db-spam':u'[[WP:CSD#G11|CSD G11]]: 廣告、宣傳頁面',
+                u'db-rediruser':u'[[WP:CSD#O1|CSD O6]] 沒有在使用的討論頁',
+                u'notchinese':u'[[WP:CSD#G7|CSD G7]]: 非中文條目且長時間未翻譯',
+                u'db-vandalism': 'vand',
                 u'翻译': 'oprj',
                 u'翻譯': 'oprj',
-                u'NotChinese': 'oprj',
-                u'NotMandarin': 'oprj',
-                u'No source':u'[[WP:CSD#I3|CSD I3]]: 沒有來源連結，無法確認來源與版權資訊',
-                u'No license':u'[[WP:CSD#I3|CSD I3]]: 沒有版權模板，無法確認版權資訊',
-                u'Unknown':u'[[WP:CSD#I3|CSD I3]]: 沒有版權模板，無法確認版權資訊',
-                u'TempPage':u'[[WP:CSD]]: 臨時頁面',
-                u'NowCommons':'commons',
-                u'Nowcommons':'commons',
-                u'RoughTranslation':'mactra',
+                u'notchinese': 'oprj',
+                u'notmandarin': 'oprj',
+                u'no source':u'[[WP:CSD#I3|CSD I3]]: 沒有來源連結，無法確認來源與版權資訊',
+                u'no license':u'[[WP:CSD#I3|CSD I3]]: 沒有版權模板，無法確認版權資訊',
+                u'unknown':u'[[WP:CSD#I3|CSD I3]]: 沒有版權模板，無法確認版權資訊',
+                u'temppage':u'[[WP:CSD]]: 臨時頁面',
+                u'nowcommons':'commons',
+                u'roughtranslation':'mactra',
                 },
         },
         'wikinews':{
@@ -475,16 +474,16 @@ class SpeedyRobot:
             reason = pywikibot.translate(self.mySite, self.talk_deletion_msg)
         else:
             # Try to guess reason by the template used
-            templateNames = page.templates()
+            templateNames = page.templatesWithParams()
             reasons = pywikibot.translate(self.mySite, self.deletion_messages)
 
             for templateName in templateNames:
-                if templateName in reasons:
-                    if type(reasons[templateName]) is not unicode:
+                if templateName[0].lower() in reasons:
+                    if type(reasons[templateName[0].lower()]) is not unicode:
                         #Make alias to delete_reasons
-                        reason = pywikibot.translate(self.mySite, self.delete_reasons)[reasons[templateName]]
+                        reason = pywikibot.translate(self.mySite, self.delete_reasons)[reasons[templateName[0].lower()]]
                     else:
-                        reason = reasons[templateName]
+                        reason = reasons[templateName[0].lower()]
                     break
         if not reason:
             # Unsuccessful in guessing the reason. Use a default message.
