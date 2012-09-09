@@ -86,6 +86,7 @@ commonscatTemplates = {
                                   u'Sister project links']),
     'es' : (u'Commonscat', [u'Ccat', u'Commons cat', u'Categoría Commons',
                             u'Commonscat-inline']),
+    'et' : (u'Commonsi kategooria', [u'Commonscat', u'Commonskat', u'Commons cat', u'Commons category']),
     'eu' : (u'Commonskat', [u'Commonscat']),
     'fa' : (u'ویکی‌انبار-رده', [u'Commonscat', u'Commons cat',
                            u'انبار رده', u'Commons category',u'انبار-رده',u'جعبه پیوند به پروژه‌های خواهر',u'در پروژه‌های خواهر',u'پروژه‌های خواهر']),
