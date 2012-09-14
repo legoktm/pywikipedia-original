@@ -176,7 +176,7 @@ class Family(family.Family):
             'kk': u'Уикидәйек талқылауы',
             'kn': u'Wikiquote ಚರ್ಚೆ',
             'ko': u'위키인용집토론',
-            'ku': u'Gotûbêja Wîkîgotinê',
+            'ku': [u'Gotûbêja Wîkîgotinê', u'Wikiquote nîqaş'],
             'ky': u'Wikiquote баарлашуу',
             'la': u'Disputatio Vicicitationis',
             'lb': u'Wikiquote Diskussioun',
