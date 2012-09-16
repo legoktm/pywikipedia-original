@@ -9,40 +9,69 @@ be followed before running it on any wiki.
 
 To get started on proper usage of the bot framework, please refer to:
 
-    http://meta.wikimedia.org/wiki/Using_the_python_wikipediabot
+    http://www.mediawiki.org/wiki/Manual:Pywikipediabot
 
 The contents of the package are:
 
-===  Library routines ===
+=== readme and config files ===
 
+CONTENTS               : THIS file
 LICENSE                : a reference to the MIT license
-wikipedia.py           : The wikipedia library
-wiktionary.py          : The wiktionary library
+README                 : Short info string used by PyWikipediaBot Nightlies
+setup.cfg              : Setup file for automated tests of the package
+version                : package version collected by PyWikipediaBot Nightlies,
+                         otherwise omitted
 config.py              : Configuration module containing all defaults. Do not
                          change these! See below how to change values.
-titletranslate.py      : rules and tricks to auto-translate wikipage titles
-date.py                : Date formats in various languages
-family.py              : Abstract superclass for wiki families. Subclassed by
-                         the classes in the 'families' subdirectory.
-catlib.py              : Library routines written especially to handle
-                         category pages and recurse over category contents.
-gui.py                 : Some GUI elements for solve_disambiguation.py
-mediawiki_messages.py  : Access to the various translations of the MediaWiki
-                         software interface.
-pagegenerators.py      : Generator pages.
-userlib.py             : Library to work with users, their pages and talk pages.
+fixes.py               : Stores predefined replacements used by replace.py.
+generate_family_file.py: Creates a new family file.
+generate_user_files.py : Creates user-config.py or user-fixes.py.
+
+===  Library routines ===
+
 apispec.py             : Library to handle special pages through API
 BeautifulSoup.py       : is a Python HTML/XML parser designed for quick
                          turnaround projects like screen-scraping. See
-                         more:
-                         http://www.crummy.com/software/BeautifulSoup
+                         more: http://www.crummy.com/software/BeautifulSoup
+botlist.py             : Allows access to the site's bot user list.
+catlib.py              : Library routines written especially to handle
+                         category pages and recurse over category contents.
+daemonize.py           : The process will fork to the background and return
+                         control to the terminal
+date.py                : Date formats in various languages
+diskcache.py           : Disk caching module
+family.py              : Abstract superclass for wiki families. Subclassed by
+                         the classes in the 'families' subdirectory.
+gui.py                 : Some GUI elements for solve_disambiguation.py
+logindata.py           : Use of pywikipedia as a library.
+mysql_autoconnection.py: A small MySQL wrapper that catches dead MySQL
+                         connections, and tries to reconnect them.
+pagegenerators.py      : Generator pages.
+pageimport.py          : Import pages from a certain wiki to another.
+query.py               : API query library
+rciw.py                : A IRC script to check for Recent Changes through IRC,
+                         and to check for interwikis in those recently modified
+                         articles.
+simple_family.py       : Family file in conjunction with none-pywikipedia
+                         config files
+titletranslate.py      : rules and tricks to auto-translate wikipage titles
+userlib.py             : Library to work with users, their pages and talk pages
+wikicomserver.py       : This library allows the use of the pywikipediabot
+                         directly from COM-aware applications.
+wikipedia.py           : The wikipedia library
+wikipediatools.py      : Returns package base directory
+wiktionary.py          : The wiktionary library
+xmlreader.py           : Reading and parsing XML dump files.
 
 === Utilities ===
 
+articlenos.py          : Displays the ordinal number of the new articles being
+                         created visible on the Recent Changes list.
 basic.py               : Is a template from which simple bots can be made.
-checkusage.py          : Provides a way for users of the Wikimedia toolserver
-                         to check the use of images from Commons on
-                         other Wikimedia wikis.
+delinker.py            : Delinks and replaces images.
+editarticle.py         : Edit an article with your favourite editor. Run
+                         the script with the "--help" option to get
+                         detailed infortion on possiblities.
 extract_wikilinks.py   : Two bots to get all linked-to wiki pages from an
                          HTML-file. They differ in their output:
                          extract_names gives bare names (can be used for
@@ -57,6 +86,8 @@ get.py                 : Script to get a page and write its contents to standard
                          output.
 login.py               : Log in to an account on your "home" wiki. or check the
                          login status
+maintainer.py          : Shares tasks between workers.
+maintcont.py           : The controller bot for maintainer.py
 splitwarning.py        : split an interwiki.log file into warning files for each
                          separate language. suggestion: Zip the created
                          files up, put them somewhere on the internet, and
@@ -64,87 +95,126 @@ splitwarning.py        : split an interwiki.log file into warning files for each
                          mailinglist.
 testfamily.py          : Check whether you are logged in all known languages
                          in a family.
-xmltest.py             : Read an XML file (e.g. the sax_parse_bug.txt sometimes
-                         created by interwiki.py), and if it contains an error,
-                         show a stacktrace with the location of the error.
-editarticle.py         : Edit an article with your favourite editor. Run
-                         the script with the "--help" option to get
-                         detailed infortion on possiblities.
-sqldump.py             : Extract information from local cur SQL dump
-                         files, like the ones at http://download.wikimedia.org
 rcsort.py              : A tool to see the recentchanges ordered by user instead
                          of by date.
-threadpool.py          :
-xmlreader.py           :
+upd-log.py             : Update notification script
+version.py             : Outputs Pywikipedia's revision number, Python's version
+                         and OS used.
+warnfile.py            : A robot that parses a warning file created by
+                         interwiki.py on another language wiki, and
+                         implements the suggested changes without verifying
+                         them.
 watchlist.py           : Allows access to the bot account's watchlist.
-wikicomserver.py       : This library allows the use of the pywikipediabot
-                         directly from COM-aware applications.
 
 === Robots ===
 
+add_text.py            : Adds text at the top or end of pages
+archivebot.py          : Archives discussion threads
+blockpagechecker.py    : Deletes any protection templates that are on pages
+                         which aren't actually protected.
 capitalize_redirects.py: Script to create a redirect of capitalize articles.
 casechecker.py         : Script to enumerate all pages in the wikipedia and
                          find all titles with mixed Latin and Cyrillic
                          alphabets.
-category.py            : add a category link to all pages mentioned on a page,
+catall.py              : Add or change categories on a number of pages.
+category.py            : Add a category link to all pages mentioned on a page,
                          change or remove category tags
 category_redirect.py   : Maintain category redirects and replace links to
                          redirected categories.
-catall.py              : Add or change categories on a number of pages.
-catmove.pl             : Need Perl programming language for this; takes a list
-                         of category moves or removes to make and uses
-                         category.py.
+censure.py             : Bad word checker bot.
+cfd.py                 : Processes the categories for discussion working page.
+                         It parses out the actions that need to be taken as a
+                         result of CFD discussions and performs them.
+checkimages.py         : Check recently uploaded files. Checks if a file
+                         description is present and if there are other problems
+                         in the image's description.
 clean_sandbox.py       : This bot makes the cleaned of the page of tests.
+commons_category_redirect.py: Cleans Commons:Category:Non-empty category
+                         redirects by moving all the files, pages and categories
+                         from redirected category to the target category.
 commons_link.py        : This robot include commons template to linking Commons
                          and your wiki project.
+commonscat.py          : Adds {{commonscat}} to Wikipedia categories (or
+                         articles), if other language wikipedia already has such
+                         a template
 copyright.py           : This robot check copyright text in Google, Yahoo! and
                          Live Search.
+copyright_clean.py     : Remove reports of copyright.py on wiki pages.
+                         Uses YurikAPI.
+copyright_put  .py     : Put reports of copyright.py on wiki pages.
 cosmetic_changes.py    : Can do slight modifications to a wiki page source code
                          such that the code looks cleaner.
+create_categories.py   : Program to batch create categories.
+data_ingestion.py      : A generic bot to do batch uploading to Commons.
+deledpimage.py         : Remove EDP images in non-article namespaces.
 delete.py              : This script can be used to delete pages en masse.
 disambredir.py         : Changing redirect names in disambiguation pages.
+djvutext.py            : Extracts OCR text from djvu files and uploads onto
+                         pages in the "Page" namespace on Wikisource.
 featured.py            : A robot to check feature articles.
-fixes.py               : This is not a bot, perform one of the predefined
-                         replacements tasks, used for "replace.py
-                         -fix:replacement".
+fixing_redirects.py    : Correct all redirect links of processed pages.
+flickrripper.py        : Upload images from Flickr easily.
+followlive.py          : follow new articles on a wikipedia and flag them
+                         with a template.
 image.py               : This script can be used to change one image to another
                          or remove an image entirely.
+imagecopy.py           : Copies images from a wikimedia wiki to Commons
+imagecopy_self.py      : Copy self published files from the English Wikipedia to
+                         Commons.
+imageharvest.py        : Bot for getting multiple images from an external site.
+iamgerecat.py          : Try to find categories for media on Commons.
 imagetransfer.py       : Given a wiki page, check the interwiki links for
                          images, and let the user choose among them for
                          images to upload.
+imageuncat.py          : Adds uncat template to images without categories at
+                         Commons
 inline_images.py       : This bot looks for images that are linked inline
                          (i.e., they are hosted from an external server and
                          hotlinked).
 interwiki.py           : A robot to check interwiki links on all pages (or
                          a range of pages) of a wiki.
 interwiki_graph.py     : Possible create graph with interwiki.py.
-imageharvest.py        : Bot for getting multiple images from an external site.
 isbn.py                : Bot to convert all ISBN-10 codes to the ISBN-13
                          format.
+lonelypages.py         : Place a template on pages which are not linked to by
+                         other pages, and are therefore lonely
 makecat.py             : Given an existing or new category, find pages for that
                          category.
+match_images.py        : Match two images based on histograms.
+misspelling.py         : Similar to solve_disambiguation.py. It is supposed to
+                         fix links that contain common spelling mistakes.
 movepages.py           : Bot page moves to another title.
-nowcommons.py          : This bot can delete images with NowCommons template.
-ndashredir.py          : Creates hyphenated redirects to articles with n dash 
+ndashredir.py          : Creates hyphenated redirects to articles with n dash
                          or m dash in their title.
+noreferences.py        : Searches for pages where <references /> is missing
+                         although a <ref> tag is present, and in that case adds
+                         a new references section.
+nowcommons.py          : This bot can delete images with NowCommons template.
 pagefromfile.py        : This bot takes its input from a file that contains a
                          number of pages to be put on the wiki.
+panoramiopicker.py     : Upload images from Panoramio easily.
+patrol.py              : Obtains a list pages and marks the edits as patrolled
+                         based on a whitelist.
 piper.py               : Pipes article text through external program(s) on
                          STDIN and collects its STDOUT which is used as the
                          new article text if it differs from the original.
+protect.py             : Protect and unprotect pages en masse.
 redirect.py            : Fix double redirects and broken redirects. Note:
                          solve_disambiguation also has functions which treat
                          redirects.
-refcheck.py            : This script checks references to see if they are
-                         properly formatted.
+reflinks.py            : Search for references which are only made of a link
+                         without title and fetch the html title from the link to
+                         use it as the title of the wiki link in the reference.
 replace.py             : Search articles for a text and replace it by another
                          text. Both text are set in two configurable
                          text files. The bot can either work on a set of given
                          pages or crawl an SQL dump.
+revertbot.py           : Revert edits.
 saveHTML.py            : Downloads the HTML-pages of articles and images.
 selflink.py            : This bot goes over multiple pages of the home wiki,
                          searches for selflinks, and allows removing them.
 solve_disambiguation.py: Interactive robot doing disambiguation.
+spamremove.py          : Remove links that are being or have been spammed.
 speedy_delete.py       : This bot load a list of pages from the category of
                          candidates for speedy deletion and give the
                          user an interactive prompt to decide whether
@@ -156,10 +226,17 @@ standardize_interwiki.py:A robot that downloads a page, and reformats the
                          separator, in the right order).
 standardize_notes.py   : Converts external links and notes/references to
                        : Footnote3 ref/note format.  Rewrites References.
+statistics_in_wikitable.py: This bot renders statistics provided by
+                         [[Special:Statistics]] in a table on a wiki page.
+                         Thus it creates and updates a statistics wikitable.
+sum_disc.py            : Summarize discussions spread over the whole wiki
+                         including all namespaces
 table2wiki.py          : Semi-automatic converting HTML-tables to wiki-tables.
+tag_nowcommons.py      : Tag files available at Commons with the Nowcommons
+                         template
+template.py            : change one template (that is {{...}}) into another.
 templatecount.py       : Display the list of pages transcluding a given list
                          of templates.
-template.py            : change one template (that is {{...}}) into another.
 touch.py               : Bot goes over all pages of the home wiki, and edits
                          them without changing.
 unlink.py              : This bot unlinks a page on every page that links to it.
@@ -168,36 +245,34 @@ unusedfiles.py         : Bot appends some text to all unused images and other
 upload.py              : upload an image to a wiki.
 us-states.py           : A robot to add redirects to cities for US state
                          abbreviations.
-warnfile.py            : A robot that parses a warning file created by
-                         interwiki.py on another language wiki, and
-                         implements the suggested changes without verifying
-                         them.
 weblinkchecker.py      : Check if external links are still working.
 welcome.py             : Script to welcome new users.
 
 === Directories ===
 
+botlist                : Contains cached bot users
+cache                  : Contains disk cached pages and data retrieved by
+                         featured.y
 category               :
+commonsdelinker        : Contains commons delinker bot maintained by Siebrand
 copyright              : Contains information retrieved by copyright.py
 deadlinks              : Contains information retrieved by weblinkchecker.py
 disambiguations        : If you run solve_disambiguation.py with the -primary
                          argument, the bot will save information here
 families               : Contains wiki-specific information like URLs,
                          languages, encodings etc.
-featured               : Stored featured article in cache file.
+i18n                   : Contains i18n translations for bot edit summaries
 interwiki_dumps        : If the interwiki bot is interrupted, it will store
-                         a dump file here. This file will be read when using
+                         a dump file here. These files will be read when using
                          the interwiki bot with -restore or -continue.
 interwiki_graphs       : Contains graphs for interwiki_graph.py
-logs                   : Contains logfiles.
-mediawiki-messages     : Information retrieved by mediawiki_messages.py will
-                         be stored here.
-maintenance            : contains maintenance scripts for the developing team
 login-data             : login.py stores your cookies here (Your password won't
                          be stored as plaintext).
+logs                   : Contains logfiles.
+maintenance            : contains maintenance scripts for the developing team
 pywikibot              : Contains some libraries and control files
 simplejson             : A simple, fast, extensible JSON encoder and decoder
-                         used by query.py.
+                         used by query.py. Needed for python release prev. 2.6
 spelling               : Contains dictionaries for spellcheck.py.
 test                   : Some test stuff for the developing team
 userinterfaces         : Contains Tkinter, WxPython, terminal and
@@ -206,10 +281,6 @@ userinterfaces         : Contains Tkinter, WxPython, terminal and
 watchlists             : Information retrieved by watchlist.py will be stored
                          here.
 wiktionary             : Contains script to used for Wiktionary project.
-
-=== Unit tests ===
-
-wiktionarytest.py      : Unit tests for wiktionary.py
 
 External software can be used with PyWikipediaBot:
   * Win32com library for use with wikicomserver.py
@@ -231,28 +302,23 @@ parameter, e.g.
 
     python interwiki.py -help
 
-You need to have at least python version 2.4 or newer installed on your
-computer to be able to run any of the code in this package, but not 3.x,
-because pywikipediabot is still not updated to it! Support for older versions
-of python is not planned. (http://www.python.org/download/)
-
+You need to have at least python version 2.7.2 (http://www.python.org/download/)
+or newer installed on your computer to be able to run any of the code in this
+package, but not 3.x, because pywikipediabot is still not updated to it! Support
+for older versions of python is not planned. Some scripts could run with older
+python releases. Please refer the manual at mediawiki for further details and
+restrictions.
 
 You do not need to "install" this package to be able to make use of
 it. You can actually just run it from the directory where you unpacked
 it or where you have your copy of the SVN sources.
 
-Before you run any of the programs, you need to create a file named
-user-config.py in your current directory. It needs at least two lines:
-The first line should set your real name; this will be used to identify you
-when the robot is making changes, in case you are not logged in. The
-second line sets the code of your home language. The file should look like:
-
-===========
-username='My name'
-mylang='xx'
-===========
-
-There are other variables that can be set in the configuration file, please
+The first time you run a script, the package creates a file named user-config.py
+in your current directory. It asks for the family and language code you are
+working on and at least for the bot's user name; this will be used to identify
+you when the robot is making changes, in case you are not logged in. You may
+choose to create a small or extended version of the config file with further
+informations. Other variables that can be set in the configuration file, please
 check config.py for ideas.
 
 After that, you are advised to create a username + password for the bot, and
