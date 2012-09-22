@@ -703,6 +703,7 @@ class Family(family.Family):
             'roa-tara': u'Portale',
             'ru': u'Портал',
             'scn': u'Purtali',
+            'se': u'Portála',
             'sh': u'Portal',
             'si': u'ද්වාරය',
             'sk': u'Portál',
@@ -721,6 +722,7 @@ class Family(family.Family):
             'tt': u'Портал',
             'uk': u'Портал',
             'ur': u'باب',
+            'uz': u'Portal',
             'vec': u'Portałe',
             'vi': u'Chủ đề',
             'wuu': u'Transwiki',
@@ -804,6 +806,7 @@ class Family(family.Family):
             'roa-tara': u'\'Ngazzaminde d\'u Portale',
             'ru': u'Обсуждение портала',
             'scn': u'Discussioni purtali',
+            'se': u'Portálaságastallan',
             'sh': u'Razgovor o portalu',
             'si': [u'ද්වාරය සාකච්ඡාව', u'Portal talk'],
             'sk': u'Diskusia k portálu',
@@ -822,6 +825,7 @@ class Family(family.Family):
             'tt': u'Портал бәхәсе',
             'uk': u'Обговорення порталу',
             'ur': u'تبادلۂ خیال باب',
+            'uz': u'Portal munozarasi',
             'vec': u'Discussion portałe',
             'vi': u'Thảo luận Chủ đề',
             'wuu': u'Transwiki talk',
@@ -861,6 +865,7 @@ class Family(family.Family):
             'ro': u'Proiect',
             'ru': u'Инкубатор',
             'scn': u'Pruggettu',
+            'uz': u'Loyiha',
             'vec': u'Projeto',
         }
 
@@ -891,6 +896,7 @@ class Family(family.Family):
             'ro': u'Discuție Proiect',
             'ru': u'Обсуждение Инкубатора',
             'scn': u'Discussioni pruggettu',
+            'uz': u'Loyiha munozarasi',
             'vec': u'Discussion projeto',
         }
 
