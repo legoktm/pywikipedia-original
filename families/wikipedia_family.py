@@ -423,7 +423,7 @@ class Family(family.Family):
             'gl': u'Conversa Wikipedia',
             'glk': u'بحث Wikipedia',
             'gn': u'Vikipetã myangekõi',
-            'got': u'𐌸𐌹𐍃 Wikipedia 𐌲𐌰𐍅𐌰𐌿𐍂𐌳𐌾𐌰',
+            'got': u'??? Wikipedia ?????????',
             'gu': u'વિકિપીડિયા ચર્ચા',
             'gv': u'Resooney Wikipedia',
             'ha': u'Wikipedia talk',
@@ -1064,7 +1064,8 @@ class Family(family.Family):
             'kg':  [u'Bisongidila'],
             'krc': [u'Кёб магъаналы', u'Disambig'],
             'la':  [u'Discretiva', u'Disnomen'], #{{Disambig}} is not a disambig
-            'lb':  [u'Homonymie', u'Disambig', u'Homonymie Ofkierzungen'],
+            'lb':  [u'Homonymie', u'Disambig', u'Homonymie Ofkierzungen',
+                    u'Homonymie Persounen'],
             'li':  [u'Verdudeliking', u'Verdudelikingpazjena', u'Vp'],
             'lmo': [u'Desambiguació', u'Dezambiguasiú', u'Desambiguazion',
                     u'Desambiguassiú', u'Desambiguació'],
