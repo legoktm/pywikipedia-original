@@ -2158,7 +2158,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                     faked = params
                     if 'text' in faked:
                         del faked['text']
-                    output("OriginalData:%s" % faked)
+                    output("OriginalData:%s" % unicode(repr(faked), "latin1"))
                     del faked
                 #------------------------
                 errorCode = data['error']['code']
