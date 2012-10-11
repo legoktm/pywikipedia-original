@@ -386,11 +386,13 @@ class Family(family.Family):
         }
 
         self.namespaces[110] = {
+            'az': u'Vikiuşaq',
             'en': u'Wikijunior',
             'tr': u'Vikiçocuk',
         }
 
         self.namespaces[111] = {
+            'az': u'Vikiuşaq müzakirəsi',
             'en': u'Wikijunior talk',
             'tr': u'Vikiçocuk tartışma',
         }
