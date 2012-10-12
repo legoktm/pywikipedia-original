@@ -352,6 +352,7 @@ msn_appid = ''
 # Using the Flickr api
 flickr = {
     'api_key': u'',  # Provide your key!
+    'api_secret': u'',  # Api secret of your key (optional)
     'review': False,  # Do we use automatically make our uploads reviewed?
     'reviewer': u'', # If so, under what reviewer name?
     }
