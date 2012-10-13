@@ -364,6 +364,7 @@ referencesSubstitute = {
         'be': u'{{зноскі}}',
         'da': u'{{reflist}}',
         'dsb':u'{{referency}}',
+        'fa': u'{{پانویس}}',
         'fi': u'{{viitteet}}',
         'hsb':u'{{referency}}',
         'hu': u'{{Források}}',
