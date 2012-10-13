@@ -410,7 +410,7 @@ class PageArchiver(object):
         for tpl in self.Page.templatesWithParams(thistxt=self.Page.header):
             if tpl[0] == self.tpl:
                 for param in tpl[1]:
-                    item, value = param.split('=')
+                    item, value = param.split('=', 1)
                     self.set(item.strip(), value.strip())
                 found = True
                 break
