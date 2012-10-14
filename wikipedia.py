@@ -1506,10 +1506,13 @@ not supported by PyWikipediaBot!"""
                             for index in regex.findall(content):
                                 disambigs.add(index[:1].upper() + index[1:])
                     except NoPage:
-                        disambigs = set([self._site.mediawiki_message(
-                            'Disambiguationspage').split(':', 1)[1]])
-                    # add the default template(s)
-                    self._site._disambigtemplates = disambigs | default
+                        message = self._site.mediawiki_message(
+                            'Disambiguationspage').split(':', 1)[1]
+                        # add the default template(s) for default mw message
+                        # only
+                        disambigs = set([message[:1].upper() +
+                                         message[1:]]) | default
+                    self._site._disambigtemplates = disambigs
                 else:
                     # Normalize template capitalization
                     self._site._disambigtemplates = set(
