@@ -252,13 +252,6 @@ class Family(family.Family):
             'fr': u'Discussion Transwiki',
             }
 
-        self.disambiguationTemplates = {
-            '_default': [],
-            'fr': ['Homonymie'],
-            'ka': [u'მრავალმნიშვნელოვანი', u'მრავმნიშ'],
-            'pt': [u'Desambiguação'],
-            }
-
         # attop is a list of languages that prefer to have the interwiki
         # links at the top of the page.
         self.interwiki_attop = []
