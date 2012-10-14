@@ -4987,7 +4987,7 @@ def Family(fam=None, fatal=True, force=False):
     @type fam: str
     @param fatal: if True, the bot will stop running if the given family is
         unknown. If False, it will only raise a ValueError exception.
-    @param fatal: bool
+    @type fatal: bool
     @return: a Family instance configured for the named family.
 
     """
