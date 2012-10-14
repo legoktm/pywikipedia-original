@@ -1,4 +1,6 @@
 # -*- coding: utf-8  -*-
+__version__ = '$Id$'
+
 import family
 
 #  German Pirate Party Wiki
@@ -9,15 +11,15 @@ class Family(family.Family):
 
    def __init__(self):
        family.Family.__init__(self)
-       self.name = "piratenwiki"                               
+       self.name = "piratenwiki"
        self.langs = {
-           "de": "wiki.piratenpartei.de",                      
+           "de": "wiki.piratenpartei.de",
        }
        self.namespaces[1] =  { "_default": u"Diskussion" }
        self.namespaces[2] =  { "_default": u"Benutzer" }
        self.namespaces[3] =  { "_default": u"Benutzer Diskussion" }
        self.namespaces[4] =  { "_default": u"Piratenwiki" }
-       self.namespaces[5] =  { "_default": u"Piratenwiki Diskussion" } 
+       self.namespaces[5] =  { "_default": u"Piratenwiki Diskussion" }
        self.namespaces[6] =  { "_default": u"Datei" }
        self.namespaces[7] =  { "_default": u"Datei Diskussion" }
 
@@ -25,14 +27,14 @@ class Family(family.Family):
        self.namespaces[9] =  { "_default": u"MediaWiki Diskussion" }
        self.namespaces[10] =  { "_default": u"Vorlage" }
        self.namespaces[11] =  { "_default": u"Vorlage Diskussion" }
-       self.namespaces[12] =  { "_default": u"Hilfe" }        
+       self.namespaces[12] =  { "_default": u"Hilfe" }
        self.namespaces[13] =  { "_default": u"Hilfe Diskussion" }
 
        self.namespaces[14] =  { "_default": u"Kategorie" }
        self.namespaces[15] =  { "_default": u"Kategorie Diskussion" }
        self.namespaces[100] =  { "_default": u"Skin" }
        self.namespaces[101] =  { "_default": u"Skin talk" }
-       self.namespaces[102] =  { "_default": u"Filler" }        
+       self.namespaces[102] =  { "_default": u"Filler" }
        self.namespaces[103] =  { "_default": u"Filler talk" }
 
        self.namespaces[108] =  { "_default": u"LaTeX" }
@@ -41,7 +43,7 @@ class Family(family.Family):
        self.namespaces[111] =  { "_default": u"Fair2.0 Diskussion" }
        self.namespaces[112] =  { "_default": u"Orga" }
        self.namespaces[113] =  { "_default": u"Orga Diskussion" }
-       
+
        self.namespaces[114] =  { "_default": u"Presse" }
        self.namespaces[115] =  { "_default": u"Presse Diskussion" }
        self.namespaces[116] =  { "_default": u"Termine" }
@@ -52,14 +54,14 @@ class Family(family.Family):
        self.namespaces[121] =  { "_default": u"BW-Web Diskussion" }
        self.namespaces[122] =  { "_default": u"BY-Web" }
        self.namespaces[123] =  { "_default": u"BY-Web Diskussion" }
-      
+
        self.namespaces[124] =  { "_default": u"B-Web" }
        self.namespaces[125] =  { "_default": u"B-Web Diskussion" }
        self.namespaces[126] =  { "_default": u"BB-Web" }
        self.namespaces[127] =  { "_default": u"BB-Web Diskussion" }
        self.namespaces[128] =  { "_default": u"HB-Web" }
        self.namespaces[129] =  { "_default": u"HB-Web Diskussion" }
-       self.namespaces[130] =  { "_default": u"HH-Web" }       
+       self.namespaces[130] =  { "_default": u"HH-Web" }
        self.namespaces[131] =  { "_default": u"HH-Web Diskussion" }
        self.namespaces[132] =  { "_default": u"HE-Web" }
        self.namespaces[133] =  { "_default": u"HE-Web Diskussion" }
@@ -113,7 +115,7 @@ class Family(family.Family):
        self.namespaces[249] =  { "_default": u"SH Diskussion" }
        self.namespaces[250] =  { "_default": u"TH" }
        self.namespaces[251] =  { "_default": u"TH Diskussion" }
-      
+
        self.namespaces[252] =  { "_default": u"Crew" }
        self.namespaces[253] =  { "_default": u"Crew Diskussion" }
        self.namespaces[254] =  { "_default": u"Archiv" }
@@ -142,7 +144,7 @@ class Family(family.Family):
        return "/wiki/"
 
    def nicepath(self, code):
-       return "" 
+       return ""
 
    def version(self, code):
        return "1.16.0"
