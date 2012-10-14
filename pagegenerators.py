@@ -20,17 +20,15 @@ These parameters are supported to specify which pages titles to print:
 #
 __version__='$Id$'
 
-import wikipedia as pywikibot
-from pywikibot import deprecate_arg, i18n
-import config
-
-import traceback
 import re
 import sys
 import codecs
 import datetime
-
 import urllib, urllib2, time
+import traceback
+import wikipedia as pywikibot
+import config
+from pywikibot import deprecate_arg, i18n
 import date, catlib, userlib, query
 
 parameterHelp = u"""\
@@ -257,7 +255,7 @@ class GeneratorFactory(object):
                               "%s:%s" % (site.namespace(14), categoryname))
         return CategorizedPageGenerator(cat, start=startfrom, recurse=recurse)
 
-    def setSubCategoriesGen(self, arg, length, recurse = False):
+    def setSubCategoriesGen(self, arg, length, recurse=False):
         site = pywikibot.getSite()
         if len(arg) == length:
             categoryname = i18n.input('pywikibot-enter-category-name')
@@ -273,7 +271,8 @@ class GeneratorFactory(object):
 
         cat = catlib.Category(site,
                               "%s:%s" % (site.namespace(14), categoryname))
-        return SubCategoriesPageGenerator(cat, start=startfrom, recurse=recurse)
+        return SubCategoriesPageGenerator(cat,
+               start=startfrom, recurse=recurse)
 
     def handleArg(self, arg):
         """Parse one argument at a time.
@@ -291,14 +290,15 @@ class GeneratorFactory(object):
             fileLinksPageTitle = arg[11:]
             if not fileLinksPageTitle:
                 fileLinksPageTitle = i18n.input(
-                                        'pywikibot-enter-file-links-processing')
+                    'pywikibot-enter-file-links-processing')
             if fileLinksPageTitle.startswith(site.namespace(6)
                                              + ":"):
                 fileLinksPage = pywikibot.ImagePage(site,
                                                     fileLinksPageTitle)
             else:
                 fileLinksPage = pywikibot.ImagePage(site,
-                                                'Image:' + fileLinksPageTitle)
+                                                    'Image:' +
+                                                    fileLinksPageTitle)
             gen = FileLinksGenerator(fileLinksPage)
         elif arg.startswith('-unusedfiles'):
             if len(arg) == 12:
@@ -333,17 +333,17 @@ class GeneratorFactory(object):
             if len(arg) == 15:
                 gen = RandomRedirectPageGenerator()
             else:
-                gen = RandomRedirectPageGenerator(number = int(arg[16:]))
+                gen = RandomRedirectPageGenerator(number=int(arg[16:]))
         elif arg.startswith('-random'):
             if len(arg) == 7:
                 gen = RandomPageGenerator()
             else:
-                gen = RandomPageGenerator(number = int(arg[8:]))
+                gen = RandomPageGenerator(number=int(arg[8:]))
         elif arg.startswith('-recentchanges'):
             if len(arg) == 14:
                 gen = RecentchangesPageGenerator()
             else:
-                gen = RecentchangesPageGenerator(number = int(arg[15:]))
+                gen = RecentchangesPageGenerator(number=int(arg[15:]))
             gen = DuplicateFilterPageGenerator(gen)
         elif arg.startswith('-file'):
             textfilename = arg[6:]
