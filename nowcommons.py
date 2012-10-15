@@ -184,9 +184,6 @@ class NowCommonsDeleteBot:
         self.site = pywikibot.getSite()
         if repr(self.site) == 'commons:commons':
             sys.exit('Do not run this bot on Commons!')
-        self.nowCommonsTemplates = [pywikibot.Page(self.site, title,
-                                                   defaultNamespace=10)
-                                    for title in self.ncTemplates()]
 
     def ncTemplates(self):
         if self.site.lang in nowCommons:
@@ -225,7 +222,8 @@ class NowCommonsDeleteBot:
                     continue
                 url_local = x.group('urllocal')
                 url_commons = x.group('urlcommons')
-                pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<" % image_local)
+                pywikibot.output(u"\n\n>>> \03{lightpurple}%s\03{default} <<<"
+                                 % image_local)
                 pywikibot.output(u'Local: %s\nCommons: %s\n'
                                  % (url_local, url_commons))
                 result1 = webbrowser.open(url_local, 0, 1)
@@ -253,9 +251,12 @@ class NowCommonsDeleteBot:
         if use_hash:
             gen = self.useHashGenerator()
         else:
+            nowCommonsTemplates = [pywikibot.Page(self.site, title,
+                                                  defaultNamespace=10)
+                                   for title in self.ncTemplates()]
             gens = [pg.ReferringPageGenerator(t, followRedirects=True,
                                               onlyTemplateInclusion=True)
-                    for t in self.nowCommonsTemplates]
+                    for t in nowCommonsTemplates]
             gen = pg.CombinedPageGenerator(gens)
             gen = pg.NamespaceFilterPageGenerator(gen, [6])
             gen = pg.DuplicateFilterPageGenerator(gen)
