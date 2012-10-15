@@ -959,6 +959,14 @@ class Family(family.Family):
         self.namespaces[111] = {
             'als': u'Nochricht Diskussion',
         }
+        
+        self.namespaces[446] = {
+            'en': u'Education Program',
+        }
+
+        self.namespaces[447] = {
+            'en': u'Education Program talk',
+        }
 
         self.category_redirect_templates = {
             '_default': (),
