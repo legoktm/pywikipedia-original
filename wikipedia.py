@@ -2028,7 +2028,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
     def _putPage(self, text, comment=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
-                captcha=None, botflag=True, maxTries=-1,wikidata=False, labelwikidata=None, valuewikidata=None):
+                captcha=None, botflag=True, maxTries=-1, wikidata=False, labelwikidata=None, valuewikidata=None):
         """Upload 'text' as new content of Page by API
 
         Don't use this directly, use put() instead.
@@ -2049,10 +2049,11 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             'summary': self._encodeArg(comment, 'summary'),
         }
         if wikidata:
-            params['id']=self.title().replace(u"Q",u"")
-            params['action']='wbsetitem'
-            params['format']='jsonfm'
-            params['data']=u"{\"labels\":{\""+labelwikidata+u"\":{\"language\":\""+labelwikidata+u"\",\"value\":\""+valuewikidata+u"\"}}}"
+            params['id'] = self.title().replace(u"Q", u"")
+            params['action'] = 'wbsetitem'
+            params['format'] = 'jsonfm'
+            params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
+                             % {'label': labelwikidata, 'value': valuewikidata}
         if token:
             params['token'] = token
         else:
