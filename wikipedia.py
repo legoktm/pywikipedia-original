@@ -1912,7 +1912,7 @@ not supported by PyWikipediaBot!"""
                             force, callback))
 
     def put(self, newtext, comment=None, watchArticle=None, minorEdit=True,
-            force=False, sysop=False, botflag=True, maxTries=-1):
+            force=False, sysop=False, botflag=True, maxTries=-1, wikidata=False, labelwikidata=None, valuewikidata=None):
         """Save the page with the contents of the first argument as the text.
 
         Optional parameters:
@@ -1936,7 +1936,7 @@ not supported by PyWikipediaBot!"""
         self.site().checkBlocks(sysop = sysop)
 
         # Determine if we are allowed to edit
-        if not force:
+        if (not force) and (self.site().lang!=u"wikidata"):
             if not self.botMayEdit(username):
                 raise LockedPage(
                     u'Not allowed to edit %s because of a restricting template'
@@ -1973,7 +1973,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             self._editrestriction = False
         # If no comment is given for the change, use the default
         comment = comment or action
-        if config.cosmetic_changes and not self.isTalkPage() and \
+        if config.cosmetic_changes and not self.isTalkPage() and self.site().lang!=u"wikidata" and \
            not calledModuleName() in ('cosmetic_changes', 'touch'):
             if config.cosmetic_changes_mylang_only:
                 cc = (self.site().family.name == config.family and self.site().lang == config.mylang) or \
@@ -2010,7 +2010,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             comment = encodeEsperantoX(comment)
 
         return self._putPage(newtext, comment, watchArticle, minorEdit,
-                             newPage, self.site().getToken(sysop = sysop), sysop = sysop, botflag=botflag, maxTries=maxTries)
+                             newPage, self.site().getToken(sysop = sysop), sysop = sysop, botflag=botflag, maxTries=maxTries, wikidata=wikidata, labelwikidata=labelwikidata, valuewikidata=valuewikidata)
 
     def _encodeArg(self, arg, msgForError):
         """Encode an ascii string/Unicode string to the site's encoding"""
@@ -2028,7 +2028,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
     def _putPage(self, text, comment=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
-                captcha=None, botflag=True, maxTries=-1):
+                captcha=None, botflag=True, maxTries=-1,wikidata=False, labelwikidata=None, valuewikidata=None):
         """Upload 'text' as new content of Page by API
 
         Don't use this directly, use put() instead.
@@ -2048,7 +2048,11 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             'text': self._encodeArg(text, 'text'),
             'summary': self._encodeArg(comment, 'summary'),
         }
-
+        if wikidata:
+            params['id']=self.title().replace(u"Q",u"")
+            params['action']='wbsetitem'
+            params['format']='jsonfm'
+            params['data']=u"{\"labels\":{\""+labelwikidata+u"\":{\"language\":\""+labelwikidata+u"\",\"value\":\""+valuewikidata+u"\"}}}"
         if token:
             params['token'] = token
         else:
@@ -2102,6 +2106,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 params['nocreate'] = 1
             # Submit the prepared information
             try:
+                if wikidata:
+                    del params['text']
+                    del params['title']
                 response, data = query.GetData(params, self.site(), sysop=sysop, back_response = True)
                 if isinstance(data,basestring):
                     raise KeyError
