@@ -44,6 +44,8 @@ class Family(family.Family):
         self.langs = dict([(lang, '%s.wikipedia.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[12]['de'] = [u'Hilfe', u'H'],
+        self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD'],
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
         self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク', u'Image talk', u'画像‐ノート']

@@ -30,8 +30,6 @@ class Family(family.Family):
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
-        self.namespaces[13]['de'] = [u'Hilfe Diskussion']
-        self.namespaces[12]['de'] = [u'Hilfe']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
