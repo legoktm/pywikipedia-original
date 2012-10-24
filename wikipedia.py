@@ -2056,9 +2056,14 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             if wikidata['type']==u'item':
                 params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
                              % {'label': wikidata['label'], 'value': wikidata['value']}
-            if wikidata['type']==u'description':
+            elif wikidata['type']==u'description':
                 params['value'] = wikidata['value']
                 params['language'] = wikidata['language']
+            elif wikidata['type']==u'sitelink':
+                params['linksite']=wikidata['site']+u'wiki'
+                params['linktitle']=wikidata['title']
+            else:
+                raise "Wikidata: Action type is unknown"
         if token:
             params['token'] = token
         else:
