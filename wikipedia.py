@@ -1912,7 +1912,7 @@ not supported by PyWikipediaBot!"""
                             force, callback))
 
     def put(self, newtext, comment=None, watchArticle=None, minorEdit=True,
-            force=False, sysop=False, botflag=True, maxTries=-1, wikidata=False, labelwikidata=None, valuewikidata=None):
+            force=False, sysop=False, botflag=True, maxTries=-1, wikidata={}):
         """Save the page with the contents of the first argument as the text.
 
         Optional parameters:
@@ -2010,7 +2010,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             comment = encodeEsperantoX(comment)
 
         return self._putPage(newtext, comment, watchArticle, minorEdit,
-                             newPage, self.site().getToken(sysop = sysop), sysop = sysop, botflag=botflag, maxTries=maxTries, wikidata=wikidata, labelwikidata=labelwikidata, valuewikidata=valuewikidata)
+                             newPage, self.site().getToken(sysop = sysop), sysop = sysop, botflag=botflag, maxTries=maxTries, wikidata=wikidata)
 
     def _encodeArg(self, arg, msgForError):
         """Encode an ascii string/Unicode string to the site's encoding"""
@@ -2028,7 +2028,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
     def _putPage(self, text, comment=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
-                captcha=None, botflag=True, maxTries=-1, wikidata=False, labelwikidata=None, valuewikidata=None):
+                captcha=None, botflag=True, maxTries=-1, wikidata={}):
         """Upload 'text' as new content of Page by API
 
         Don't use this directly, use put() instead.
@@ -2049,11 +2049,16 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             'summary': self._encodeArg(comment, 'summary'),
         }
         if wikidata:
-            params['id'] = self.title().replace(u"Q", u"")
-            params['action'] = 'wbsetitem'
+            params['title'] = self.title()
+            params['site'] = 'enwiki' #I'm working on making more flexible so i'll change that
+            params['action'] = u'wbset'+wikidata['type']
             params['format'] = 'jsonfm'
-            params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
-                             % {'label': labelwikidata, 'value': valuewikidata}
+            if wikidata['type']==u'item':
+                params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
+                             % {'label': wikidata['label'], 'value': wikidata['value']}
+            if wikidata['type']==u'description':
+                params['value'] = wikidata['value']
+                params['language'] = wikidata['language']
         if token:
             params['token'] = token
         else:
@@ -2109,7 +2114,6 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             try:
                 if wikidata:
                     del params['text']
-                    del params['title']
                 response, data = query.GetData(params, self.site(), sysop=sysop, back_response = True)
                 if isinstance(data,basestring):
                     raise KeyError
