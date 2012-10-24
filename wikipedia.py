@@ -1257,7 +1257,7 @@ not supported by PyWikipediaBot!"""
         if self._editTime and datetime:
             import datetime
             return datetime.datetime.strptime(str(self._editTime), '%Y%m%d%H%M%S')
-          
+
         return self._editTime
 
     def previousRevision(self):
@@ -1929,7 +1929,9 @@ not supported by PyWikipediaBot!"""
             self.get()
         except:
             pass
-        sysop = self._getActionUser(action = 'edit', restriction = self.editRestriction, sysop = sysop)
+        sysop = self._getActionUser(action='edit',
+                                    restriction=self.editRestriction,
+                                    sysop=sysop)
         username = self.site().loggedInAs()
 
         # Check blocks
@@ -2010,7 +2012,9 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             comment = encodeEsperantoX(comment)
 
         return self._putPage(newtext, comment, watchArticle, minorEdit,
-                             newPage, self.site().getToken(sysop = sysop), sysop = sysop, botflag=botflag, maxTries=maxTries, wikidata=wikidata)
+                             newPage, self.site().getToken(sysop = sysop),
+                             sysop = sysop, botflag=botflag, maxTries=maxTries,
+                             wikidata=wikidata)
 
     def _encodeArg(self, arg, msgForError):
         """Encode an ascii string/Unicode string to the site's encoding"""
@@ -2053,17 +2057,19 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             params['site'] = 'enwiki' #I'm working on making more flexible so i'll change that
             params['action'] = u'wbset'+wikidata['type']
             params['format'] = 'jsonfm'
-            if wikidata['type']==u'item':
+            if wikidata['type'] == u'item':
                 params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
-                             % {'label': wikidata['label'], 'value': wikidata['value']}
-            elif wikidata['type']==u'description':
+                                 % {'label': wikidata['label'],
+                                    'value': wikidata['value']}
+            elif wikidata['type'] == u'description':
                 params['value'] = wikidata['value']
                 params['language'] = wikidata['language']
-            elif wikidata['type']==u'sitelink':
-                params['linksite']=wikidata['site']+u'wiki'
-                params['linktitle']=wikidata['title']
+            elif wikidata['type'] == u'sitelink':
+                params['linksite'] = wikidata['site'] + u'wiki'
+                params['linktitle'] = wikidata['title']
             else:
-                raise "Wikidata: Action type is unknown"
+                raise NotImplementedError(
+                    u'Wikidata action type "%s" is unknown' % wikidata['type'])
         if token:
             params['token'] = token
         else:
@@ -2969,7 +2975,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                                               reverseOrder, revCount)
         dataQ = []
         thisHistoryDone = False
-        
+
         params = {
             'action': 'query',
             'prop': 'revisions',
