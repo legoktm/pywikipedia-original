@@ -2450,7 +2450,7 @@ class Family:
                 'nds-nl': u'Hulpe',
                 'ne': u'मद्दत',
                 'new': u'ग्वाहालि',
-                'nl': [u'Help', u'H'],
+                'nl': u'Help',
                 'nn': u'Hjelp',
                 'no': u'Hjelp',
                 'nso': u'Thušo',
