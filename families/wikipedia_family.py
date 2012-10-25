@@ -56,6 +56,7 @@ class Family(family.Family):
         self.namespaces[13]['ja'] = [u'Help‐ノート', u'ヘルプ・トーク']
         self.namespaces[14]['ja'] = [u'Category', u'カテゴリ']
         self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
+        self.namespaces[12]['nl'] = [u'Help', u'H']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
