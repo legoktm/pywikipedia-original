@@ -752,6 +752,14 @@ not supported by PyWikipediaBot!"""
             'inprop': ['protection', 'subjectid'],
             #'intoken': 'edit',
         }
+        params1=params.copy()
+        if self.site().lang==u"wikidata":
+            params['action']='wbgetentities'
+            params['sites']='enwiki'
+            del params['prop']
+            del params['rvprop']
+            del params['rvlimit']
+            del params['inprop']
         if oldid:
             params['rvstartid'] = oldid
         if expandtemplates:
@@ -762,6 +770,14 @@ not supported by PyWikipediaBot!"""
         textareaFound = False
         # retrying loop is done by query.GetData
         data = query.GetData(params, self.site(), sysop=sysop)
+        if self.site().lang==u"wikidata":
+            data['query']={'pages':data['entities']}
+            for pageid in data['entities'].keys():
+                if pageid=="-1":
+                    continue #Means the page does not exist
+                params1['titles']="Q"+pageid
+                ndata=query.GetData(params1, self.site(), sysop=sysop)['query']['pages']
+                data['query']['pages'].update(ndata)
         if 'error' in data:
             raise RuntimeError("API query error: %s" % data)
         if not 'pages' in data['query']:
