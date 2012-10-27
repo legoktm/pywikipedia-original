@@ -965,7 +965,7 @@ class Family:
                 'cv': u'Хутшăнаканăн канашлу страници',
                 'cy': u'Sgwrs Defnyddiwr',
                 'da': u'Brugerdiskussion',
-                'de': [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion'],
+                'de': [u'Benutzer Diskussion', u'Benutzerin Diskussion'],
                 'diq': [u'Karber werênayış', u'Karber mesac'],
                 'dsb': [u'Diskusija wužywarja', u'Diskusija wužywarki'],
                 'el': u'Συζήτηση χρήστη',
