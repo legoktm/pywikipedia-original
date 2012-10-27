@@ -38,6 +38,7 @@ class Family(family.Family):
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
+        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
@@ -107,7 +108,7 @@ class Family(family.Family):
             'he': [u'ויקימילון', u'Wiktionary'],
             'hi': [u'विक्षनरी', u'Wiktionary'],
             'hr': [u'Wječnik', u'Wiktionary'],
-            'hsb': u'Wiktionary',
+            'hsb': [u'Wikisłownik', u'Wiktionary'],
             'hu': [u'Wikiszótár', u'Wiktionary'],
             'hy': [u'Վիքիբառարան', u'Wiktionary'],
             'ia': [u'Wiktionario', u'Wiktionary'],
@@ -264,7 +265,7 @@ class Family(family.Family):
             'he': u'שיחת ויקימילון',
             'hi': u'विक्षनरी वार्ता',
             'hr': u'Razgovor Wječnik',
-            'hsb': u'Wiktionary diskusija',
+            'hsb': [u'Diskusija k Wikisłownikej', u'Wiktionary diskusija'],
             'hu': [u'Wikiszótár-vita', u'Wikiszótár vita'],
             'hy': u'Վիքիբառարանի քննարկում',
             'ia': u'Discussion Wiktionario',

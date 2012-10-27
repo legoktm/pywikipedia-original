@@ -41,7 +41,6 @@ class Family(family.Family):
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
-        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'Benutzerin Diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[12]['ml'] = [u'സഹായം', u'H', u'സ']

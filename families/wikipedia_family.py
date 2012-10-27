@@ -44,6 +44,7 @@ class Family(family.Family):
         self.langs = dict([(lang, '%s.wikipedia.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[12]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion'],
         self.namespaces[12]['de'] = [u'Hilfe', u'H']
         self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD']
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
@@ -770,7 +771,7 @@ class Family(family.Family):
             'fa': u'بحث درگاه',
             'fi': u'Keskustelu teemasivusta',
             'fr': u'Discussion Portail',
-            'gl': u'Portal talk',
+            'gl': u'Conversa portal',
             'he': u'שיחת פורטל',
             'hi': [u'प्रवेशद्वार वार्ता', u'प्रवा'],
             'hr': u'Razgovor o portalu',
@@ -962,7 +963,7 @@ class Family(family.Family):
         self.namespaces[111] = {
             'als': u'Nochricht Diskussion',
         }
-        
+
         self.namespaces[446] = {
             'en': u'Education Program',
         }
