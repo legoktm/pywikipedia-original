@@ -63,7 +63,7 @@ Options (may be omitted):
   -L LANG, --lang=LANG  set the language code to work on
   -n NAMESPACE, --namespace=NAMESPACE
                         only archive pages from a given namespace
-  -p PAGE, --page=PAGE  archive a single PAGE
+  -p PAGE, --page=PAGE  archive a single PAGE, default ns is a user talk page
   -s SALT, --salt=SALT  specify salt
   -S --simulate         Do not change pages, just simulate
 """
@@ -290,7 +290,7 @@ class DiscussionPage(pywikibot.Page):
     page. Feed threads to it and run an update() afterwards."""
 
     def __init__(self, title, archiver, vars=None):
-        pywikibot.Page.__init__(self, Site, title, defaultNamespace=3)
+        pywikibot.Page.__init__(self, Site, title)
         self.threads = []
         self.full = False
         self.archiver = archiver
@@ -372,7 +372,7 @@ class PageArchiver(object):
         self.tpl = tpl
         self.salt = salt
         self.force = force
-        self.Page = DiscussionPage(Page.title(),self)
+        self.Page = DiscussionPage(Page.title(), self)
         self.loadConfig()
         self.commentParams = {
                 'from' : self.Page.title(),
@@ -432,7 +432,7 @@ class PageArchiver(object):
            and not self.key_ok():
             raise ArchiveSecurityError
         if not archive in self.archives:
-            self.archives[archive] = DiscussionPage(archive,self,vars)
+            self.archives[archive] = DiscussionPage(archive, self, vars)
         return self.archives[archive].feedThread(thread,maxArchiveSize)
 
     def analyzePage(self):
@@ -588,7 +588,8 @@ def main():
             for pg in file(options.filename,'r').readlines():
                 pagelist.append(pywikibot.Page(Site,pg))
         if options.pagename:
-            pagelist.append(pywikibot.Page(Site,options.pagename))
+            pagelist.append(pywikibot.Page(Site, options.pagename,
+                                           defaultNamespace=3))
 
         pagelist = sorted(pagelist)
         #if not options.namespace == None:
