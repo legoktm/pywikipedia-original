@@ -309,7 +309,6 @@ class Page(object):
             if not t:
                 raise InvalidTitle(u"Invalid title '%s'" % title )
 
-            self._namespace = defaultNamespace
             #
             # This code was adapted from Title.php : secureAndSplit()
             #
