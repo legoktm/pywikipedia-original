@@ -299,15 +299,13 @@ class Page(object):
             t = t.strip()
             # Remove left-to-right and right-to-left markers.
             t = t.replace(u'\u200e', '').replace(u'\u200f', '')
-            # leading colon implies main namespace instead of the default
+
             if t.startswith(':'):
                 t = t[1:]
-                self._namespace = 0
+                prefix = True
             else:
-                self._namespace = defaultNamespace
-
-            if not t:
-                raise InvalidTitle(u"Invalid title '%s'" % title )
+                prefix = False
+            self._namespace = defaultNamespace
 
             #
             # This code was adapted from Title.php : secureAndSplit()
@@ -316,7 +314,16 @@ class Page(object):
             while True:
                 m = reNamespace.match(t)
                 if not m:
+                    # leading colon implies main namespace instead of default
+                    if t.startswith(':'):
+                        t = t[1:]
+                        self._namespace = 0
+                    elif prefix:
+                        self._namespace = 0
+                    else:
+                        self._namespace = defaultNamespace
                     break
+                prefix = False
                 p = m.group(1)
                 lowerNs = p.lower()
                 ns = self._site.getNamespaceIndex(lowerNs)
@@ -338,11 +345,6 @@ class Page(object):
                         if t == '':
                             t = self._site.mediawiki_message('Mainpage')
 
-                    # If there's an initial colon after the interwiki, that also
-                    # resets the default namespace
-                    if t != '' and t[0] == ':':
-                        self._namespace = 0
-                        t = t[1:]
                 elif lowerNs in self._site.family.get_known_families(site = self._site):
                     if self._site.family.get_known_families(site = self._site)[lowerNs] == self._site.family.name:
                         t = m.group(2)
@@ -371,6 +373,9 @@ not supported by PyWikipediaBot!"""
                     # If there's no recognized interwiki or namespace,
                     # then let the colon expression be part of the title.
                     break
+
+            if not t:
+                raise InvalidTitle(u"Invalid title '%s'" % title )
 
             sectionStart = t.find(u'#')
             # But maybe there are magic words like {{#time|}}
