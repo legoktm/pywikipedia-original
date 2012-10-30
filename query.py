@@ -27,6 +27,7 @@ __version__ = '$Id$'
 
 import time
 import wikipedia as pywikibot
+import config
 try:
     #For Python 2.6 newer
     import json
@@ -38,8 +39,8 @@ except ImportError:
     import simplejson as json
 
 
-def GetData(params, site=None, useAPI=True, retryCount=5, encodeTitle=True,
-            sysop=False, back_response=False):
+def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
+            encodeTitle=True, sysop=False, back_response=False):
     """Get data from the query api, and convert it into a data object
     """
     if ('action' in params) and pywikibot.simulate and \
