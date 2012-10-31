@@ -13,7 +13,7 @@ class Family(family.Family):
         self.name = 'wikidata'
 
         self.langs = {
-            'wikidata': 'wikidata-test-repo.wikimedia.de',
+            'wikidata': 'wikidata.org',
         }
 #http://wikidata-test-repo.wikimedia.de/w/api.php?action=query&meta=siteinfo&siprop=namespaces
         self.namespaces[4] = {
