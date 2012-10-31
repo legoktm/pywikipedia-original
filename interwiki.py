@@ -1654,14 +1654,21 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                             break
         else:
             for (site, page) in new.iteritems():
+                # edit restriction for some templates on zh-wiki where interlanguage keys are included
+                # by /doc subpage
+                smallWikiAllowed = not (page.site.sitename() == 'wikipedia:zh' and
+                                        page.site.namespace() == 10 and
+                                        u'Country data' in page.title(withNamespace=False))
                 # edit restriction on is-wiki
                 # http://is.wikipedia.org/wiki/Wikipediaspjall:V%C3%A9lmenni
+                # and zh-wiki for template namespace which prevents increasing the queue
                 # allow edits for the same conditions as -whenneeded
                 # or the last edit wasn't a bot
                 # or the last edit was 1 month ago
-                smallWikiAllowed = True
-                if globalvar.autonomous and (page.site.sitename() == 'wikipedia:is' or
-                                             page.site.sitename() == 'wikipedia:zh'):
+                if smallWikiAllowed and globalvar.autonomous and \
+                   (page.site.sitename() == 'wikipedia:is' or
+                    page.site.sitename() == 'wikipedia:zh' and
+                    page.site.namespace() == 10):
                     old={}
                     try:
                         for mypage in new[page.site].interwiki():
