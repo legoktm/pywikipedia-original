@@ -1552,6 +1552,12 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                 time1 = str(time1)
             if type(time2) is long:
                 time2 = str(time2)
+            if '-' in time1:
+                pywikibot.output(u'BUG>>> in %s' % self.originPage.aslink(True))
+                pywikibot.output(u'time1:%s' % time1)
+                pywikibot.output(u'time2:%s' % time2)
+                time1 = str(pywikibot.parsetime2stamp(time1))
+
             t1 = (((int(time1[0:4]) * 12 + int(time1[4:6])) * 30 +
                    int(time1[6:8])) * 24 + int(time1[8:10])) * 60 + \
                    int(time1[10:12])
@@ -1840,7 +1846,7 @@ u'NOTE: number of edits are restricted at %s'
                 if not globalvar.cleanup and not globalvar.force or \
                    globalvar.cleanup and \
                    unicode(rmPage) not in globalvar.remove or \
-                   rmPage.site.lang in ['hak', 'hi', 'cdo'] and \
+                   rmPage.site.lang in ['hak', 'hi', 'cdo', 'sa'] and \
                    pywikibot.unicode_error: #work-arround for bug #3081100 (do not remove affected pages)
                     new[rmsite] = rmPage
                     pywikibot.output(
@@ -2313,6 +2319,11 @@ def compareLanguages(old, new, insite):
         commentname += '-removing'
     if modifying:
         commentname += '-modifying'
+    if commentname == 'interwiki-modifying' and len(modifying) == 1:
+        useFrom = True
+        commentname += '-from'
+    else:
+        useFrom = False
 
     if adding or removing or modifying:
         #Version info marks bots without unicode error
@@ -2324,10 +2335,11 @@ def compareLanguages(old, new, insite):
 
         changes = {'adding':    ', '.join([fmt(new, x) for x in adding]),
                    'removing':  ', '.join([fmt(old, x) for x in removing]),
-                   'modifying': ', '.join([fmt(new, x) for x in modifying])}
+                   'modifying': ', '.join([fmt(new, x) for x in modifying]),
+                   'from': u'' if not useFrom else old[modifying[0]]}
 
         mcomment += i18n.twtranslate(insite.lang, commentname) % changes
-        mods = i18n.twtranslate('en', commentname) % changes
+        mods = i18n.twtranslate(config.userinterface_lang, commentname) % changes
 
     return mods, mcomment, adding, removing, modifying
 
