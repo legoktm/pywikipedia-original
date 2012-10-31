@@ -124,7 +124,7 @@ userinterface = 'terminal'
 
 # i18n setting for user interface language
 # default is config.mylang or 'en'
-userinterface_lang = None
+userinterface_lang = 'en' # None
 
 # Should we transliterate characters that do not exist in the console
 # character set?
