@@ -4044,8 +4044,8 @@ class ImagePage(Page):
                                 page.
     fileIsOnCommons           : Return True if image stored on Wikimedia
                                 Commons.
-    fileIsShared              : Return True if image stored on Wikitravel
-                                shared repository.
+    fileIsShared              : Return True if image stored on a shared
+                                repository like Wikimedia Commons or Wikitravel.
     getFileMd5Sum             : Return image file's MD5 checksum.
     getFileVersionHistory     : Return the image file's version history.
     getFileVersionHistoryTable: Return the version history in the form of a
@@ -4054,10 +4054,10 @@ class ImagePage(Page):
     globalUsage               : Yield Pages on which the image is used globally
 
     """
-    def __init__(self, site, title, insite = None):
+    def __init__(self, site, title, insite=None):
         Page.__init__(self, site, title, insite, defaultNamespace=6)
         if self.namespace() != 6:
-            raise ValueError(u'BUG: %s is not in the image namespace!' % title)
+            raise ValueError(u"'%s' is not in the image namespace!" % title)
         self._imagePageHtml = None
         self._local = None
         self._latestInfo = {}
