@@ -1663,7 +1663,7 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                 # edit restriction for some templates on zh-wiki where interlanguage keys are included
                 # by /doc subpage
                 smallWikiAllowed = not (page.site.sitename() == 'wikipedia:zh' and
-                                        page.site.namespace() == 10 and
+                                        page.namespace() == 10 and
                                         u'Country data' in page.title(withNamespace=False))
                 # edit restriction on is-wiki
                 # http://is.wikipedia.org/wiki/Wikipediaspjall:V%C3%A9lmenni
