@@ -978,6 +978,14 @@ class Family(family.Family):
             'en': u'Education Program talk',
         }
 
+        self.namespaces[710] = {
+            'en': u'TimedText',
+        }
+
+        self.namespaces[711] = {
+            'en': u'TimedText talk',
+        }
+
         self.category_redirect_templates = {
             '_default': (),
             'ar': (u'تحويل تصنيف',
