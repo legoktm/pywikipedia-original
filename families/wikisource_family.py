@@ -24,26 +24,20 @@ class Family(family.Family):
         self.langs['-'] = 'wikisource.org'
 
         # Override defaults
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
-        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
-        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
-        self.namespaces[3]['ca'] = [u'Usuari Discussió']
-        self.namespaces[2]['ca'] = [u'Usuari']
-        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
-        self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
-        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
-        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
-        self.namespaces[6]['vec'] = [u'File', u'Imagine']
-        self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
-        self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
-        self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
-        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
-        self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
+        self.namespaces[3]['ca'] = [u'Usuari Discussió']
+        self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[12]['ml'] = [u'സഹായം', u'H', u'സ']
+        self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
+        self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
+        self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
+        self.namespaces[6]['vec'] = [u'File', u'Imagine']
+        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -506,6 +500,7 @@ class Family(family.Family):
             'it': u'Pagina',
             'pt': u'Em Tradução',
             'sv': u'Index',
+            'zh': u'Transwiki',
         }
 
         self.namespaces[109] = {
@@ -516,6 +511,7 @@ class Family(family.Family):
             'it': u'Discussioni pagina',
             'pt': u'Discussão Em Tradução',
             'sv': u'Indexdiskussion',
+            'zh': u'Transwiki talk',
         }
 
         self.namespaces[110] = {
