@@ -740,7 +740,7 @@ class Family:
                 'ch': u'Muna\'sesetbi',
                 'ckb': u'بەکارھێنەر',
                 'crh': [u'Qullanıcı', u'Къулланыджы'],
-                'cs': [u'Wikipedista', u'Uživatel', u'Wikipedistka'],
+                'cs': [u'Uživatel', u'Uživatelka'],
                 'csb': [u'Brëkòwnik', u'Użytkownik', u'Użytkowniczka'],
                 'cu': [u'Польꙃєватєл҄ь', u'Участник', u'Польѕевател҄ь'],
                 'cv': u'Хутшăнакан',
@@ -761,7 +761,7 @@ class Family:
                 'fi': u'Käyttäjä',
                 'fiu-vro': u'Pruukja',
                 'fo': u'Brúkari',
-                'fr': [u'Utilisateur', u'Utilisatrice'],
+                'fr':  u'Utilisateur',
                 'frp': [u'Utilisator', u'Usanciér'],
                 'frr': [u'Benutzer', u'Benutzerin'],
                 'fur': u'Utent',
@@ -860,7 +860,7 @@ class Family:
                 'pms': u'Utent',
                 'pnt': u'Χρήστες',
                 'ps': [u'کارن', u'کارونکی'],
-                'pt': [u'Usuário(a)', u'Utilizador', u'Usuário', u'Usuária'],
+                'pt': [u'Utilizador', u'Usuário', u'Utilizadora'],
                 'qu': u'Ruraq',
                 'rm': u'Utilisader',
                 'rmy': u'Jeno',
@@ -959,7 +959,7 @@ class Family:
                 'ch': u'Kombetsasion ni muna\'sesetbi',
                 'ckb': [u'لێدوانی بەکارھێنەر', u'قسەی بەکارھێنەر'],
                 'crh': [u'Qullanıcı muzakeresi', u'Къулланыджы музакереси'],
-                'cs': [u'Diskuse s wikipedistou', u'Diskuse s uživatelem', u'Diskuse s wikipedistkou', u'Wikipedista diskuse', u'Wikipedistka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse'],
+                'cs': [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou'],
                 'csb': [u'Diskùsëjô brëkòwnika', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki'],
                 'cu': [u'Польꙃєватєлꙗ бєсѣда', u'Польѕевател� бесѣда'],
                 'cv': u'Хутшăнаканăн канашлу страници',
@@ -979,7 +979,7 @@ class Family:
                 'fi': u'Keskustelu käyttäjästä',
                 'fiu-vro': u'Pruukja arotus',
                 'fo': [u'Brúkarakjak', u'Brúkari kjak'],
-                'fr': [u'Discussion utilisateur', u'Discussion Utilisatrice', u'Discussion Utilisateur'],
+                'fr': [u'Discussion utilisateur', u'Discussion Utilisateur'],
                 'frp': [u'Discussion utilisator', u'Discussion usanciér'],
                 'frr': [u'Benutzer Diskussion', u'Benutzerin Diskussion'],
                 'fur': u'Discussion utent',
@@ -1078,7 +1078,7 @@ class Family:
                 'pms': u'Ciaciarade',
                 'pnt': u'Καλάτσεμαν χρήστε',
                 'ps': [u'د کارن خبرې اترې', u'د کارونکي خبرې اترې'],
-                'pt': [u'Usuário(a) Discussão', u'Utilizador Discussão', u'Usuário Discussão', u'Usuária Discussão'],
+                'pt': [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão'],
                 'qu': u'Ruraq rimanakuy',
                 'rm': u'Utilisader discussiun',
                 'rmy': [u'Jeno vakyarimata', u'Discuţie Utilizator'],
@@ -4333,7 +4333,7 @@ class Family:
         """Return the shared image repository, if any."""
         return (None, None)
 
-    def server_time(self):
+    def server_time(self, code):
         """Return a datetime object representing server time"""
         # TODO : If the local computer time is wrong, result will be wrong
         return datetime.utcnow() + self.servergmtoffset
