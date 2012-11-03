@@ -44,9 +44,13 @@ class Family(family.Family):
         self.langs = dict([(lang, '%s.wikipedia.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[2]['cs'] = [u'Wikipedista', u'Uživatel', u'Wikipedistka']
+        self.namespaces[3]['cs'] =  [u'Diskuse s wikipedistou', u'Diskuse s uživatelem', u'Diskuse s wikipedistkou', u'Wikipedista diskuse', u'Wikipedistka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[12]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion'],
         self.namespaces[12]['de'] = [u'Hilfe', u'H']
         self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD']
+        self.namespaces[2]['fr'] = [u'Utilisateur', u'Utilisatrice']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisatrice', u'Discussion Utilisateur']
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
         self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク', u'Image talk', u'画像‐ノート']
@@ -58,6 +62,8 @@ class Family(family.Family):
         self.namespaces[14]['ja'] = [u'Category', u'カテゴリ']
         self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
         self.namespaces[12]['nl'] = [u'Help', u'H']
+        self.namespaces[2]['pt'] =  [u'Usuário(a)', u'Utilizador', u'Usuário', u'Usuária']
+        self.namespaces[3]['pt'] = [u'Usuário(a) Discussão', u'Utilizador Discussão', u'Usuário Discussão', u'Usuária Discussão']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -1060,10 +1066,6 @@ class Family(family.Family):
             # ([[MediaWiki:Disambiguationspage]])
             # first char must be in uppercase
             '_default': [u'Disambig'], # for default MediaWiki message only
-            'arc': [u'ܬ.ܐ.', u'ܕ', u'Disambig'],
-            'az':  [u'Dəqiqləşdirmə'],
-            'ba':  [u'Күп мәғәнәлелек'],
-            'bn':  [u'দ্ব্যর্থতা নিরসন', u'Disambig'],
             'cdo': [u'Gì-ngiê', u'Disambig'],
             'fo':  [u'Fleiri týdningar'],
             'frp': [u'Homonimos', u'Disambig'],
