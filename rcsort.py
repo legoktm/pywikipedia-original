@@ -9,7 +9,7 @@ Currently only works on Dutch Wikipedia, I do intend to make it more generally
 usable.
 Permission has been asked to run this on the toolserver.
 """
-# (C) Pywikipedia bot team, 2007-2010
+# (C) Pywikipedia bot team, 2007-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -19,7 +19,7 @@ __version__ = '$Id$'
 import cgi
 import cgitb
 import re
-import wikipedia
+import wikipedia as pywikibot
 
 cgitb.enable()
 
