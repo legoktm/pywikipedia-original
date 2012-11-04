@@ -1963,13 +1963,13 @@ not supported by PyWikipediaBot!"""
                 raise LockedPage(
                     u'Not allowed to edit %s because of a restricting template'
                     % self.title(asLink=True))
-            elif self.site().has_api() and self.namespace() in [2,3] \
+            elif self.site().has_api() and self.namespace() == 2 \
                  and (self.title().endswith('.css') or \
                       self.title().endswith('.js')):
                 titleparts = self.title().split("/")
                 userpageowner = titleparts[0].split(":")[1]
                 if userpageowner != username:
-                    # API enable: if title ends with .css or .js in ns2,3
+                    # API enable: if title ends with .css or .js in ns2
                     # it needs permission to edit user pages
                     if self.title().endswith('css'):
                         permission = 'editusercss'
