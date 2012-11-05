@@ -282,9 +282,9 @@ def getUsage(use):
 def applyAllFilters(categories):
     ''' Apply all filters on categories. '''
     result = []
-    result = filterBlacklist(categories)
-    result = filterDisambiguation(result)
+    result = filterDisambiguation(categories)
     result = followRedirects(result)
+    result = filterBlacklist(result)
     result = filterCountries(result)
     result = filterParents(result)
     return result
