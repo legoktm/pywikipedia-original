@@ -52,6 +52,7 @@ fixes = {
         'msg': {
             'ar':u'روبوت: تحويل/تصليح HTML',
             'be':u'Бот: карэкцыя HTML',
+            'be-x-old':u'Бот: карэкцыя HTML',
             'cs':u'převod/oprava HTML',
             'en':u'Robot: Converting/fixing HTML',
             'eo':u'Bot: koredtado de HTMLa teksto',
@@ -193,6 +194,7 @@ fixes = {
         'msg': {
             'ar':u'بوت: تصليح تهيئة الويكي',
             'be':u'Бот: Карэкцыя вiкi-сiнтаксiсу',
+            'be-x-old':u'Бот выпраўляе вiкi-сынтаксiс',
             'cs':u'Oprava wikisyntaxe',
             'de':u'Bot: Korrigiere Wiki-Syntax',
             'en':u'Robot: Fixing wiki syntax',
@@ -269,6 +271,7 @@ fixes = {
         'msg': {
             'ar':u'بوت: تصليح تهيئة الويكي',
             'be':u'Бот: Карэкцыя вiкi-сiнтаксiсу',
+            'be-x-old':u'Бот выпраўляе вiкi-сынтаксiс',
             'cs':u'Oprava wikisyntaxe',
             'de':u'Bot: Korrigiere Wiki-Syntax',
             'en':u'Robot: Fixing wiki syntax',
