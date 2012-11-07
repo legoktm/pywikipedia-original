@@ -6266,7 +6266,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                     }
                     datas = query.GetData(params, self)['query']['allmessages'][0]
                     if "missing" in datas:
-                        raise KeyError("message is not exist.")
+                        raise KeyError("message '%s' does not exist." % key)
                     elif datas['name'] not in self._mediawiki_messages:
                         self._mediawiki_messages[datas['name']] = datas['*']
                     #self._mediawiki_messages = _dict([(tag['name'].lower(), tag['*'])
