@@ -23,11 +23,14 @@ class Family(family.Family):
         self.langs = dict([(lang, '%s.wikiquote.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
+        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
@@ -39,9 +42,6 @@ class Family(family.Family):
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[3]['pl'] = [u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
         self.namespaces[2]['pl'] = [u'Użytkownik', u'Użytkowniczka']
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
-        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
-        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.

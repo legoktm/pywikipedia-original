@@ -24,20 +24,20 @@ class Family(family.Family):
         self.langs['-'] = 'wikisource.org'
 
         # Override defaults
-        self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
-        self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
-        self.namespaces[3]['ca'] = [u'Usuari Discussió']
-        self.namespaces[2]['ca'] = [u'Usuari']
-        self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
-        self.namespaces[12]['ml'] = [u'സഹായം', u'H', u'സ']
-        self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
-        self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
-        self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
-        self.namespaces[6]['vec'] = [u'File', u'Imagine']
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
         self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
+        self.namespaces[3]['ca'] = [u'Usuari Discussió']
+        self.namespaces[2]['ca'] = [u'Usuari']
+        self.namespaces[6]['vec'] = [u'File', u'Imagine']
+        self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
+        self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
+        self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
+        self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
+        self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
+        self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
+        self.namespaces[12]['ml'] = [u'സഹായം', u'H', u'സ']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.

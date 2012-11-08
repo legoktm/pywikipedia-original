@@ -19,16 +19,16 @@ class Family(family.Family):
         self.langs = dict([(lang, '%s.wikinews.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[14]['en'] = [u'Category', u'CAT']
+        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['cs'] = [u'Diskuse s redaktorem', u'Diskuse s redaktorkou', u'Diskuse s uživatelem', u'Redaktor diskuse', u'Redaktorka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
         self.namespaces[2]['cs'] = [u'Redaktor', u'Redaktorka', u'Uživatel', u'Uživatelka']
-        self.namespaces[14]['en'] = [u'Category', u'CAT']
         self.namespaces[3]['pl'] = [u'Dyskusja wikireportera', u'Dyskusja wikireporterki']
         self.namespaces[2]['pl'] = [u'Wikireporter', u'Wikireporterka']
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
-        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
-        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
