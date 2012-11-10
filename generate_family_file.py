@@ -48,11 +48,12 @@ os.path.exists = lambda x: False
 import family
 
 class FamilyFileGenerator(object):
-    def __init__(self, url=None, name=None):
+    def __init__(self, url=None, name=None, dointerwiki=None):
         if url == None:
             url = raw_input("Please insert URL to wiki: ")
         if name == None:
             name = raw_input("Please insert a short name (eg: freeciv): ")
+        self.dointerwiki = dointerwiki
         self.base_url = url
         self.name = name
 
@@ -96,25 +97,45 @@ class FamilyFileGenerator(object):
                                u'prefix': w.lang,
                                u'url': w.iwpath})
 
-        if len(self.langs) > 1 and \
-           raw_input("\nThere are %i languages available.\nDo you want to generate interwiki links? This might take a long time. (y/N)" % len(self.langs)).lower() != "y":
-            self.langs = [wiki for wiki in self.langs if wiki[u'url'] == w.iwpath]
+        if len(self.langs) > 1:
+           if self.dointerwiki is None:
+               makeiw = raw_input("\nThere are %i languages available.\nDo you want to generate interwiki links? This might take a long time. ([y]es/[N]o/[e]dit)" % len(self.langs)).lower()
+           else:
+               makeiw = self.dointerwiki
+           
+           if makeiw == "y":
+               pass
+           elif makeiw == "e":
+               for wiki in self.langs:
+                   print wiki['prefix'], wiki['url']
+               do_langs = raw_input("Which languages do you want: ")
+               self.langs = [wiki for wiki in self.langs if wiki['prefix'] in do_langs or wiki['url'] == w.iwpath]
+           else:
+               self.langs = [wiki for wiki in self.langs if wiki[u'url'] == w.iwpath]
 
     def getapis(self):
         print "Loading wikis... "
         for lang in self.langs:
             print "  * %s... " % (lang[u'prefix']),
             if lang[u'url'] not in self.wikis:
-                self.wikis[lang[u'url']] = Wiki(lang[u'url'])
-                print "downloaded"
+                try:
+                    self.wikis[lang[u'url']] = Wiki(lang[u'url'])
+                    print "downloaded"
+                except Exception, e:
+                    print e
             else:
                 print "in cache"
 
     def getnamespaces(self):
         print "Retrieving namespaces... ",
-        for w in self.wikis.itervalues():
+        for key in self.wikis.keys():
+            w = self.wikis[key]
             print "%s " % w.lang,
-            self.namespaces.addfromwiki(w)
+            try:
+                self.namespaces.addfromwiki(w)
+            except Exception, e:
+                print e, (" - removing language %s" % key)
+                del self.wikis[key]
         print
 
     def writefile(self):
