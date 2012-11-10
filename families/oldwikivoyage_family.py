@@ -6,15 +6,15 @@ class Family(family.Family):
         family.Family.__init__(self)
         self.name = 'oldwikivoyage'
         self.langs = {
-            'fr': u'fr.wikivoyage.org',
-            'wts': u'wts.wikivoyage.org',
-            'en': u'en.wikivoyage.org',
-            'ru': u'ru.wikivoyage.org',
-            'de': u'www.wikivoyage.org',
-            'shared': u'www.wikivoyage.org',
-            'it': u'www.wikivoyage.org',
-            'nl': u'nl.wikivoyage.org',
-            'sv': u'sv.wikivoyage.org',
+            'fr': u'fr.wikivoyage-old.org',
+            'wts': u'wts.wikivoyage-old.org',
+            'en': u'en.wikivoyage-old.org',
+            'ru': u'ru.wikivoyage-old.org',
+            'de': u'www.wikivoyage-old.org',
+            'shared': u'www.wikivoyage-old.org',
+            'it': u'www.wikivoyage-old.org',
+            'nl': u'nl.wikivoyage-old.org',
+            'sv': u'sv.wikivoyage-old.org',
         }
 
         self.namespaces[1] = self.namespaces.get(1, {})
