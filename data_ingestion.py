@@ -9,9 +9,122 @@ import xml.etree.ElementTree
 import wikipedia as pywikibot
 import config, query, upload
 import csv, urllib
-import flickrripper
 import pagegenerators
+import urlparse, posixpath
 
+class Photo(object):
+    '''
+    Represents a Photo (or other file), with metadata, to upload to Commons.
+
+    The constructor takes two parameters: URL (string) and metadata (dict with str:str key:value pairs)
+    that can be referred to from the title & template generation.
+
+
+    '''
+    def __init__(self, URL, metadata):
+        self.URL = URL
+        self.metadata = metadata
+        self.metadata["_url"] = URL
+        self.metadata["_filename"] = filename = posixpath.split(urlparse.urlparse(URL)[2])[1]
+        self.metadata["_ext"] = ext = filename.split(".")[-1]
+        if ext == filename:
+            self.metadata["_ext"] = ext = None
+        self.contents = None
+
+    def downloadPhoto(self):
+        '''
+        Download the photo and store it in a StringIO.StringIO object.
+
+        TODO: Add exception handling
+        '''
+        if not self.contents:
+            imageFile=urllib.urlopen(self.URL).read()
+            self.contents = StringIO.StringIO(imageFile)
+        return self.contents
+
+    def findDuplicateImages(self, site = pywikibot.getSite(u'commons', u'commons')):
+        '''
+        Takes the photo, calculates the SHA1 hash and asks the mediawiki api for a list of duplicates.
+
+        TODO: Add exception handling, fix site thing
+        '''
+        hashObject = hashlib.sha1()
+        hashObject.update(self.downloadPhoto().getvalue())
+        return site.getFilesFromAnHash(base64.b16encode(hashObject.digest()))
+
+    def getTitle(self, fmt):
+        """
+        Given a format string with %(name)s entries, returns the string formatted with metadata
+        """
+        return fmt % self.metadata
+
+    def getDescription(self, template, extraparams={}):
+        '''
+        Generate a description for a file
+        '''
+
+        params = {}
+        params.update(self.metadata)
+        params.update(extraparams)
+        description = u'{{%s\n' % template
+        for key in sorted(params.keys()):
+            value = params[key]
+            if not key.startswith("_"):
+                description = description + (u'|%s=%s' % (key, self._safeTemplateValue(value))) + "\n"
+        description = description + u'}}'
+
+        return description
+
+    def _safeTemplateValue(self, value):
+        return value.replace("|", "{{!}}")
+
+def CSVReader(fileobj, urlcolumn, *args, **kwargs):
+    reader = csv.DictReader(fileobj, *args, **kwargs)
+
+    for line in reader:
+        yield Photo(line[urlcolumn], line)
+
+class DataIngestionBot:
+    def __init__(self, reader, titlefmt, pagefmt, site=pywikibot.getSite(u'commons', u'commons')):
+        self.reader = reader
+        self.titlefmt = titlefmt
+        self.pagefmt = pagefmt
+        self.site = site
+
+    def _doUpload(self, photo):
+        duplicates = photo.findDuplicateImages(self.site)
+        if duplicates:
+            pywikibot.output(u"Skipping duplicate of %r" % (duplicates, ))
+            return duplicates[0]
+
+        title = photo.getTitle(self.titlefmt)
+        description = photo.getDescription(self.pagefmt)
+
+        bot = upload.UploadRobot(url = photo.URL,
+                                 description = description,
+                                 useFilename = title,
+                                 keepFilename = True,
+                                 verifyDescription = False,
+                                 targetSite = self.site)
+        bot._contents = photo.downloadPhoto().getvalue()
+        bot._retrieved = True
+        bot.run()
+
+        return title
+
+    def doSingle(self):
+        return self._doUpload(self.reader.next())
+
+    def run(self):
+        for photo in self.reader:
+            self._doUpload(photo)
+
+if __name__=="__main__":
+    reader = CSVReader(open('tests/data/csv_ingestion.csv'), 'url')
+    bot = DataIngestionBot(reader, "%(name)s - %(set)s.%(_ext)s", ":user:valhallasw/test_template", pywikibot.getSite('test', 'test'))
+    bot.run()
+
+"""
 class DataIngestionBot:
     def __init__(self, configurationPage):
         '''
@@ -62,18 +175,6 @@ class DataIngestionBot:
         hashObject = hashlib.sha1()
         hashObject.update(photo.getvalue())
         return site.getFilesFromAnHash(base64.b16encode(hashObject.digest()))
-
-    def getDescription(self, metadata):
-        '''
-        Generate a description for a file
-        '''
-
-        description = u'{{%(configurationTemplate)s}}\n' % self.configuration
-        for key, value in metadata.iteritems():
-            description = description + u'|' + key + u'=%(' + key + u')s\n'
-        description = description + u'}}\n'
-
-        return description % metadata
 
     def getTitle(self, metadata):
         '''
@@ -180,3 +281,4 @@ if __name__ == "__main__":
         main(sys.argv[1:])
     finally:
         print "All done!"
+"""
