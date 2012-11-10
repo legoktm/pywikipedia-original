@@ -283,7 +283,10 @@ class SumDiscBot(basic.AutoBasicBot):
 
 
         lang = locale.locale_alias.get(self.site.lang, locale.locale_alias['en']).split('.')[0]
-        locale.setlocale(locale.LC_TIME, lang)
+        try:
+            locale.setlocale(locale.LC_TIME, lang)
+        except locale.Error:    # work-a-round for missing 'de_DE' on nightshade (TS-1554)
+            locale.setlocale(locale.LC_TIME, lang + '.utf8')
 
         # init constants
         self._userListPage = pywikibot.Page(self.site, bot_config['userlist'])
