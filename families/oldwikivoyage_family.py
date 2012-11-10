@@ -133,6 +133,4 @@ class Family(family.Family):
         }[code]
 
     def apipath(self, code):
-        if self.versionnumber(code) == 13:
-            raise NotImplementedError
         return family.Family.apipath(self, code)
