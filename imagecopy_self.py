@@ -75,6 +75,7 @@ nowCommonsTemplate = {
     'en' : u'{{NowCommons|1=File:%s|date=~~~~~|reviewer={{subst:REVISIONUSER}}}}',
     'lb' : u'{{Elo op Commons|%s}}',
     'nds-nl' : u'{{NoenCommons|1=File:%s}}',
+    'shared' : u'{{NowCommons|1=File:%s|date=~~~~~|reviewer={{subst:REVISIONUSER}}}}',
 }
 
 moveToCommonsTemplate = {
@@ -82,6 +83,7 @@ moveToCommonsTemplate = {
     'en' : [u'Commons ok', u'Copy to Wikimedia Commons', u'Move to commons', u'Movetocommons', u'To commons', u'Copy to Wikimedia Commons by BotMultichill'],
     'lb' : [u'Move to commons'],
     'nds-nl' : [u'Noar Commons', u'VNC'],
+    'shared' : [u'Move'],
 }
 
 skipTemplates = {
@@ -140,6 +142,7 @@ skipTemplates = {
                 u'NoenCommons',
                 u'NowCommons',
                 ],
+    'shared' : [u''],
     }
 
 
@@ -164,6 +167,8 @@ licenseTemplates = {
             ],
     'nds-nl' : [(u'\{\{PD-eigenwark\}\}', u'{{PD-user-w|%(lang)s|%(family)s|%(author)s}}'),
                 ],
+    'shared' : [(u'\{\{(self|self2)\|([^\}]+)\}\}', u'{{Self|\\2|author=%(author)s at old wikivoyage shared}}'),
+            ],
     }
 
 sourceGarbage = {
@@ -183,12 +188,16 @@ sourceGarbage = {
                u'==\s*Licentie\s*==',
                u'\{\{DEFAULTSORT:\{\{PAGENAME\}\}\}\}',
                ],
+    'shared' : [u'==\s*Beschreibung,\sQuelle\s*==',
+                u'==\s*Licensing:?\s*==',
+                ],                
     }
 
 informationTemplate = {
     'de' : 'Information',
     'en' : 'Information',
     'nds-nl' : 'Information',
+    'shared' : 'Information',
     }
 
 informationFields = {
@@ -212,6 +221,14 @@ informationFields = {
         },
     'nds-nl' : {
         u'location' : u'remarks',
+        u'description' : u'description',
+        u'source' : u'source',
+        u'date' : u'date',
+        u'author' : u'author',
+        u'permission' : u'permission',
+        u'other versions' : u'other versions',
+        },
+    'shared' : {
         u'description' : u'description',
         u'source' : u'source',
         u'date' : u'date',
@@ -361,9 +378,10 @@ class imageFetcher(threading.Thread):
         # We now got the contents from the old information template. Let's get the info for the new one
 
         # Description
+        # FIXME: Add {{<lang>|<original text>}} if <lang is valid at Commons
         if not contents[u'description']==u'':
             description = self.convertLinks(contents[u'description'], imagepage.site())
-        if not contents[u'remarks']==u'':
+        if contents.get(u'remarks') and not contents[u'remarks']==u'':
             if description==u'':
                 description = self.convertLinks(contents[u'remarks'], imagepage.site())
             else:
@@ -801,8 +819,7 @@ class uploader(threading.Thread):
             cid = cid + u'\n{{BotMoveToCommons|%(lang)s.%(family)s|year={{subst:CURRENTYEAR}}|month={{subst:CURRENTMONTHNAME}}|day={{subst:CURRENTDAY}}}}\n' % {u'lang' : lang, u'family' : family}
         cid = cid + u'== {{int:filedesc}} ==\n'
         cid = cid + u'{{Information\n'
-        cid = cid + u'|description={{%(lang)s|1=' % {u'lang' : lang, u'family' : family}
-        cid = cid + u'%(description)s}}\n' % fields
+        cid = cid + u'|description=%(description)s\n' % fields
         cid = cid + u'|date=%(date)s\n' % fields
         cid = cid + u'|source=%(source)s\n' % fields
         cid = cid + u'|author=%(author)s\n' % fields
