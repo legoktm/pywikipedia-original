@@ -77,6 +77,9 @@ class Family(family.Family):
     def dbName(self, code):
         return 'commonswiki_p'
 
+    def shared_image_repository(self, code):
+        return ('commons', 'commons')
+
     if family.config.SSL_connection:
 
         def protocol(self, code):
