@@ -46,7 +46,7 @@ template_to_the_image = {
     }
 template_to_the_user = {
     'en': u'\n\n{{img-sem-uso|%(title)s}}',
-    'fa': u'\n\n{{اخطار به کاربر برای تصاویر بدون استفاده|%(title)s}}--~~~~',
+    'fa': u'\n\n{{جا:اخطار به کاربر برای تصاویر بدون استفاده|%(title)s}}--~~~~',
     'it': u'\n\n{{Utente:Filbot/Immagine orfana}}',
     }
 except_text = {
@@ -93,6 +93,8 @@ def main():
     for arg in pywikibot.handleArgs():
         if arg == '-always':
             always = True
+        if arg == '-start':
+            start = True
 
     mysite = pywikibot.getSite()
     # If anything needs to be prepared, you can do it here
@@ -114,12 +116,15 @@ def main():
                 pywikibot.output(u"%s done already"
                                  % page.title(asLink=True))
                 continue
-            appendtext(page, u"\n\n"+template_image)
-            uploader = page.getFileVersionHistory().pop()[1]
-            usertalkname = u'User Talk:%s' % uploader
-            usertalkpage = pywikibot.Page(mysite, usertalkname)
-            msg2uploader = template_user % {'title': page.title()}
-            appendtext(usertalkpage, msg2uploader)
+            try:
+                appendtext(page, u"\n\n"+template_image)
+                uploader = page.getFileVersionHistory().pop()[1]
+                usertalkname = u'User Talk:%s' % uploader
+                usertalkpage = pywikibot.Page(mysite, usertalkname)
+                msg2uploader = template_user % {'title': page.title()}
+                appendtext(usertalkpage, msg2uploader)
+            except:
+                continue
 
 if __name__ == "__main__":
     try:
