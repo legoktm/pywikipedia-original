@@ -1316,7 +1316,7 @@ not supported by PyWikipediaBot!"""
             'prop'      :'info',
             'titles'    :self.title(),
             }
-        data = query.GetData(params, self.site(), encodeTitle = False)['query']['pages'].values()[0]
+        data = query.GetData(params, self.site)['query']['pages'].values()[0]
         if 'redirect' in data:
             raise IsRedirectPage
         elif 'missing' in data:
@@ -1351,7 +1351,7 @@ not supported by PyWikipediaBot!"""
         tmpsFound = []
         count = 0
         while True:
-            data = query.GetData(params, self.site(), encodeTitle = False)['query']['pages'].values()[0]
+            data = query.GetData(params, self.site)['query']['pages'].values()[0]
             if "templates" not in data:
                 return []
 
@@ -6841,7 +6841,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
 
         seen = set()
         while True:
-            data = query.GetData(params, self, encodeTitle = False)
+            data = query.GetData(params, self)
             if 'error' in data:
                 raise RuntimeError('%s' % data['error'])
             try:
@@ -7888,7 +7888,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 'rctoken'   : 'patrol',
                 'rclimit'   : 1,
             }
-            data = query.GetData(params, self, encodeTitle = False)
+            data = query.GetData(params, self)
             if 'error' in data:
                 raise RuntimeError('%s' % data['error'])
             elif 'warnings' in data:
@@ -7924,7 +7924,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             'list'      :'allimages',
             'aisha1'    :hash_found,
         }
-        allimages = query.GetData(params, self, encodeTitle = False)['query']['allimages']
+        allimages = query.GetData(params, self)['query']['allimages']
         files = list()
         for imagedata in allimages:
             image = imagedata[u'name']

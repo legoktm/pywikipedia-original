@@ -14,7 +14,7 @@ This module allow you to use the API in a simple and easy way.
         'rvprop'    :'user|timestamp|content',
         }
 
-    print query.GetData(params, encodeTitle = False)
+    print query.GetData(params)
 
 """
 #
@@ -28,6 +28,7 @@ __version__ = '$Id$'
 import time
 import wikipedia as pywikibot
 import config
+from pywikibot import deprecate_arg
 try:
     #For Python 2.6 newer
     import json
@@ -38,7 +39,7 @@ try:
 except ImportError:
     import simplejson as json
 
-
+@deprecate_arg("encodeTitle", None)
 def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
             encodeTitle=True, sysop=False, back_response=False):
     """Get data from the query api, and convert it into a data object

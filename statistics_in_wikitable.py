@@ -62,7 +62,7 @@ class StatisticsBot:
         }
         pywikibot.output("\nQuerying api for json-formatted data...")
         try:
-            data = query.GetData(params,self.site, encodeTitle = False)
+            data = query.GetData(params,self.site)
         except:
             url = self.site.protocol() + '://' + self.site.hostname() + self.site.api_address()
             pywikibot.output("The query has failed. Have you check the API? Cookies are working?")

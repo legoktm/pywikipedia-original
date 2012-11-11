@@ -7,17 +7,19 @@ See imagerecat.py (still working on that one) to add these images to categories.
 __version__ = '$Id$'
 #
 # (C) Multichill 2008-2011
-# (C) Pywikipedia bot team, 2008-2011
+# (C) Pywikipedia bot team, 2008-2012
 #
 # Distributed under the terms of the MIT license.
 #
 #
 
 import os, sys, re, codecs
-import wikipedia as pywikibot
-import config, pagegenerators, query
 from datetime import datetime
 from datetime import timedelta
+import wikipedia as pywikibot
+import config
+import pagegenerators
+import query
 
 #Probably unneeded because these are hidden categories. Have to figure it out.
 ignoreCategories = [u'Category:CC-BY-SA-3.0',
@@ -1273,7 +1275,7 @@ def recentChanges(site = None, delay=0, block=70):
         'rctype'    :'edit|log',
         }
 
-    data = query.GetData(params, site, encodeTitle = False)
+    data = query.GetData(params, site)
     try:
         for item in data['query']['recentchanges']:
             result.append(item['title'])
