@@ -7883,6 +7883,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             params = {
                 'action'    : 'query',
                 'list'      : 'recentchanges',
+                'rctype'    : 'new',
                 'rcshow'    : '!patrolled',
                 'rctoken'   : 'patrol',
                 'rclimit'   : 1,
@@ -7890,6 +7891,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             data = query.GetData(params, self, encodeTitle = False)
             if 'error' in data:
                 raise RuntimeError('%s' % data['error'])
+            elif 'warnings' in data:
+                raise RuntimeError('%s' % data['warnings'])
             try:
                 rcData = data['query']['recentchanges']
             except KeyError:
