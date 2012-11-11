@@ -24,22 +24,23 @@ import config
 from pywikibot import *
 import wikipedia as pywikibot
 
-
 # global variables
-
 # import useragent and MyURLopener from global namespace
 useragent   = pywikibot.useragent
 MyURLopener = pywikibot.MyURLopener
+
 
 class buffered_addinfourl(object):
     """
     Buffered transparent addinfourl wrapper to enable re-reading of all
     attributes.
     """
+
     def __init__(self, addinfourl):
         self._parent = addinfourl
         self._buffer = {}
-    def __getattr__(self, name):
+
+    def __getattr__(self, name, *args, **kwds):
         # raise same exception as parent if attribute does not exist
         attr = getattr(self._parent, name)
         if callable(attr):
@@ -48,12 +49,14 @@ class buffered_addinfourl(object):
         else:
             # do call to buffer data from parent and return
             return self._call(name, attr, *args, **kwds)
+
     def _call(self, name, attr, *args, **kwds):
         if name not in self._buffer:
             # buffer data from parent
             self._buffer[name] = attr(*args, **kwds)
         # return buffered data
         return self._buffer[name]
+
 
 def request(site, uri, retry = None, sysop = False, data = None, compress = True,
             no_hostname = False, cookie_only=False, refer=None, back_response=False):
