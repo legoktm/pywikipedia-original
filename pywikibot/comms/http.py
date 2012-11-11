@@ -40,7 +40,7 @@ class buffered_addinfourl(object):
         self._parent = addinfourl
         self._buffer = {}
 
-    def __getattr__(self, name, *args, **kwds):
+    def __getattr__(self, name):
         # raise same exception as parent if attribute does not exist
         attr = getattr(self._parent, name)
         if callable(attr):
