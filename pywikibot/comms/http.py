@@ -48,7 +48,7 @@ class buffered_addinfourl(object):
             return lambda *args, **kwds: self._call(name, attr, *args, **kwds)
         else:
             # do call to buffer data from parent and return
-            return self._call(name, attr, *args, **kwds)
+            return self._call(name, (lambda *args, **kwds: attr))
 
     def _call(self, name, attr, *args, **kwds):
         if name not in self._buffer:
