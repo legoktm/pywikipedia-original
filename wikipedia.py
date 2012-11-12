@@ -2680,10 +2680,16 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                     allDone = True
             return cats
 
-    def linkedPages(self, withImageLinks = False):
+    def linkedPages(self, withImageLinks=False):
         """Return a list of Pages that this Page links to.
 
-        Excludes interwiki and category links, and also image links by default.
+        Only returns pages from "normal" internal links. Category links are
+        omitted unless prefixed with ":". Image links are omitted when parameter
+        withImageLinks is False. Embedded templates are omitted (but links
+        within them are returned). All interwiki and external links are omitted.
+
+        @param withImageLinks: include Image links
+        @return: a list of Page objects.
         """
         result = []
         try:
