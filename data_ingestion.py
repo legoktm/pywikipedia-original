@@ -4,13 +4,11 @@
 A generic bot to do data ingestion (batch uploading) to Commons
 
 '''
-import sys, os.path, glob, re, hashlib, base64, StringIO
-import xml.etree.ElementTree
-import wikipedia as pywikibot
-import config, query, upload
-import csv, urllib
-import pagegenerators
-import urlparse, posixpath
+import pywikibot
+import posixpath, urlparse
+import urllib
+import hashlib, base64
+import StringIO
 
 class Photo(object):
     '''
@@ -79,6 +77,7 @@ class Photo(object):
         return value.replace("|", "{{!}}")
 
 def CSVReader(fileobj, urlcolumn, *args, **kwargs):
+    import csv
     reader = csv.DictReader(fileobj, *args, **kwargs)
 
     for line in reader:

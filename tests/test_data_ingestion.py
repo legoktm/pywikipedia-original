@@ -8,8 +8,7 @@ import os
 import unittest
 import test_utils
 
-import userlib
-import wikipedia
+import pywikibot
 
 import data_ingestion
 
@@ -30,7 +29,7 @@ class TestPhoto(unittest.TestCase):
 
     def test_findDuplicateImages(self):
         duplicates = self.obj.findDuplicateImages()
-        self.assertIn('MP_sounds.png', duplicates)
+        self.assertIn('MP sounds.png', [dup.replace("_", " ") for dup in duplicates])
 
     def test_getTitle(self):
         self.assertEqual(self.obj.getTitle("%(name)s - %(set)s.%(_ext)s"), "Sound icon - Crystal SVG icon set.png")
