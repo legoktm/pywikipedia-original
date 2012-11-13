@@ -26,9 +26,9 @@ __version__ = '$Id$'
 #
 
 import time
-import wikipedia as pywikibot
+import pywikibot
 import config
-from pywikibot import deprecate_arg
+from pywikibot.support import deprecate_arg
 try:
     #For Python 2.6 newer
     import json
