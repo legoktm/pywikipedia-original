@@ -138,7 +138,7 @@ import xmlreader
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup, SoupStrainer
 import weakref
 # Splitting the bot into library parts
-from pywikibot import *
+from pywikibot.support import *
 import config, login, query, version
 
 # Check Unicode support (is this a wide or narrow python build?)
@@ -8619,6 +8619,15 @@ should support your version and to learn how to hide this message.
 After collecting opinions for a time we will decide and announce the deadline
 of deprecating use of old Python versions for Pywikipedia.
 """ % sys.version)
+
+# The following will monkey-patch the pywikibot module to contain the same
+# functions and variables as wikipedia itself. This means we no longer have
+# to import wikipedia as pywikibot - instead, we can just import pywikibot
+#
+# Alas, it ain't beautiful, but it does work.
+
+import pywikibot
+pywikibot.__dict__.update(locals())
 
 if __name__ == '__main__':
     import doctest

@@ -28,7 +28,8 @@ import urllib, urllib2, time
 import traceback
 import wikipedia as pywikibot
 import config
-from pywikibot import deprecate_arg, i18n
+from pywikibot import i18n
+from pywikibot.support import deprecate_arg
 import date, catlib, userlib, query
 
 parameterHelp = u"""\

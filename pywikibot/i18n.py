@@ -11,7 +11,7 @@ __version__ = '$Id$'
 
 import re, sys
 import locale
-from pywikibot import Error
+from pywikibot.exceptions import Error
 import wikipedia as pywikibot
 import config
 
