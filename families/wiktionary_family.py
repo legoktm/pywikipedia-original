@@ -36,9 +36,22 @@ class Family(family.Family):
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
-        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
+        self.namespaces[-2]['tr'] = [u'Ortam', u'Medya']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[13]['ks'] = [u'پَلزُن بَحَژ']
+        self.namespaces[12]['ks'] = [u'پَلزُن']
+        self.namespaces[15]['ks'] = [u'زٲژ بَحَژ']
+        self.namespaces[14]['ks'] = [u'زٲژ']
+        self.namespaces[6]['ks'] = [u'فَیِل']
+        self.namespaces[1]['ks'] = [u'بَحَژ']
+        self.namespaces[3]['ks'] = [u'رُکُن بَحَژ']
+        self.namespaces[2]['ks'] = [u'رُکُن']
+        self.namespaces[-1]['ks'] = [u'خاص']
+        self.namespaces[7]['ks'] = [u'فَیِل بَحَژ']
+        self.namespaces[-2]['ks'] = [u'میڈیا']
+        self.namespaces[9]['ks'] = [u'میڈیاوکی بَحَژ']
+        self.namespaces[8]['ks'] = [u'میڈیاوکی']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
@@ -279,7 +292,7 @@ class Family(family.Family):
             'km': [u'ការពិភាក្សាអំពីWiktionary', u'Wiktionary ពិភាក្ស'],
             'kn': u'Wiktionary ಚರ್ಚೆ',
             'ko': u'위키낱말사전토론',
-            'ks': u'Wiktionary talk',
+            'ks': u'Wiktionary بَحَژ',
             'ku': [u'Gotûbêja Wîkîferhengê', u'Wîkîferheng gotûbêj', u'Wîkîferheng nîqaş'],
             'kw': [u'Kescows Wiktionary', u'Cows Wiktionary', u'Keskows Wiktionary'],
             'ky': u'Wiktionary баарлашуу',
@@ -387,6 +400,7 @@ class Family(family.Family):
             'bn': u'উইকিসরাস',
             'br': u'Stagadenn',
             'bs': u'Portal',
+            'cs': u'Příloha',
             'cy': u'Atodiad',
             'el': u'Παράρτημα',
             'en': u'Appendix',
@@ -421,6 +435,7 @@ class Family(family.Family):
             'bn': u'উইকিসরাস আলোচনা',
             'br': u'Kaozeadenn Stagadenn',
             'bs': u'Razgovor o Portalu',
+            'cs': u'Diskuse k příloze',
             'cy': u'Sgwrs Atodiad',
             'el': u'Συζήτηση παραρτήματος',
             'en': u'Appendix talk',

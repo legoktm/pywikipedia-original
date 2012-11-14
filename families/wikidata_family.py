@@ -16,10 +16,10 @@ class Family(family.Family):
         }
 #https://wikidata.org/w/api.php?action=query&meta=siteinfo&siprop=namespaces
         self.namespaces[4] = {
-            '_default': [u'Wikidata', 'Project'],
+            '_default': [u'Wikidata', u'WD', 'Project'],
         }
         self.namespaces[5] = {
-            '_default': [u'Wikidata talk', 'Project talk'],
+            '_default': [u'Wikidata talk', u'WT', 'Project talk'],
         }
         self.namespaces[120] = {
             '_default': u'Property',
