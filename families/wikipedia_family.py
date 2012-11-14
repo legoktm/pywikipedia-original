@@ -753,7 +753,7 @@ class Family(family.Family):
             'arz': [u'مناقشة بوابة', u'Portal talk'],
             'as': u'ৱিকিচ\'ৰা আলোচনা',
             'az': u'Portal müzakirəsi',
-            'bar': u'Portal Diskussion',
+            'bar': u'Portal Dischkrian',
             'be': [u'Размовы пра партал', u'Portal talk'],
             'be-x-old': u'Абмеркаваньне парталу',
             'bg': u'Портал беседа',
@@ -850,6 +850,7 @@ class Family(family.Family):
 
         self.namespaces[102] = {
             'als': u'Buech',
+            'bar': u'Buach',
             'ca': u'Viquiprojecte',
             'cs': u'Rejstřík',
             'da': u'Artikeldata',
@@ -882,6 +883,7 @@ class Family(family.Family):
 
         self.namespaces[103] = {
             'als': u'Buech Diskussion',
+            'bar': u'Buach Dischkrian',
             'ca': u'Viquiprojecte Discussió',
             'cs': u'Diskuse k rejstříku',
             'da': u'Artikeldatadiskussion',
@@ -915,6 +917,7 @@ class Family(family.Family):
         self.namespaces[104] = {
             'als': u'Wort',
             'ar': u'ملحق',
+            'bar': u'Woat',
             'es': u'Anexo',
             'fi': u'Kirja',
             'fr': u'Référence',
@@ -927,6 +930,7 @@ class Family(family.Family):
         self.namespaces[105] = {
             'als': u'Wort Diskussion',
             'ar': u'نقاش الملحق',
+            'bar': u'Woat Dischkrian',
             'es': u'Anexo Discusión',
             'fi': u'Keskustelu kirjasta',
             'fr': u'Discussion Référence',
@@ -938,18 +942,21 @@ class Family(family.Family):
 
         self.namespaces[106] = {
             'als': u'Text',
+            'bar': u'Text',
             'frr': u'Text',
             'ru': u'Арбитраж',
         }
 
         self.namespaces[107] = {
             'als': u'Text Diskussion',
+            'bar': u'Text Dischkrian',
             'frr': u'Text Diskussion',
             'ru': u'Обсуждение арбитража',
         }
 
         self.namespaces[108] = {
             'als': u'Spruch',
+            'bar': u'Spruch',
             'en': u'Book',
             'he': u'ספר',
             'yo': u'Ìwé',
@@ -957,6 +964,7 @@ class Family(family.Family):
 
         self.namespaces[109] = {
             'als': u'Spruch Diskussion',
+            'bar': u'Spruch Dischkrian',
             'en': u'Book talk',
             'he': u'שיחת ספר',
             'yo': u'Ọ̀rọ̀ ìwé',
@@ -964,10 +972,12 @@ class Family(family.Family):
 
         self.namespaces[110] = {
             'als': u'Nochricht',
+            'bar': u'Nochricht',
         }
 
         self.namespaces[111] = {
             'als': u'Nochricht Diskussion',
+            'bar': u'Nochricht Dischkrian',
         }
 
         self.namespaces[446] = {
