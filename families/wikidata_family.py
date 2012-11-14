@@ -4,8 +4,7 @@ __version__ = '$Id: wikidata_family.py 10591 2012-10-20 amir $'
 
 import family
 
-# The Wikidata family
-# user-config.py: usernames['wikidata']['wikidata'] = 'User name'
+# The wikidata family
 
 class Family(family.Family):
     def __init__(self):
@@ -14,7 +13,7 @@ class Family(family.Family):
         self.langs = {
             'wikidata': 'wikidata.org',
         }
-#https://wikidata.org/w/api.php?action=query&meta=siteinfo&siprop=namespaces
+
         self.namespaces[4] = {
             '_default': [u'Wikidata', u'WD', 'Project'],
         }
