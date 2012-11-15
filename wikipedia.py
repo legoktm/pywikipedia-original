@@ -846,7 +846,7 @@ not supported by PyWikipediaBot!"""
                 raise IsRedirectPage(redirtarget)
 
         if self.section() and \
-           not textlib.does_text_contain_section(pagetext, self.section()):
+           not does_text_contain_section(pagetext, self.section()):
             try:
                 self._getexception
             except AttributeError:
@@ -987,7 +987,7 @@ not supported by PyWikipediaBot!"""
                 raise IsRedirectPage(redirtarget)
 
         if self.section() and \
-           not textlib.does_text_contain_section(text, self.section()):
+           not does_text_contain_section(text, self.section()):
             try:
                 self._getexception
             except AttributeError:
