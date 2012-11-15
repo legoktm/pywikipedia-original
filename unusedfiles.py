@@ -116,15 +116,12 @@ def main():
                 pywikibot.output(u"%s done already"
                                  % page.title(asLink=True))
                 continue
-            try:
-                appendtext(page, u"\n\n"+template_image)
-                uploader = page.getFileVersionHistory().pop()[1]
-                usertalkname = u'User Talk:%s' % uploader
-                usertalkpage = pywikibot.Page(mysite, usertalkname)
-                msg2uploader = template_user % {'title': page.title()}
-                appendtext(usertalkpage, msg2uploader)
-            except:
-                continue
+            appendtext(page, u"\n\n"+template_image)
+            uploader = page.getFileVersionHistory().pop()[1]
+            usertalkname = u'User Talk:%s' % uploader
+            usertalkpage = pywikibot.Page(mysite, usertalkname)
+            msg2uploader = template_user % {'title': page.title()}
+            appendtext(usertalkpage, msg2uploader)
 
 if __name__ == "__main__":
     try:
