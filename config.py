@@ -487,18 +487,6 @@ actions_to_block = ['edit', 'watch', 'move', 'delete', 'undelete', 'protect',
 # processing. As higher this value this effect will decrease.
 max_queue_size = 64
 
-# Define the line separator. Pages retrieved via API have "\n" whereas
-# pages fetched from screen (mostly) have "\r\n". Interwiki and category
-# separator settings in family files should use multiplied of this.
-# LS is a shortcut alias.
-line_separator = LS = u'\r\n'
-
-############## TEMPORARY SETTINGS ##############
-# Temporary solution for 2012 version survey, search for this key
-# in wikipedia.py
-import sys # Just for the next line, remove them together
-suppresssurvey = (sys.version >= '2.7.2')
-
 # End of configuration section
 # ============================
 
