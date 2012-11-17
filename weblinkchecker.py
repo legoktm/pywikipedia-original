@@ -88,7 +88,7 @@ Syntax examples:
 
 #
 # (C) Daniel Herding, 2005
-# (C) Pywikipedia bot team, 2005-2011
+# (C) Pywikipedia bot team, 2005-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -113,6 +113,7 @@ talk_report_msg = {
     'ar': u'روبوت: الإبلاغ عن وصلات خارجية غير متوفرة',
     'de': u'Bot: Berichte nicht verfügbaren Weblink',
     'en': u'Robot: Reporting unavailable external link',
+    'et': u'Teadaanne mittetöötavast välislingist',
     'fa': u'ربات:گزارش پیوند غیرقابل دسترسی',
     'fr': u'Robot : Rapporte lien externe inaccessible',
     'he': u'בוט: מדווח על קישור חיצוני בלתי זמין',
@@ -137,6 +138,7 @@ talk_report = {
     'ar': u'== %s ==\n\nخلال عدة عمليات أوتوماتيكية من البوت الوصلة الخارجية التالية كانت غير متوفرة. من فضلك تحقق من أن الوصلة لا تعمل وأزلها أو أصلحها في هذه الحالة!\n\n%s\n%s--~~~~',
     'de': u'== %s ==\n\nBei mehreren automatisierten Botläufen wurde der folgende Weblink als nicht verfügbar erkannt. Bitte überprüfe, ob der Link tatsächlich unerreichbar ist, und korrigiere oder entferne ihn in diesem Fall!\n\n%s\n%s--~~~~',
     'en': u'== %s ==\n\nDuring several automated bot runs the following external link was found to be unavailable. Please check if the link is in fact down and fix or remove it in that case!\n\n%s\n%s--~~~~',
+    'et': u'== %s ==\n\nKorduval kontrollimisel on leitud, et järgnev välislink ei tööta. Kontrolli selle toimimist ja vajadusel paranda vigane link. \n\n%s\n%s--~~~~',
     'fa': u'== %s ==\n\nبر طبق بررسی‌های رباتیکی من چندین پیوند غیرقابل دسترس پیدا شد. لطفا آنها بررسی و در صورت لزوم درستش کنید.تشکر!\n\n%s\n%s--~~~~',
     'fr': u'== %s ==\n\nPendant plusieurs patrouilles par un robot, le lien suivant a été inaccessible. Veuillez vérifier si le lien est effectivement mort et si oui corrigez ou retirez-le.\n\n%s\n%s--~~~~',
     'he': u'== %s ==\n\nבמהלך מספר ריצות אוטומטיות של הבוט, נמצא שהקישור החיצוני הבא אינו זמין. אנא בדקו אם הקישור אכן שבור, ותקנו אותו או הסירו אותו במקרה זה!\n\n%s\n%s--~~~~',
@@ -159,6 +161,7 @@ talk_report_caption = {
     'ar': u'وصلة ميتة',
     'de': u'Toter Weblink',
     'en': u'Dead link',
+    'et': u'Surnud link',
     'fa': u'پیوند مرده',
     'fr': u'Lien mort',
     'he': u'קישור שבור',
@@ -180,6 +183,7 @@ talk_report_archive = {
     'ar': u'\nصفحة الويب تم حفظها بواسطة أرشيف الإنترنت. من فضلك ضع في الاعتبار الوصل لنسخة مؤرشفة مناسبة: [%s]. ',
     'de': u'Die Webseite wurde vom Internet Archive gespeichert. Bitte verlinke gegebenenfalls eine geeignete archivierte Version: [%s]. ',
     'en': u'\nThe web page has been saved by the Internet Archive. Please consider linking to an appropriate archived version: [%s]. ',
+    'et': u'\nVeebilehekülg on olemas Interneti arhiivis. Võid mõelda linkimisele selle lehekülje arhiveeritud versioonile: [%s]. ',
     'fa': u'\nوب‌گاه اینترنت آرشیو یک نسخه بایگانی شده از این پیوند دارد لطفا از آن استفاده نمایید:[%s]',
     'fr': u"\nLa page a été sauvegardée dans l’''Internet Archive''. Il serait peut-être utile de faire pointer le lien vers une des versions archivées : [%s]. ",
     'he': u'\nעמוד האינטרנט נשמר על־ידי ארכיון האינטרנט. אנא שקלו לקשר לגרסה המאורכבת המתאימה: [%s]',
