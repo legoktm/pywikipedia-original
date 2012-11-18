@@ -98,104 +98,12 @@ import sys, re
 import codecs, pickle
 import httplib, socket, urlparse, urllib, urllib2
 import threading, time
-import wikipedia as pywikibot
+import pywikibot
+from pywikibot import i18n
 import config, pagegenerators
-try:
-    set # introduced in Python 2.4: faster and future
-except NameError:
-    from sets import Set as set
 
 docuReplacements = {
     '&params;': pagegenerators.parameterHelp
-}
-
-talk_report_msg = {
-    'ar': u'روبوت: الإبلاغ عن وصلات خارجية غير متوفرة',
-    'de': u'Bot: Berichte nicht verfügbaren Weblink',
-    'en': u'Robot: Reporting unavailable external link',
-    'et': u'Teadaanne mittetöötavast välislingist',
-    'fa': u'ربات:گزارش پیوند غیرقابل دسترسی',
-    'fr': u'Robot : Rapporte lien externe inaccessible',
-    'he': u'בוט: מדווח על קישור חיצוני בלתי זמין',
-    'ia': u'Robot: Reporto de un ligamine externe non functionante',
-    'kk': u'Бот: Қатынаулы емес сілтеме туралы есеп беру',
-    'ksh': u'Bot: Ene Weblengk jeijt nit mih.',
-    'ja': u'ロボットによる: 利用不可能な外部リンクの報告',
-    'nds': u'Lenk-Bot: Weblenk geiht nich mehr',
-    'nl': u'Bot: melding (tijdelijk) onbereikbare externe verwijzing',
-    'no': u'bot: Rapporter død eksternlenke',
-    'pl': u'Robot zgłasza niedostępny link zewnętrzny',
-    'pt': u'Bot: Link externo não funcionando',
-    'sr': u'Бот: Пријављивање непостојећих спољашњих повезница',
-    'uk': u'Бот: Сповіщення про мертві зовнішні посилання',
-    'zh': u'BOT: 报告失效的外部链接',
-}
-
-# The first %s will be replaced by the URL and the error report.
-# The second %s will be replaced by a hint to the Internet Archive,
-# in case the page has been archived there.
-talk_report = {
-    'ar': u'== %s ==\n\nخلال عدة عمليات أوتوماتيكية من البوت الوصلة الخارجية التالية كانت غير متوفرة. من فضلك تحقق من أن الوصلة لا تعمل وأزلها أو أصلحها في هذه الحالة!\n\n%s\n%s--~~~~',
-    'de': u'== %s ==\n\nBei mehreren automatisierten Botläufen wurde der folgende Weblink als nicht verfügbar erkannt. Bitte überprüfe, ob der Link tatsächlich unerreichbar ist, und korrigiere oder entferne ihn in diesem Fall!\n\n%s\n%s--~~~~',
-    'en': u'== %s ==\n\nDuring several automated bot runs the following external link was found to be unavailable. Please check if the link is in fact down and fix or remove it in that case!\n\n%s\n%s--~~~~',
-    'et': u'== %s ==\n\nKorduval kontrollimisel on leitud, et järgnev välislink ei tööta. Kontrolli selle toimimist ja vajadusel paranda vigane link. \n\n%s\n%s--~~~~',
-    'fa': u'== %s ==\n\nبر طبق بررسی‌های رباتیکی من چندین پیوند غیرقابل دسترس پیدا شد. لطفا آنها بررسی و در صورت لزوم درستش کنید.تشکر!\n\n%s\n%s--~~~~',
-    'fr': u'== %s ==\n\nPendant plusieurs patrouilles par un robot, le lien suivant a été inaccessible. Veuillez vérifier si le lien est effectivement mort et si oui corrigez ou retirez-le.\n\n%s\n%s--~~~~',
-    'he': u'== %s ==\n\nבמהלך מספר ריצות אוטומטיות של הבוט, נמצא שהקישור החיצוני הבא אינו זמין. אנא בדקו אם הקישור אכן שבור, ותקנו אותו או הסירו אותו במקרה זה!\n\n%s\n%s--~~~~',
-    'ia': u'== %s ==\n\nDurante plure sessiones automatic, le robot ha constatate que le sequente ligamine externe non es disponibile. Per favor confirma que le ligamine de facto es defuncte, e in caso de si, repara o elimina lo!\n\n%s\n%s--~~~~',
-    'kk': u'== %s ==\n\nӨздікті бот бірнеше жегілгенде келесі сыртқы сілтемеге қатынай алмады. Бұл сілтеменің қатыналуын тексеріп шығыңыз да, не түзетіңіз, не аластаңыз!\n\n%s\n%s--~~~~',
-    'ksh': u'== %s ==\n\nEsch han bonge die Weblingks paa Mol jetschäck. Se han allemoolde nit jedon Doht ens donnoh loore, un dä Lengk reparreere odo eruß nämme.\n\n%s\n%s--~~~~',
-    'ja': u'== %s ==\n\nボットが何度か自動運行する間に、以下の外部リンクが利用不可能であると判明しました。本当にリンク切れしているかを調べて、修復するか取り除いてください!\n\n%s\n%s--~~~~',
-    'nds': u'== %s ==\n\nDe Bot hett en poor Mal al versöcht, disse Siet optoropen un kunn dor nich bikamen. Schall man een nakieken, wat de Siet noch dor is un den Lenk richten oder rutnehmen.\n\n%s\n%s--~~~~',
-    'nl': u'== %s ==\nTijdens enkele automatische controles bleek de onderstaande externe verwijzing onbereikbaar. Controleer alstublieft of de verwijzing inderdaad onbereikbaar is. Verwijder deze tekst alstublieft na een succesvolle controle of na het verwijderen of corrigeren van de externe verwijzing.\n\n%s\n%s--~~~~[[Categorie:Wikipedia:Onbereikbare externe link]]',
-    # This is not a good solution as it only works on the Norwegian Wikipedia, not on Wiktionary etc.
-    'no': u'%s{{subst:Bruker:JhsBot/Død lenke}}\n\n%s\n%s~~~~\n\n{{ødelagt lenke}}',
-    'pl': u'{{Martwy link dyskusja|numer=%s|link=%s|IA=%s}}',
-    'pt': u'== %s ==\n\nFoi checado os links externos deste artigo por vários minutos. Alguém verifique por favor se a ligação estiver fora do ar e tente arrumá-lo ou removê-la!\n\n%s\n --~~~~ ',
-    'sr': u'== %s ==\n\nТоком неколико аутоматски провера, бот је пронашао покварене спољашње повезнице. Молимо вас проверите да ли је повезница добра, поправите је или је уклоните!\n\n%s\n%s--~~~~',
-    'uk': u'== %s ==\n\nПротягом кількох автоматичних перевірок наступне зовнішнє посилання було недоступне. Будь ласка, перевірте чи посилання справді "мертве" і в такому випадку виправіть або видаліть його!\n\n%s\n%s--~~~~',
-    'zh': u'== %s ==\n\n一个自动运行的bot发现下列外部链接可能已经失效。请帮助修复错误的链接或者移除它!\n\n%s\n%s--~~~~',
-}
-
-talk_report_caption = {
-    'ar': u'وصلة ميتة',
-    'de': u'Toter Weblink',
-    'en': u'Dead link',
-    'et': u'Surnud link',
-    'fa': u'پیوند مرده',
-    'fr': u'Lien mort',
-    'he': u'קישור שבור',
-    'ia': u'Ligamine defuncte',
-    'kk': u'Өлі сілтем',
-    'ksh': u'Han enne kappodde Weblengk jefonge',
-    'ja': u'リンク切れ',
-    'nds': u'Weblenk geiht nich mehr',
-    'nl': u'Dode verwijzing',
-    'no': u'',
-    'pl': u'',
-    'pt': u'Link quebrado',
-    'sr': u'Покварене спољашње повезнице',
-    'uk': u'Недоступне зовнішнє посилання',
-    'zh': u'失效链接',
-}
-
-talk_report_archive = {
-    'ar': u'\nصفحة الويب تم حفظها بواسطة أرشيف الإنترنت. من فضلك ضع في الاعتبار الوصل لنسخة مؤرشفة مناسبة: [%s]. ',
-    'de': u'Die Webseite wurde vom Internet Archive gespeichert. Bitte verlinke gegebenenfalls eine geeignete archivierte Version: [%s]. ',
-    'en': u'\nThe web page has been saved by the Internet Archive. Please consider linking to an appropriate archived version: [%s]. ',
-    'et': u'\nVeebilehekülg on olemas Interneti arhiivis. Võid mõelda linkimisele selle lehekülje arhiveeritud versioonile: [%s]. ',
-    'fa': u'\nوب‌گاه اینترنت آرشیو یک نسخه بایگانی شده از این پیوند دارد لطفا از آن استفاده نمایید:[%s]',
-    'fr': u"\nLa page a été sauvegardée dans l’''Internet Archive''. Il serait peut-être utile de faire pointer le lien vers une des versions archivées : [%s]. ",
-    'he': u'\nעמוד האינטרנט נשמר על־ידי ארכיון האינטרנט. אנא שקלו לקשר לגרסה המאורכבת המתאימה: [%s]',
-    'kk': u'\nБұл ғаламтордың беті Интернет Мұрағатында сақталған. Мұрағатталған нұсқасына сәйкесті сілтеуді ескеріңіз: [%s]. ',
-    'ksh': u"De Websick es em ''Internet Archive'' faßjehallde. Kannß jo felleijsj_obb_en Koppi doh verlengke, süsh hee: [%s]. ",
-    'ja': u'\nウェブ・ページはインターネット・アーカイブによって保存されました。アーカイブに保管された適切なバージョンにリンクすることを検討してください: [%s]. ',
-    'nl': u'\nDeze website is bewaard in het Internet Archive. Overweeg te verwijzen naar een gearchiveerde pagina: [%s]. ',
-    'no': u'\nDenne nettsiden er lagra i Internet Archive. Vurder om lenka kan endres til å peke til en av de arkiverte versjonene: [%s]. ',
-    'pl': u'%s',
-    'pt': u'Esta página web foi gravada na Internet Archive. Por favor considere o link para a versão arquivada: [%s]. ',
-    'uk': u'\nВеб-сторінка була збережена у Internet Archive. Будь ласка, подумайте над заміною посилання на відповідну збережену версію: [%s]. ',
-    'zh': u'这个网页已经被保存在互联网档案馆（Internet Archive）。请为该网页提供一个合适的存档版本： [%s]。',
 }
 
 ignorelist = [
@@ -724,28 +632,35 @@ class DeadLinkReportThread(threading.Thread):
                     content = u''
 
                 if archiveURL:
-                    archiveMsg = pywikibot.translate(pywikibot.getSite(),
-                                                     talk_report_archive) % archiveURL
+                    archiveMsg = u'\n' + \
+                                 i18n.twtranslate(pywikibot.getSite(),
+                                                  'weblinkchecker-archive_msg',
+                                                  {'URL': archiveURL})
                 else:
                     archiveMsg = u''
                 # The caption will default to "Dead link". But if there is
                 # already such a caption, we'll use "Dead link 2",
                 # "Dead link 3", etc.
-                caption = pywikibot.translate(pywikibot.getSite(),
-                                              talk_report_caption)
+                caption = i18n.twtranslate(pywikibot.getSite(),
+                                           'weblinkchecker-caption')
                 i = 1
+                count = u''
                 # Check if there is already such a caption on the talk page.
-                while re.search('= *' + caption + ' *=', content) is not None:
+                while re.search('= *%s%s *=' % (caption, count),
+                                content) is not None:
                     i += 1
-                    caption = pywikibot.translate(pywikibot.getSite(),
-                                                  talk_report_caption) + " " + str(i)
-                content += pywikibot.translate(pywikibot.getSite(),
-                                               talk_report) % (caption,
-                                                               errorReport,
-                                                               archiveMsg)
-                comment = u'[[%s#%s|→]]%s' % (talkPage.title(), caption,
-                                              pywikibot.translate(pywikibot.getSite(),
-                                                                  talk_report_msg))
+                    count = u' ' + str(i)
+                caption += count
+                content += '\n\n== %s ==\n\n%s\n\n%s%s--~~~~' % \
+                           (caption,
+                            i18n.twtranslate(pywikibot.getSite(),
+                                             'weblinkchecker-report'),
+                            errorReport,
+                            archiveMsg)
+                comment = u'[[%s#%s|→]] %s' % \
+                          (talkPage.title(), caption,
+                           i18n.twtranslate(pywikibot.getSite(),
+                                            'weblinkchecker-summary'))
                 try:
                     talkPage.put(content, comment)
                 except pywikibot.SpamfilterError, error:
