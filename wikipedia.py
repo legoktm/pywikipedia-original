@@ -1932,7 +1932,7 @@ not supported by PyWikipediaBot!"""
                             force, callback))
 
     def put(self, newtext, comment=None, watchArticle=None, minorEdit=True,
-            force=False, sysop=False, botflag=True, maxTries=-1, wikidata={}):
+            force=False, sysop=False, botflag=True, maxTries=-1):
         """Save the page with the contents of the first argument as the text.
 
         Optional parameters:
@@ -1958,7 +1958,7 @@ not supported by PyWikipediaBot!"""
         self.site().checkBlocks(sysop = sysop)
 
         # Determine if we are allowed to edit
-        if (not force) and (self.site().lang!=u"wikidata"):
+        if not force:
             if not self.botMayEdit(username):
                 raise LockedPage(
                     u'Not allowed to edit %s because of a restricting template'
@@ -1995,7 +1995,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             self._editrestriction = False
         # If no comment is given for the change, use the default
         comment = comment or action
-        if config.cosmetic_changes and not self.isTalkPage() and self.site().lang!=u"wikidata" and \
+        if config.cosmetic_changes and not self.isTalkPage() and \
            not calledModuleName() in ('cosmetic_changes', 'touch'):
             if config.cosmetic_changes_mylang_only:
                 cc = (self.site().family.name == config.family and self.site().lang == config.mylang) or \
@@ -2033,8 +2033,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         return self._putPage(newtext, comment, watchArticle, minorEdit,
                              newPage, self.site().getToken(sysop = sysop),
-                             sysop = sysop, botflag=botflag, maxTries=maxTries,
-                             wikidata=wikidata)
+                             sysop = sysop, botflag=botflag, maxTries=maxTries)
 
     def _encodeArg(self, arg, msgForError):
         """Encode an ascii string/Unicode string to the site's encoding"""
@@ -2052,7 +2051,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
     def _putPage(self, text, comment=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
-                captcha=None, botflag=True, maxTries=-1, wikidata={}):
+                captcha=None, botflag=True, maxTries=-1):
         """Upload 'text' as new content of Page by API
 
         Don't use this directly, use put() instead.
@@ -2072,24 +2071,6 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             'text': self._encodeArg(text, 'text'),
             'summary': self._encodeArg(comment, 'summary'),
         }
-        if wikidata:
-            params['title'] = self.title()
-            params['site'] = 'enwiki' #I'm working on making more flexible so i'll change that
-            params['action'] = u'wbset'+wikidata['type']
-            params['format'] = 'jsonfm'
-            if wikidata['type'] == u'item':
-                params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
-                                 % {'label': wikidata['label'],
-                                    'value': wikidata['value']}
-            elif wikidata['type'] == u'description':
-                params['value'] = wikidata['value']
-                params['language'] = wikidata['language']
-            elif wikidata['type'] == u'sitelink':
-                params['linksite'] = wikidata['site'] + u'wiki'
-                params['linktitle'] = wikidata['title']
-            else:
-                raise NotImplementedError(
-                    u'Wikidata action type "%s" is unknown' % wikidata['type'])
         if token:
             params['token'] = token
         else:
@@ -2143,8 +2124,6 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 params['nocreate'] = 1
             # Submit the prepared information
             try:
-                if wikidata:
-                    del params['text']
                 response, data = query.GetData(params, self.site(), sysop=sysop, back_response = True)
                 if isinstance(data,basestring):
                     raise KeyError
@@ -4039,7 +4018,121 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         return (u'purged' in r)
 
+class wikidataPage(Page):
+    """A subclass of Page representing a page on wikidata.
 
+    Supports the same interface as Page, with the following added methods:
+
+    setitem          : Setting item(s) on a page
+
+    """
+    def __init__(self, site, title, insite=False):
+        Page.__init__(self, getSite('wikidata',fam='wikidata'), title, insite, defaultNamespace=0)
+    def setitem(self,summary=None, watchArticle=False, minorEdit=True,
+                newPage=False, token=None, newToken=False, sysop=False,
+                captcha=None, botflag=True, maxTries=-1,items={}):
+        """Setting items on a specific page
+            items          : a dictionary of item(s) you want to add, use of these ways:
+                items={'type':u'item', 'label':'fa', 'value':'OK'}) #for change Persian language label of a page to "OK" 
+                items={'type':u'description', 'language':'en', 'value':'OK'}) #for change English language description of a page to "OK" 
+                items={'type':u'sitelink', 'site':'de', 'title':'OK'})  #for change German language sitelink of a page to "OK"
+        """
+        retry_attempt = 0
+        retry_delay = 1
+        dblagged = False
+        params = {
+            'title': self.title(),
+            'summary': self._encodeArg(summary, 'summary'),
+        }
+        params['site'] = 'enwiki' #I'm working on making more flexible so i'll change that
+        params['action'] = u'wbset'+items['type']
+        params['format'] = 'jsonfm'
+        if items['type'] == u'item':
+            params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
+                                 % {'label': items['label'],
+                                    'value': items['value']}
+        elif items['type'] == u'description':
+            params['value'] = items['value']
+            params['language'] = items['language']
+        elif items['type'] == u'sitelink':
+            params['linksite'] = items['site'] + u'wiki'
+            params['linktitle'] = items['title']
+        else:
+            raise NotImplementedError(
+                u'Wikidata action type "%s" is unknown' % items['type'])
+        if token:
+            params['token'] = token
+        else:
+            params['token'] = self.site().getToken(sysop = sysop)
+        if config.maxlag:
+            params['maxlag'] = str(config.maxlag)
+        if botflag:
+            params['bot'] = 1
+        if watchArticle:
+            params['watch'] = 1
+        if captcha:
+            params['captchaid'] = captcha['id']
+            params['captchaword'] = captcha['answer']
+
+        while True:
+            if (maxTries == 0):
+                raise MaxTriesExceededError()
+            maxTries -= 1
+            # Check whether we are not too quickly after the previous
+            # putPage, and wait a bit until the interval is acceptable
+            if not dblagged:
+                put_throttle()
+            # Which web-site host are we submitting to?
+            if newPage:
+                output(u'Creating page %s via API' % self.title(asLink=True))
+                params['createonly'] = 1
+            else:
+                output(u'Updating page %s via API' % self.title(asLink=True))
+                params['nocreate'] = 1
+            try:
+                response, data = query.GetData(params, self.site(), sysop=sysop, back_response = True)
+                if isinstance(data,basestring):
+                    raise KeyError
+            except httplib.BadStatusLine, line:
+                raise PageNotSaved('Bad status line: %s' % line.line)
+            except ServerError:
+                output(u''.join(traceback.format_exception(*sys.exc_info())))
+                retry_attempt += 1
+                if retry_attempt > config.maxretries:
+                    raise
+                output(u'Got a server error when putting %s; will retry in %i minute%s.' % (self.title(asLink=True), retry_delay, retry_delay != 1 and "s" or ""))
+                time.sleep(60 * retry_delay)
+                retry_delay *= 2
+                if retry_delay > 30:
+                    retry_delay = 30
+                continue
+            except ValueError: # API result cannot decode
+                output(u"Server error encountered; will retry in %i minute%s."
+                       % (retry_delay, retry_delay != 1 and "s" or ""))
+                time.sleep(60 * retry_delay)
+                retry_delay *= 2
+                if retry_delay > 30:
+                    retry_delay = 30
+                continue
+            # If it has gotten this far then we should reset dblagged
+            dblagged = False
+            # Check blocks
+            self.site().checkBlocks(sysop = sysop)
+            # A second text area means that an edit conflict has occured.
+            if response.code == 500:
+                output(u"Server error encountered; will retry in %i minute%s."
+                       % (retry_delay, retry_delay != 1 and "s" or ""))
+                time.sleep(60 * retry_delay)
+                retry_delay *= 2
+                if retry_delay > 30:
+                    retry_delay = 30
+                continue
+            if 'error' in data:
+                errorCode = data['error']['code']
+            else:
+                if data['success'] == u"1":
+                    return 302, response.msg, data['edit']
+            return response.code, response.msg, data
 class ImagePage(Page):
     """A subclass of Page representing an image descriptor wiki page.
 
