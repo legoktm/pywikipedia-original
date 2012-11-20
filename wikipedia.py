@@ -4131,7 +4131,7 @@ class wikidataPage(Page):
                 errorCode = data['error']['code']
             else:
                 if data['success'] == u"1":
-                    return 302, response.msg, data['edit']
+                    return 302, response.msg, data['success']
             return response.code, response.msg, data
 class ImagePage(Page):
     """A subclass of Page representing an image descriptor wiki page.

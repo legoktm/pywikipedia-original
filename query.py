@@ -139,7 +139,7 @@ def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
                   (('file', params['filename'].encode(site.encoding()), data['file']),),
                   site.cookies(sysop=sysop)
                   )
-            elif params['action'] in postAC:
+            elif params['action'] in postAC or params['action'][:5]=='wbset':
                 res, jsontext = site.postForm(path, params, sysop, site.cookies(sysop = sysop) )
             else:
                 if back_response:
