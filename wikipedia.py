@@ -757,7 +757,7 @@ not supported by PyWikipediaBot!"""
             #'intoken': 'edit',
         }
         params1=params.copy()
-        if self.site().lang==u"wikidata":
+        if self.site().lang==u"wikidata" and self.namespace()==0:
             params['action']='wbgetentities'
             params['sites']='enwiki'
             del params['prop']
@@ -774,7 +774,7 @@ not supported by PyWikipediaBot!"""
         textareaFound = False
         # retrying loop is done by query.GetData
         data = query.GetData(params, self.site(), sysop=sysop)
-        if self.site().lang==u"wikidata":
+        if self.site().lang==u"wikidata" and self.namespace()==0:
             data['query']={'pages':data['entities']}
             for pageid in data['entities'].keys():
                 if pageid=="-1":
