@@ -18,7 +18,6 @@ class Family(family.Family):
         self.langs = dict([(lang, '%s.wikiversity.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
-        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'Benutzerin Diskussion']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
