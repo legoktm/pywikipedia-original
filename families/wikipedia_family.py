@@ -473,7 +473,7 @@ class Family(family.Family):
             'ko': [u'위키백과토론', u'백토'],
             'koi': u'Баитам Википедия йылiсь',
             'krc': u'Википедия сюзюу',
-            'ks': u'Wikipedia talk',
+            'ks': u'Wikipedia بَحَژ',
             'ksh': u'Wikipedia Klaaf',
             'ku': [u'Gotûbêja Wîkîpediyayê', u'Wîkîpediya nîqaş'],
             'kv': [u'Википедия донъялӧм', u'Обсуждение Wikipedia', u'Обсуждение Википедии'],
