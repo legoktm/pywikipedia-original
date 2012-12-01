@@ -49,7 +49,7 @@ class Family(family.Family):
             'ang': u'Wicifruma',
             'ar': [u'ويكي مصدر', u'وم'],
             'az': u'VikiMənbə',
-            'be': [u'Вікікрыніцы', u'Wikisource'],
+            'be': [u'Вікікрыніцы', u'ВК'],
             'bg': u'Уикиизточник',
             'bn': [u'উইকিসংকলন', u'Wikisource'],
             'br': u'Wikimammenn',
