@@ -37,7 +37,7 @@ a list of affected articles
 __version__='$Id$'
 
 import re, sys
-import wikipedia as pywikibot
+import pywikibot
 from pywikibot import i18n
 import pagegenerators, catlib
 import editarticle
@@ -675,7 +675,6 @@ def main():
         except:
             pass
         else:
-            import catlib
             if not namespaces:
                 namespaces = [0]
             cat = catlib.Category(site, "%s:%s" % (site.category_namespace(),
