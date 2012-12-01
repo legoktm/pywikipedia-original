@@ -12,6 +12,8 @@ import re
 import urllib
 from datetime import timedelta, datetime
 
+import pywikibot
+
 # Parent class for all wiki families
 
 class Family:
@@ -3846,7 +3848,6 @@ class Family:
     @property
     def iwkeys(self):
         if self.interwiki_forward:
-            import wikipedia as pywikibot
             return pywikibot.Family(self.interwiki_forward).langs.keys()
         return self.langs.keys()
 
@@ -3868,8 +3869,8 @@ class Family:
             return self.linktrails[fallback]
         else:
             raise KeyError(
-                "ERROR: linktrail in language %s unknown"
-                % code)
+                "ERROR: linktrail in language %(language_code)s unknown"
+                % {'language_code': code})
 
     def namespace(self, code, ns_number, fallback = '_default', all = False):
         if not self.isDefinedNS(ns_number):
@@ -4089,7 +4090,7 @@ class Family:
         """Return MediaWiki version number as a string."""
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
-        return '1.21wmf3'
+        return '1.21wmf4'
 
     def versionnumber(self, code, version=None):
         """Return an int identifying MediaWiki version.
