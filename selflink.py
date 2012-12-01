@@ -49,6 +49,7 @@ docuReplacements = {
 # in fixes.py.
 msg = {
     'ar':u'روبوت: إزالة وصلات ذاتية',
+    'be-x-old':u'Робат: выдаленьне аўтаспасылкі',
     'cs':u'Robot odstranil odkaz na název článku',
     'da':u'Bot: fjerner selvreference',
     'de':u'Bot: Entferne Selbstlinks',

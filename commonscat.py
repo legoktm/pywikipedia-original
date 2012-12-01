@@ -140,7 +140,7 @@ commonscatTemplates = {
 ignoreTemplates = {
     'af' : [u'commons'],
     'ar' : [u'تحويلة تصنيف', u'كومنز', u'كومونز', u'Commons'],
-    'be-x-old' : [u'Commons'],
+    'be-x-old' : [u'Commons', u'Commons category'],
     'cs' : [u'Commons', u'Sestřičky', u'Sisterlinks'],
     'da' : [u'Commons', u'Commons left', u'Commons2', u'Commonsbilleder',
             u'Commonskat', u'Commonscat2', u'GalleriCommons', u'Søsterlinks'],
@@ -185,6 +185,7 @@ ignoreTemplates = {
 }
 
 msg_change = {
+    'be-x-old': u'Робат: зьмяніў шаблён [[:Commons:Category:%(oldcat)s|%(oldcat)s]] на [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'cs': u'Robot změnil šablonu Commonscat z [[:Commons:Category:%(oldcat)s|%(oldcat)s]] na [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'da': u'Robot: Ændrer commonscat link fra [[:Commons:Category:%(oldcat)s|%(oldcat)s]] til [[:Commons:Category:%(newcat)s|%(newcat)s]]',
     'de': u'Bot: Ändere commonscat link von [[:Commons:Category:%(oldcat)s|%(oldcat)s]] zu [[:Commons:Category:%(newcat)s|%(newcat)s]]',
