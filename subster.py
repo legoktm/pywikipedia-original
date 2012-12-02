@@ -39,7 +39,7 @@ Other scripts and tools related to this bot are:
 #  Distributed under the terms of the MIT license.
 #  @see http://de.wikipedia.org/wiki/MIT-Lizenz
 #
-__version__ = '$Id: subster.py 418 2012-10-19 17:41:45Z drtrigon $'
+__version__ = '$Id$'
 #
 
 

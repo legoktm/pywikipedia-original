@@ -25,7 +25,7 @@ http://python-irclib.sourceforge.net/
 #
 #  Distributed under the terms of the LGPL license.
 #
-__version__ = '$Id: subster_irc.py 332 2012-06-13 12:37:40Z drtrigon $'
+__version__ = '$Id$'
 #
 
 import wikipedia as pywikibot
