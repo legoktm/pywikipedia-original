@@ -55,7 +55,6 @@ import copy
 import ast
 
 import pagegenerators, basic
-import dtbext
 # Splitting the bot into library parts
 import wikipedia as pywikibot
 from pywikibot import i18n
@@ -240,7 +239,7 @@ class SubsterBot(basic.AutoBasicBot):
             substed_tags += tags
         except:
             exc_info = sys.exc_info()
-            (exception_only, result) = dtbext.pywikibot.gettraceback(exc_info)
+            (exception_only, result) = pywikibot.gettraceback(exc_info)
             substed_content += ast.literal_eval(self._param_default['error']) %\
                                {'error': bot_config['ErrorTemplate'] %\
                                  ( pywikibot.Timestamp.now().isoformat(' '), 
@@ -257,7 +256,7 @@ class SubsterBot(basic.AutoBasicBot):
                 substed_tags += tags
             except:
                 exc_info = sys.exc_info()
-                (exception_only, result) = dtbext.pywikibot.gettraceback(exc_info)
+                (exception_only, result) = pywikibot.gettraceback(exc_info)
                 substed_content += ast.literal_eval(item['error']) %\
                                    {'error': bot_config['ErrorTemplate'] %\
                                      ( item['value'],
@@ -336,9 +335,9 @@ class SubsterBot(basic.AutoBasicBot):
             return (content, substed_tags)
         if   param['wiki']:
             if ast.literal_eval(param['expandtemplates']):  # DRTRIGON-93 (only with 'wiki')
-                external_buffer = dtbext.pywikibot.Page(self.site, param['url']).get(expandtemplates=True)
+                external_buffer = pywikibot.Page(self.site, param['url']).get(expandtemplates=True)
             else:
-                external_buffer = self.load( dtbext.pywikibot.Page(self.site, param['url']) )
+                external_buffer = self.load( pywikibot.Page(self.site, param['url']) )
         elif (param['url'][:7] == u'mail://'): # DRTRIGON-101
             param['url'] = param['url'].replace(u'{{@}}', u'@')     # e.g. nlwiki
             mbox = SubsterMailbox(pywikibot.config.datafilepath(bot_config['data_path'], bot_config['mbox_file'], ''))
