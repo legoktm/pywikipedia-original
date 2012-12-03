@@ -12,7 +12,7 @@ import re
 import urllib
 from datetime import timedelta, datetime
 
-import pywikibot
+import wikipedia as pywikibot
 
 # Parent class for all wiki families
 
