@@ -116,8 +116,8 @@ class SubsterTagModifiedBot(articlenos.ArtNoDisp):
                 p = [p]
             if (source == p[0]):
                 pywikibot.output(u'DIFFLINK: target=%s, source=%s, params=%s' % (target, source, params))
-                text = u'[[%s]] / [[User:%s]] / %s' % ( page, 
-                                                        user, 
+                text = u'[[%s]] / [[User:%s]] / %s' % ( page,
+                                                        user,
                                            match.group('summary').decode(self.site.encoding()) )
                 self.do_check(target, params=(text, params['flags']))
 

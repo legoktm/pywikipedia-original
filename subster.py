@@ -8,9 +8,9 @@ for 'postproc' example code.
 
 Look at https://wiki.toolserver.org/view/Mail how to setup mail handling. The
 following code was used in file '$HOME/.forward+subster':
---- --- --- --- --- --- --- --- --- --- 
+--- --- --- --- --- --- --- --- --- ---
 > ~/data/subster/mail_inbox
---- --- --- --- --- --- --- --- --- --- 
+--- --- --- --- --- --- --- --- --- ---
 in order to enable mail (mbox style) storage in given file for address:
 drtrigon+subster@toolserver.org
 
@@ -212,7 +212,7 @@ class SubsterBot(basic.AutoBasicBot):
                     if page.title() in self._flagenable:
                         flags.update( self._flagenable[page.title()] )
                     pywikibot.output(u'Flags used for writing: %s' % flags)
-                    self.save( page, substed_content, 
+                    self.save( page, substed_content,
                                (head + u' ' + msg) % {'tags':", ".join(substed_tags)},
                                **flags )
                 else:
@@ -242,7 +242,7 @@ class SubsterBot(basic.AutoBasicBot):
             (exception_only, result) = pywikibot.gettraceback(exc_info)
             substed_content += ast.literal_eval(self._param_default['error']) %\
                                {'error': bot_config['ErrorTemplate'] %\
-                                 ( pywikibot.Timestamp.now().isoformat(' '), 
+                                 ( pywikibot.Timestamp.now().isoformat(' '),
                                    u' ' + result.replace(u'\n', u'\n ').rstrip() ) }
             substed_tags.append( u'>error:BotMagicWords<' )
 
@@ -260,7 +260,7 @@ class SubsterBot(basic.AutoBasicBot):
                 substed_content += ast.literal_eval(item['error']) %\
                                    {'error': bot_config['ErrorTemplate'] %\
                                      ( item['value'],
-                                       pywikibot.Timestamp.now().isoformat(' '), 
+                                       pywikibot.Timestamp.now().isoformat(' '),
                                        u' ' + result.replace(u'\n', u'\n ').rstrip() ) }
                 substed_tags.append( u'>error:%s<' % item['value'] )
 
@@ -403,7 +403,7 @@ class SubsterBot(basic.AutoBasicBot):
                     exec(self._code + (bot_config['CodeTemplate'] % func), scope, scope)
                     external_data = DATA[0]
                 logging.getLogger('subster').debug( external_data )
-    
+
                 # 5.) subst content
                 var_regex = self.get_var_regex(value)
                 content = var_regex.sub((self._var_regex_str%{'var':value,'cont':external_data}), content, int(param['count']))
@@ -551,7 +551,7 @@ class SubsterMailbox(mailbox.mbox):
             if sender in unique:
                 (j, timestmp_j) = unique[sender]
 
-                if (timestmp >= timestmp_j): 
+                if (timestmp >= timestmp_j):
                     remove.append( j )
                 else:
                     remove.append( i )
