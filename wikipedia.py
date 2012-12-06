@@ -4018,6 +4018,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
 
         return (u'purged' in r)
 
+
 class wikidataPage(Page):
     """A subclass of Page representing a page on wikidata.
 
@@ -4027,14 +4028,16 @@ class wikidataPage(Page):
 
     """
     def __init__(self, site, title, insite=False):
-        Page.__init__(self, getSite('wikidata',fam='wikidata'), title, insite, defaultNamespace=0)
-    def setitem(self,summary=None, watchArticle=False, minorEdit=True,
+        Page.__init__(self, getSite('wikidata', fam='wikidata'), title, insite,
+                      defaultNamespace=0)
+
+    def setitem(self, summary=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
-                captcha=None, botflag=True, maxTries=-1,items={}):
+                captcha=None, botflag=True, maxTries=-1, items={}):
         """Setting items on a specific page
             items          : a dictionary of item(s) you want to add, use of these ways:
-                items={'type':u'item', 'label':'fa', 'value':'OK'}) #for change Persian language label of a page to "OK" 
-                items={'type':u'description', 'language':'en', 'value':'OK'}) #for change English language description of a page to "OK" 
+                items={'type':u'item', 'label':'fa', 'value':'OK'}) #for change Persian language label of a page to "OK"
+                items={'type':u'description', 'language':'en', 'value':'OK'}) #for change English language description of a page to "OK"
                 items={'type':u'sitelink', 'site':'de', 'title':'OK'})  #for change German language sitelink of a page to "OK"
         """
         retry_attempt = 0
@@ -4045,7 +4048,7 @@ class wikidataPage(Page):
             'summary': self._encodeArg(summary, 'summary'),
         }
         params['site'] = 'enwiki' #I'm working on making more flexible so i'll change that
-        params['action'] = u'wbset'+items['type']
+        params['action'] = u'wbset' + items['type']
         params['format'] = 'jsonfm'
         if items['type'] == u'item':
             params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
@@ -4133,6 +4136,8 @@ class wikidataPage(Page):
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
+
+
 class ImagePage(Page):
     """A subclass of Page representing an image descriptor wiki page.
 
