@@ -409,6 +409,7 @@ not supported by PyWikipediaBot!"""
             self.moveRestriction = None
             self._permalink = None
             self._userName = None
+            self._comment = None
             self._ipedit = None
             self._editTime = None
             self._startTime = '0'
@@ -815,6 +816,10 @@ not supported by PyWikipediaBot!"""
         else:
             self._userName = lastRev['user']
             self._ipedit = 'anon' in lastRev
+        try:
+            self._comment  = lastRev['comment']
+        except KeyError:
+            self._comment = None
         for restr in pageInfo['protection']:
             if restr['type'] == 'edit':
                 self.editRestriction = restr['level']
@@ -1616,6 +1621,14 @@ not supported by PyWikipediaBot!"""
         # no restricting template found
         return True
 
+    def comment(self):
+        """Return comment of last edit.
+
+        Returns None unless page was retrieved with getAll().
+
+        """
+        return self._comment
+
     def getReferences(self, follow_redirects=True, withTemplateInclusion=True,
             onlyTemplateInclusion=False, redirectsOnly=False, internal = False):
         """Yield all pages that link to the page by API
@@ -1962,6 +1975,10 @@ not supported by PyWikipediaBot!"""
             if not self.botMayEdit(username):
                 raise LockedPage(
                     u'Not allowed to edit %s because of a restricting template'
+                    % self.title(asLink=True))
+            elif self.comment() and username in self.comment():
+                raise LockedPage(
+                    u'Not allowed to edit %s because last edit maybe reverted'
                     % self.title(asLink=True))
             elif self.site().has_api() and self.namespace() == 2 \
                  and (self.title().endswith('.css') or \
@@ -6306,7 +6323,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 params['siprop'] = [key]
         try:
             data = query.GetData(params, self)['query']
-        except NotImplementedError:
+        except KeyError, NotImplementedError:
             return None
 
         if not hasattr(self, '_info'):
@@ -6957,6 +6974,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 if i['pageid'] not in seen:
                     seen.add(i['pageid'])
                     page = Page(self, i['title'], defaultNamespace=i['ns'])
+                    if 'comment' in i:
+                        page._comment = i['comment']
                     if returndict:
                         yield page, i
                     else:
