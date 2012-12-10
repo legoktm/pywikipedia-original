@@ -1599,9 +1599,17 @@ not supported by PyWikipediaBot!"""
         except (NoPage, IsRedirectPage, SectionError):
             return True
 
+        # go through all templates and look for any restriction
+        # multiple bots/nobots templates are allowed
         for template in templates:
             if template[0].lower() == 'nobots':
-                return False
+                if len(template[1]) == 0:
+                    return False
+                else:
+                    bots = template[1][0].split(',')
+                    if 'all' in bots or calledModuleName() in bots \
+                       or username in bots:
+                        return False
             elif template[0].lower() == 'bots':
                 if len(template[1]) == 0:
                     return True
@@ -1609,15 +1617,13 @@ not supported by PyWikipediaBot!"""
                     (ttype, bots) = template[1][0].split('=', 1)
                     bots = bots.split(',')
                     if ttype == 'allow':
-                        if 'all' in bots or username in bots:
-                            return True
-                        else:
-                            return False
+                        return 'all' in bots or username in bots
                     if ttype == 'deny':
-                        if 'all' in bots or username in bots:
-                            return False
-                        else:
-                            return True
+                        return not ('all' in bots or username in bots)
+                    if ttype == 'allowscript':
+                        return 'all' in bots or calledModuleName() in bots
+                    if ttype == 'denyscript':
+                        return not ('all' in bots or calledModuleName() in bots)
         # no restricting template found
         return True
 
