@@ -1595,14 +1595,15 @@ not supported by PyWikipediaBot!"""
             return True
 
         try:
-            templates = self.templatesWithParams(get_redirect=True);
+            templates = self.templatesWithParams(get_redirect=True)
         except (NoPage, IsRedirectPage, SectionError):
             return True
 
         # go through all templates and look for any restriction
         # multiple bots/nobots templates are allowed
         for template in templates:
-            if template[0].lower() == 'nobots':
+            title = template[0].title()
+            if title == 'Nobots':
                 if len(template[1]) == 0:
                     return False
                 else:
@@ -1610,7 +1611,7 @@ not supported by PyWikipediaBot!"""
                     if 'all' in bots or calledModuleName() in bots \
                        or username in bots:
                         return False
-            elif template[0].lower() == 'bots':
+            elif title == 'Bots':
                 if len(template[1]) == 0:
                     return True
                 else:
