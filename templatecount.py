@@ -40,34 +40,40 @@ import re, sys, string
 import datetime
 import wikipedia as pywikibot
 import config
-import replace, pagegenerators
+import replace
+import pagegenerators as pg
 
 templates = ['ref', 'note', 'ref label', 'note label', 'reflist']
 
+
 class TemplateCountRobot:
-    #def __init__(self):
-        #Nothing
-    def countTemplates(self, templates, namespaces):
+
+    @staticmethod
+    def countTemplates(templates, namespace):
         mysite = pywikibot.getSite()
         total = 0
         # The names of the templates are the keys, and the numbers of
         # transclusions are the values.
         templateDict = {}
-        pg = pagegenerators
         getall = templates
-        mytpl  = mysite.template_namespace()+':'
+        mytpl = mysite.getNamespaceIndex(mysite.template_namespace())
         for template in getall:
-            gen = pg.ReferringPageGenerator(pywikibot.Page(mysite,
-                                                           mytpl + template),
-                onlyTemplateInclusion = True)
-            if namespaces:
-                gen = pg.NamespaceFilterPageGenerator(gen, namespaces)
-            count = 0
-            for page in gen:
-                count += 1
-            templateDict[template] = count
-
-            total += count
+            try:
+                gen = pg.ReferringPageGenerator(
+                    pywikibot.Page(mysite, template, defaultNamespace=mytpl),
+                    onlyTemplateInclusion=True)
+                if namespaces:
+                    gen = pg.NamespaceFilterPageGenerator(gen, namespaces)
+                count = 0
+                for page in gen:
+                    count += 1
+                if templates == 'all':
+                    pass
+                else:
+                    templateDict[template] = count
+                total += count
+            except KeyboardInterrupt:
+                break
         pywikibot.output(u'\nNumber of transclusions per template',
                          toStdout=True)
         pywikibot.output(u'-' * 36, toStdout=True)
@@ -80,7 +86,8 @@ class TemplateCountRobot:
                          toStdout=True)
         return templateDict
 
-    def listTemplates(self, templates, namespaces):
+    @staticmethod
+    def listTemplates(templates, namespaces):
         mysite = pywikibot.getSite()
         count = 0
         # The names of the templates are the keys, and lists of pages
@@ -90,15 +97,14 @@ class TemplateCountRobot:
         for template in templates:
             finalText.append(u'* %s' % template)
         finalText.append(u'-' * 36)
+        mytpl = mysite.getNamespaceIndex(mysite.template_namespace())
         for template in templates:
             transcludingArray = []
-            gen = pagegenerators.ReferringPageGenerator(
-                pywikibot.Page(mysite,
-                               mysite.template_namespace() + ':' + template),
+            gen = pg.ReferringPageGenerator(
+                pywikibot.Page(mysite, template, defaultNamespace=mytpl),
                 onlyTemplateInclusion=True)
             if namespaces:
-                gen = pagegenerators.NamespaceFilterPageGenerator(gen,
-                                                                  namespaces)
+                gen = pg.NamespaceFilterPageGenerator(gen, namespaces)
             for page in gen:
                 finalText.append(u'%s' % page.title())
                 count += 1
@@ -111,6 +117,7 @@ class TemplateCountRobot:
                          % datetime.datetime.utcnow().isoformat(),
                          toStdout=True)
         return templateDict
+
 
 def main():
     operation = None
