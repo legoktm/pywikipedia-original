@@ -757,14 +757,6 @@ not supported by PyWikipediaBot!"""
             'inprop': ['protection', 'subjectid'],
             #'intoken': 'edit',
         }
-        params1=params.copy()
-        if self.site().lang==u"wikidata" and self.namespace()==0:
-            params['action']='wbgetentities'
-            params['sites']='enwiki'
-            del params['prop']
-            del params['rvprop']
-            del params['rvlimit']
-            del params['inprop']
         if oldid:
             params['rvstartid'] = oldid
         if expandtemplates:
@@ -775,14 +767,6 @@ not supported by PyWikipediaBot!"""
         textareaFound = False
         # retrying loop is done by query.GetData
         data = query.GetData(params, self.site(), sysop=sysop)
-        if self.site().lang==u"wikidata" and self.namespace()==0:
-            data['query']={'pages':data['entities']}
-            for pageid in data['entities'].keys():
-                if pageid=="-1":
-                    continue #Means the page does not exist
-                params1['titles']="Q"+pageid
-                ndata=query.GetData(params1, self.site(), sysop=sysop)['query']['pages']
-                data['query']['pages'].update(ndata)
         if 'error' in data:
             raise RuntimeError("API query error: %s" % data)
         if not 'pages' in data['query']:
@@ -4050,6 +4034,8 @@ class wikidataPage(Page):
 
     setitem          : Setting item(s) on a page
 
+    getentity        : Getting item(s) of a page
+
     """
     def __init__(self, site, title, insite=False):
         Page.__init__(self, getSite('wikidata', fam='wikidata'), title, insite,
@@ -4160,6 +4146,111 @@ class wikidataPage(Page):
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
+    def getentity(self,force=False, get_redirect=False, throttle=True,
+            sysop=False, change_edit_time=True):
+        """Returns items of a entity in a dictionary
+        """
+        params = {
+            'action': 'query',
+            'titles': self.title(),
+            'prop': ['revisions', 'info'],
+            'rvprop': ['content', 'ids', 'flags', 'timestamp', 'user', 'comment', 'size'],
+            'rvlimit': 1,
+            'inprop': ['protection', 'subjectid'],
+        }
+        params1=params.copy()
+        params['action']='wbgetentities'
+        params['sites']='enwiki'
+        del params['prop']
+        del params['rvprop']
+        del params['rvlimit']
+        del params['inprop']
+        textareaFound = False
+        # retrying loop is done by query.GetData
+        data = query.GetData(params, self.site(), sysop=sysop)
+        data['query']={'pages':data['entities']}
+        for pageid in data['entities'].keys():
+            if pageid=="-1":
+                continue #Means the page does not exist
+            params1['titles']=pageid
+            ndata=query.GetData(params1, self.site(), sysop=sysop)
+            data['entities'].update(ndata['query']['pages'])
+            data['query']['pages'].update(data['entities'])
+        if 'error' in data:
+            raise RuntimeError("API query error: %s" % data)
+        if not 'pages' in data['query']:
+            raise RuntimeError("API query error, no pages found: %s" % data)
+        pageInfo = ndata['query']['pages'].values()[0]
+        if data['query']['pages'].keys()[0] == "-1":
+            if 'missing' in pageInfo:
+                raise NoPage(self.site(), unicode(self),
+"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
+            elif 'invalid' in pageInfo:
+                raise BadTitle('BadTitle: %s' % self)
+        elif 'revisions' in pageInfo: #valid Title
+            lastRev = pageInfo['revisions'][0]
+            if isinstance(lastRev['*'], basestring):
+                textareaFound = True
+        # I got page date with 'revisions' in pageInfo but
+        # lastRev['*'] = False instead of the content. The Page itself was
+        # deleted but there was not 'missing' in pageInfo as expected
+        # I raise a ServerError() yet, but maybe it should be NoPage().
+        if not textareaFound:
+            if verbose:
+                print pageInfo
+            raise ServerError('ServerError: No textarea found in %s' % self)
+
+        self.editRestriction = ''
+        self.moveRestriction = ''
+
+        # Note: user may be hidden and mw returns 'userhidden' flag
+        if 'userhidden' in lastRev:
+            self._userName = None
+        else:
+            self._userName = lastRev['user']
+            self._ipedit = 'anon' in lastRev
+        try:
+            self._comment  = lastRev['comment']
+        except KeyError:
+            self._comment = None
+        for restr in pageInfo['protection']:
+            if restr['type'] == 'edit':
+                self.editRestriction = restr['level']
+            elif restr['type'] == 'move':
+                self.moveRestriction = restr['level']
+
+        self._revisionId = lastRev['revid']
+
+        if change_edit_time:
+            self._editTime = parsetime2stamp(lastRev['timestamp'])
+            if "starttimestamp" in pageInfo:
+                self._startTime = parsetime2stamp(pageInfo["starttimestamp"])
+
+        self._isWatched = False #cannot handle in API in my research for now.
+
+        pagetext = lastRev['*']
+        pagetext = pagetext.rstrip()
+        # pagetext must not decodeEsperantoX() if loaded via API
+        m = self.site().redirectRegex().match(pagetext)
+        if m:
+            # page text matches the redirect pattern
+            if self.section() and not "#" in m.group(1):
+                redirtarget = "%s#%s" % (m.group(1), self.section())
+            else:
+                redirtarget = m.group(1)
+            if get_redirect:
+                self._redirarg = redirtarget
+            else:
+                raise IsRedirectPage(redirtarget)
+
+        if self.section() and \
+           not does_text_contain_section(pagetext, self.section()):
+            try:
+                self._getexception
+            except AttributeError:
+                raise SectionError # Page has no section by this name
+        return pagetext
+
 
 
 class ImagePage(Page):
