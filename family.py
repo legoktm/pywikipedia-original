@@ -4347,6 +4347,10 @@ class Family:
         """Return the shared image repository, if any."""
         return (None, None)
 
+    def shared_data_repository(self, code):
+        """Return the shared wikidata repository, if any."""
+        return (None, None)
+
     def server_time(self, code):
         """Return a datetime object representing server time"""
         # TODO : If the local computer time is wrong, result will be wrong
