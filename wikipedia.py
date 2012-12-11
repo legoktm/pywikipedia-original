@@ -432,6 +432,16 @@ not supported by PyWikipediaBot!"""
         """Return the Site object for the wiki on which this Page resides."""
         return self._site
 
+    @property
+    def image_repository(self):
+        """Return the Site object for the image repository."""
+        return self.site.image_repository()
+
+    @property
+    def data_repository(self):
+       """Return the Site object for the data repository."""
+       return self.site.data_repository()
+
     def namespace(self):
         """Return the number of the namespace of the page.
 
@@ -1428,8 +1438,8 @@ not supported by PyWikipediaBot!"""
 
         """
         txt = self.get()
-        txt = removeLanguageLinks(txt, site = self.site())
-        txt = removeCategoryLinks(txt, site = self.site())
+        txt = removeLanguageLinks(txt, site=self.site())
+        txt = removeCategoryLinks(txt, site=self.site())
         if len(txt) < 4:
             return True
         else:
@@ -4037,18 +4047,28 @@ class wikidataPage(Page):
     getentity        : Getting item(s) of a page
 
     """
-    def __init__(self, site, title, insite=False):
-        Page.__init__(self, getSite('wikidata', fam='wikidata'), title, insite,
-                      defaultNamespace=0)
+    def __init__(self, site, *args, **kwargs):
+        if isinstance(site, basestring):
+            site = getSite(site)
+        self._originSite = site
+        Page.__init__(self, site.data_repository(), *args, **kwargs)
 
     def setitem(self, summary=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
                 captcha=None, botflag=True, maxTries=-1, items={}):
         """Setting items on a specific page
-            items          : a dictionary of item(s) you want to add, use of these ways:
-                items={'type':u'item', 'label':'fa', 'value':'OK'}) #for change Persian language label of a page to "OK"
-                items={'type':u'description', 'language':'en', 'value':'OK'}) #for change English language description of a page to "OK"
-                items={'type':u'sitelink', 'site':'de', 'title':'OK'})  #for change German language sitelink of a page to "OK"
+        @param items: a dictionary of item(s) you want to add
+        @type items: dict
+
+        use of these ways:
+        #for change Persian language label of a page to "OK"
+        items={'type': u'item', 'label': 'fa', 'value': 'OK'})
+
+        #for change english language description of a page to "OK"
+        items={'type': u'description', 'language': 'en', 'value': 'OK'})
+
+        #for change german language sitelink of a page to "OK"
+        items={'type': u'sitelink', 'site': 'de', 'title': 'OK'})
         """
         retry_attempt = 0
         retry_delay = 1
@@ -4057,13 +4077,12 @@ class wikidataPage(Page):
             'title': self.title(),
             'summary': self._encodeArg(summary, 'summary'),
         }
-        params['site'] = 'enwiki' #I'm working on making more flexible so i'll change that
+        params['site'] = self._originSite.dbName().split('_')[0]
         params['action'] = u'wbset' + items['type']
         params['format'] = 'jsonfm'
         if items['type'] == u'item':
             params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
-                                 % {'label': items['label'],
-                                    'value': items['value']}
+                             % {'label': items['label'], 'value': items['value']}
         elif items['type'] == u'description':
             params['value'] = items['value']
             params['language'] = items['language']
@@ -4097,13 +4116,14 @@ class wikidataPage(Page):
                 put_throttle()
             # Which web-site host are we submitting to?
             if newPage:
-                output(u'Creating page %s via API' % self.title(asLink=True))
+                output(u'Creating page %s via API' % self)
                 params['createonly'] = 1
             else:
-                output(u'Updating page %s via API' % self.title(asLink=True))
+                output(u'Updating page %s via API' % self)
                 params['nocreate'] = 1
             try:
-                response, data = query.GetData(params, self.site(), sysop=sysop, back_response = True)
+                response, data = query.GetData(params, self.site(),
+                                               sysop=sysop, back_response=True)
                 if isinstance(data,basestring):
                     raise KeyError
             except httplib.BadStatusLine, line:
@@ -4113,7 +4133,8 @@ class wikidataPage(Page):
                 retry_attempt += 1
                 if retry_attempt > config.maxretries:
                     raise
-                output(u'Got a server error when putting %s; will retry in %i minute%s.' % (self.title(asLink=True), retry_delay, retry_delay != 1 and "s" or ""))
+                output(u'Got a server error when putting %s; will retry in %i minute%s.'
+                       % (self, retry_delay, retry_delay != 1 and "s" or ""))
                 time.sleep(60 * retry_delay)
                 retry_delay *= 2
                 if retry_delay > 30:
@@ -4146,6 +4167,7 @@ class wikidataPage(Page):
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
+
     def getentity(self,force=False, get_redirect=False, throttle=True,
             sysop=False, change_edit_time=True):
         """Returns items of a entity in a dictionary
@@ -4250,7 +4272,6 @@ class wikidataPage(Page):
             except AttributeError:
                 raise SectionError # Page has no section by this name
         return pagetext
-
 
 
 class ImagePage(Page):
@@ -4385,7 +4406,7 @@ class ImagePage(Page):
             return self.fileUrl().startswith(u'http://wikitravel.org/upload/shared/')
         return self.fileIsOnCommons()
 
-    # FIXME: MD5 might be performed on not complete file due to server disconnection
+    # FIXME: MD5 might be performed on incomplete file due to server disconnection
     # (see bug #1795683).
     def getFileMd5Sum(self):
         """Return image file's MD5 checksum."""
@@ -5165,6 +5186,8 @@ def unicode2html(x, encoding):
         x = UnicodeToAsciiHtml(x)
     return x
 
+# Utility functions for parsing page titles
+
 def html2unicode(text, ignore = []):
     """Return text, replacing HTML entities by equivalent unicode characters."""
     # This regular expression will match any decimal and hexadecimal entity and
@@ -5322,6 +5345,8 @@ class Site(object):
     has_api: True if this site's family provides api interface
 
     shared_image_repository: Return tuple of image repositories used by this
+        site.
+    shared_image_repository: Return tuple of data repositories used by this
         site.
     category_on_one_line: Return True if this site wants all category links
         on one line.
@@ -7828,7 +7853,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         """Return path to Special:Allpages."""
         return self.family.allpages_address(self.lang, start=s, namespace = ns)
 
-    def log_address(self, n=50, mode = '', user = ''):
+    def log_address(self, n=50, mode='', user=''):
         """Return path to Special:Log."""
         return self.family.log_address(self.lang, n, mode, user)
 
@@ -8010,6 +8035,44 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
     def shared_image_repository(self):
         """Return a tuple of image repositories used by this site."""
         return self.family.shared_image_repository(self.lang)
+
+    def shared_data_repository(self):
+        """Return a tuple of image repositories used by this site."""
+        return self.family.shared_image_repository(self.lang)
+
+    @property
+    def has_image_repository(self):
+        """Return True if site has a shared image repository like commons"""
+        code, fam = self.shared_image_repository()
+        return bool(code or fam)
+
+    @property
+    def has_data_repository(self):
+        """Return True if site has a shared image repository like wikidata"""
+        code, fam = self.shared_data_repository()
+        return bool(code or fam)
+
+    def image_repository(self):
+        """Return Site object for image repository e.g. commons."""
+
+        code, fam = self.shared_image_repository()
+        if bool(code or fam):
+            return pywikibot.getSite(code, fam, self.username())
+
+    def data_repository(self):
+        """Return Site object for data repository e.g. wikidata."""
+
+        code, fam = self.shared_data_repository()
+        if bool(code or fam):
+            return pywikibot.getSite(code, fam, self.username())
+
+    def is_image_repository(self):
+        """Return True if Site object is the image repository."""
+        return self is self.image_repository()
+
+    def is_data_repository(self):
+        """Return True if Site object is the data repository."""
+        return self is self.data_repository()
 
     def category_on_one_line(self):
         """Return True if this site wants all category links on one line."""
