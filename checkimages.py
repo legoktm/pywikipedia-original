@@ -1134,7 +1134,7 @@ class main:
             # Adding the log
             if addings:
                 rep_text = rep_text % image_to_report # Adding the name of the image in the report if not done already
-            another_page.put(text_get + rep_text, comment = com, minorEdit = False)
+            another_page.put(text_get + rep_text, comment = com, force = True, minorEdit = False)
             pywikibot.output(u"...Reported...")
             reported = True
         return reported
