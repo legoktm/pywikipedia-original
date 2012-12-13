@@ -1126,8 +1126,7 @@ def main():
         return
     if (len(commandline_replacements) == 2):
         replacements[commandline_replacements[0]] = commandline_replacements[1]
-        editSummary = pywikibot.translate(pywikibot.getSite(), msg)
-        % ' (-' + commandline_replacements[0] + ' +' + commandline_replacements[1] + ')'
+        editSummary = pywikibot.translate(pywikibot.getSite(), msg) % ' (-' + commandline_replacements[0] + ' +' + commandline_replacements[1] + ')'
     else:
         change = ''
         default_summary_message =  pywikibot.translate(pywikibot.getSite(), msg) % change

@@ -1635,7 +1635,7 @@ not supported by PyWikipediaBot!"""
         """Yield all pages that link to the page by API
 
         If you need a full list of referring pages, use this:
-            pages = [page for page in s.getReferences()]
+            pages = list(s.getReferences())
         Parameters:
         * follow_redirects      - if True, also returns pages that link to a
                                   redirect pointing to the page.
