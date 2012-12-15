@@ -64,6 +64,9 @@ class Family(family.Family):
         self.namespaces[12]['nl'] = [u'Help', u'H']
         self.namespaces[2]['pt'] =  [u'Usuário(a)', u'Utilizador', u'Usuário', u'Usuária']
         self.namespaces[3]['pt'] = [u'Usuário(a) Discussão', u'Utilizador Discussão', u'Usuário Discussão', u'Usuária Discussão']
+        self.namespaces[2]['ru'] = [u'Участник', u'У', u'Участница']
+        self.namespaces[10]['ru'] = [u'Шаблон', u'Ш', u'T'],
+        self.namespaces[14]['ru'] = [u'Категория', u'К']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -104,7 +107,7 @@ class Family(family.Family):
             'br': u'Wikipedia',
             'bs': u'Wikipedia',
             'bug': u'Wikipedia',
-            'bxr': u'Wikipedia',
+            'bxr': u'Википеэди',
             'ca': u'Viquipèdia',
             'cbk-zam': u'Wikipedia',
             'cdo': u'Wikipedia',
@@ -382,7 +385,7 @@ class Family(family.Family):
             'br': [u'Kaozeadenn Wikipedia', u'Discussion Wikipedia'],
             'bs': u'Razgovor s Wikipediom',
             'bug': u'Pembicaraan Wikipedia',
-            'bxr': u'Wikipedia talk',
+            'bxr': u'Википеэди talk',
             'ca': u'Viquipèdia Discussió',
             'cbk-zam': u'Wikipedia discusión',
             'cdo': u'Wikipedia talk',
@@ -650,6 +653,7 @@ class Family(family.Family):
             'arz': u'بوابة',
             'as': u'ৱিকিচ\'ৰা',
             'az': u'Portal',
+            'ba': u'Портал',
             'bar': u'Portal',
             'be': u'Партал',
             'be-x-old': u'Партал',
@@ -753,6 +757,7 @@ class Family(family.Family):
             'arz': [u'مناقشة بوابة', u'Portal talk'],
             'as': u'ৱিকিচ\'ৰা আলোচনা',
             'az': u'Portal müzakirəsi',
+            'ba': u'Портал буйынса фекерләшеү',
             'bar': u'Portal Dischkrian',
             'be': [u'Размовы пра партал', u'Portal talk'],
             'be-x-old': u'Абмеркаваньне парталу',
@@ -850,6 +855,7 @@ class Family(family.Family):
 
         self.namespaces[102] = {
             'als': u'Buech',
+            'ba': u'Проект',
             'bar': u'Buach',
             'ca': u'Viquiprojecte',
             'cs': u'Rejstřík',
@@ -883,6 +889,7 @@ class Family(family.Family):
 
         self.namespaces[103] = {
             'als': u'Buech Diskussion',
+            'ba': u'Проект буйынса фекерләшеү',
             'bar': u'Buach Dischkrian',
             'ca': u'Viquiprojecte Discussió',
             'cs': u'Diskuse k rejstříku',
@@ -959,6 +966,7 @@ class Family(family.Family):
             'bar': u'Spruch',
             'en': u'Book',
             'he': u'ספר',
+            'ro': u'Cod',
             'yo': u'Ìwé',
         }
 
@@ -967,6 +975,7 @@ class Family(family.Family):
             'bar': u'Spruch Dischkrian',
             'en': u'Book talk',
             'he': u'שיחת ספר',
+            'ro': u'Discuție Cod',
             'yo': u'Ọ̀rọ̀ ìwé',
         }
 
