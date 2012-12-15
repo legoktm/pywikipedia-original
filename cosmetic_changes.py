@@ -82,7 +82,7 @@ msg_interwiki = {
     'fr' : u'<!-- Autres langues -->',
     'nn' : (u'<!--interwiki (no, sv, da first; then other languages alphabetically by name)-->',
             u'(<!-- ?interwiki \(no(?:/nb)?, ?sv, ?da first; then other languages alphabetically by name\) ?-->)')
-}    
+}
 
 # This is from interwiki.py;
 # move it to family file and implement global instances

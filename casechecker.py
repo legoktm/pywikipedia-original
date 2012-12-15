@@ -220,7 +220,7 @@ class CaseChecker( object ):
 
         if not os.path.isabs(self.failedTitles):
             self.failedTitles = pywikibot.config.datafilepath(self.failedTitles)
-        
+
         if self.doFailed:
             with codecs.open(self.failedTitles, 'r', 'utf-8') as f:
                 self.titleList = [self.Page(t) for t in f]
@@ -274,7 +274,7 @@ class CaseChecker( object ):
             if len(data['query']['pageids']) == 1:
                 pageid = data['query']['pageids'][0]
                 links = data['query']['pages'][pageid]['links']
-                
+
                 allWords = [nn for n in links for nn in self.FindBadWords(n['title'])]
 
                 self.knownWords = set(allWords)
@@ -301,7 +301,7 @@ class CaseChecker( object ):
 
             # Process received data
             yield data
-            
+
             # Clear any continuations first
             if 'clcontinue' in params: del params['clcontinue']
             if 'plcontinue' in params: del params['plcontinue']
@@ -320,7 +320,7 @@ class CaseChecker( object ):
             else:
                 raise ValueError(u'Unexpected query-continue values: %s' % qc)
             continue
-        
+
     def Run(self):
         try:
             self.lastLetter = ''
@@ -357,7 +357,7 @@ class CaseChecker( object ):
 
         firstItem = True
         for pageID, page in data['query']['pages'].iteritems():
-            
+
             printed = False
             title = page['title']
             self.currentTitle = title
@@ -479,7 +479,7 @@ class CaseChecker( object ):
                         if self.PutNewPage(pageObj, pageTxt, msg):
                                 # done, no need to log anything
                                 foundSuggestions = False
-                                
+
                     if foundSuggestions:
                         self.AppendLineToLog(self.failedTitles, title)
 
@@ -501,14 +501,14 @@ class CaseChecker( object ):
     def ProcessTitle(self, title):
 
         badWords = list(self.FindBadWords(title))
-        
+
         if len(badWords) > 0:
             # Allow known words, allow any roman numerals with local suffixes
             badWords = set([i for i in badWords if i not in self.knownWords and self.romanNumSfxPtrn.match(i) is not None])
-       
+
         if len(badWords) == 0 or self.Page(title).isImage():
             return None
-                
+
         count = 0
         ambigBadWords = set()
         ambigBadWordsCount = 0
@@ -614,7 +614,7 @@ class CaseChecker( object ):
         return (infoText, possibleAlternatives)
 
     def PickTarget(self, title, original, candidates):
-        
+
         if len(candidates) == 0:
             return None
 
@@ -719,13 +719,13 @@ class CaseChecker( object ):
             bl = data['query']['backlinks']
             cl = len(bl)
             redirs = len([i for i in bl if 'redirect' in i])
-        
+
         if cl > 0 and 'query-continue' in data:
             count = '50+'
         else:
             count = str(cl if cl > 0 else 'no backlinks')
-        
-        self.AppendLineToLog(self.nosuggestions, u'* %s (%s%s)' % 
+
+        self.AppendLineToLog(self.nosuggestions, u'* %s (%s%s)' %
                              (self.MakeLink(title), count, u', %d redirects' % redirs if redirs > 0 else u''))
         return False
 
@@ -764,7 +764,7 @@ class CaseChecker( object ):
             return codecs.open(filename, 'a', 'utf-8')
         except IOError:
             return codecs.open(filename, 'w', 'utf-8')
-            
+
     def AppendLineToLog(self, filename, text):
         with self.OpenLogFile(filename) as f:
             f.write(text + u'\n')
@@ -787,6 +787,7 @@ class CaseChecker( object ):
                 text = text.replace(frmParts[i][0].upper() + frmParts[i][1:], toParts[i][0].upper() + toParts[i][1:])
 
         return text
+
 
 if __name__ == "__main__":
     try:
