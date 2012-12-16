@@ -8206,7 +8206,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         params = {
             'action'    :'query',
             'list'      :'allimages',
-            'aisha1'    :hash_found,
+            # Workaround for bug pywikipediabot-Bugs-3596617 / bugzilla:43177
+            'aisha1'    : hash_found.lower(),
         }
         allimages = query.GetData(params, self)['query']['allimages']
         files = list()
