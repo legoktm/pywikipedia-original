@@ -40,7 +40,7 @@ Unprotect all pages listed in text file "unprotect.txt" without prompting.
 # Written by http://it.wikisource.org/wiki/Utente:Qualc1
 # Created by modifying delete.py
 #
-# (C) Pywikipedia bot team, 2008-2010
+# (C) Pywikipedia bot team, 2008-2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -61,6 +61,7 @@ msg_simple_protect = {
     'pt': u'Bot: Protegendo uma lista de artigos.',
     'zh': u'機器人:保護清單中的所有檔案',
 }
+
 msg_protect_category = {
     'ar': u'روبوت - حماية كل الصفحات من التصنيف %s',
     'en': u'Robot: Protecting all pages from category %s',
@@ -70,6 +71,7 @@ msg_protect_category = {
     'pt': u'Bot: Protegendo todos os artigos da categoria %s',
     'zh': u'機器人: 保護目錄 %s 的所有頁面',
 }
+
 msg_protect_links = {
     'ar': u'روبوت - حماية كل الصفحات الموصولة من %s',
     'en': u'Robot: Protecting all pages linked from %s',
@@ -79,6 +81,7 @@ msg_protect_links = {
     'pt': u'Bot: Protegendo todos os artigos ligados a %s',
     'zh': u'機器人: 保護所有從 %s 連結的頁面',
 }
+
 msg_protect_ref = {
     'ar': u'روبوت - حماية كل الصفحات الراجعة من %s',
     'en': u'Robot: Protecting all pages referring from %s',
@@ -88,6 +91,7 @@ msg_protect_ref = {
     'pt': u'Bot: Protegendo todos os artigos afluentes a %s',
     'zh': u'機器人: 保護所有連至 %s 的頁面',
 }
+
 msg_protect_images = {
     'ar': u'روبوت - حماية كل الصور في الصفحة %s',
     'en': u'Robot: Protecting all images on page %s',
@@ -103,7 +107,7 @@ class ProtectionRobot:
     This robot allows protection of pages en masse.
     """
 
-    def __init__(self, generator, summary, always = False, unprotect=False,
+    def __init__(self, generator, summary, always=False, unprotect=False,
                 edit='sysop', move='sysop', create='sysop'):
         """
         Arguments:
@@ -114,7 +118,7 @@ class ProtectionRobot:
         """
         self.generator = generator
         self.summary = summary
-        self.always = always
+        self.prompt = not always
         self.unprotect = unprotect
         self.edit = edit
         self.move = move
@@ -126,17 +130,20 @@ class ProtectionRobot:
         #Loop through everything in the page generator and (un)protect it.
         for page in self.generator:
             pywikibot.output(u'Processing page %s' % page.title())
-            print self.edit, self.move#, self.create
-            page.protect(unprotect=self.unprotect, reason=self.summary, prompt=self.always,
-                        editcreate=self.edit, move=self.move)
+            #print self.edit, self.move#, self.create
+            page.protect(unprotect=self.unprotect, reason=self.summary,
+                         prompt=self.prompt, editcreate=self.edit,
+                         move=self.move)
 
 # Asks a valid protection level for "operation".
 # Returns the protection level chosen by user.
 def choiceProtectionLevel(operation, default):
     default = default[0]
     firstChar = map(lambda level: level[0], protectionLevels)
-    choiceChar = pywikibot.inputChoice('Choice a protection level to %s:' % operation,
-                            protectionLevels, firstChar, default = default)
+    choiceChar = pywikibot.inputChoice('Choice a protection level to %s:'
+                                       % operation,
+                                       protectionLevels, firstChar,
+                                       default=default)
     for level in protectionLevels:
         if level.startswith(choiceChar):
             return level
@@ -230,13 +237,16 @@ def main():
         gen = iter([page])
     elif doCategory:
         if not summary:
-            summary = pywikibot.translate(mysite, msg_protect_category) % pageName
+            summary = pywikibot.translate(mysite,
+                                          msg_protect_category) % pageName
         ns = mysite.category_namespace()
         categoryPage = catlib.Category(mysite, ns + ':' + pageName)
-        gen = pagegenerators.CategorizedPageGenerator(categoryPage, recurse = protectSubcategories)
+        gen = pagegenerators.CategorizedPageGenerator(categoryPage,
+                                                      recurse=protectSubcategories)
     elif doLinks:
         if not summary:
-            summary = pywikibot.translate(mysite, msg_protect_links) % pageName
+            summary = pywikibot.translate(mysite,
+                                          msg_protect_links) % pageName
         linksPage = pywikibot.Page(mysite, pageName)
         gen = pagegenerators.LinkedPageGenerator(linksPage)
     elif doRef:
@@ -251,14 +261,18 @@ def main():
     elif doImages:
         if not summary:
             summary = pywikibot.translate(mysite, msg_protect_images) % pageName
-        gen = pagegenerators.ImagesPageGenerator(pywikibot.Page(mysite, pageName))
+        gen = pagegenerators.ImagesPageGenerator(pywikibot.Page(mysite,
+                                                                pageName))
 
     if gen:
         pywikibot.setAction(summary)
-        # We are just protecting pages, so we have no need of using a preloading page generator
+        # We are just protecting pages, so we have no need of using a preloading
+        # page generator
         # to actually get the text of those pages.
-        if not edit: edit = defaultProtection
-        if not move: move = defaultProtection
+        if not edit:
+            edit = defaultProtection
+        if not move:
+            move = defaultProtection
         bot = ProtectionRobot(gen, summary, always, edit=edit, move=move)
         bot.run()
     else:
