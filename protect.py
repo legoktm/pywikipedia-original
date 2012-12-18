@@ -14,7 +14,7 @@ Command line options:
 -file:       Protect all pages listed in a text file.
 -ref:        Protect all pages referring from a given page.
 -images:     Protect all images used on a given page.
--always:     Always prompt to protect pages
+-always:     Don't prompt to protect pages, just do it.
 -summary:    Supply a custom edit summary.
 -unprotect:   Actually unprotect pages instead of protecting
 -edit:PROTECTION_LEVEL Set edit protection level to PROTECTION_LEVEL
