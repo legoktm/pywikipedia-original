@@ -65,7 +65,7 @@ class Family(family.Family):
         self.namespaces[2]['pt'] =  [u'Usuário(a)', u'Utilizador', u'Usuário', u'Usuária']
         self.namespaces[3]['pt'] = [u'Usuário(a) Discussão', u'Utilizador Discussão', u'Usuário Discussão', u'Usuária Discussão']
         self.namespaces[2]['ru'] = [u'Участник', u'У', u'Участница']
-        self.namespaces[10]['ru'] = [u'Шаблон', u'Ш', u'T'],
+        self.namespaces[10]['ru'] = [u'Шаблон', u'Ш', u'T']
         self.namespaces[14]['ru'] = [u'Категория', u'К']
 
         # Most namespaces are inherited from family.Family.
