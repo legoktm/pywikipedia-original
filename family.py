@@ -7,11 +7,11 @@
 #
 __version__='$Id$'
 
-import config
 import re
 import urllib
 from datetime import timedelta, datetime
 
+import config
 import wikipedia as pywikibot
 
 # Parent class for all wiki families
