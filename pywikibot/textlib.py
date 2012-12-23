@@ -30,7 +30,12 @@ def unescape(s):
     s = s.replace("&amp;", "&") # Must be last
     return s
 
-
+def comma(langcode):
+    #TODO: needs to epxand
+    if langcode=='fa':
+        return u"،"
+    else:
+        return u","
 def replaceExcept(text, old, new, exceptions, caseInsensitive=False,
                   allowoverlap=False, marker = '', site = None):
     """

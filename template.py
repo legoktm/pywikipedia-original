@@ -215,7 +215,7 @@ class TemplateRobot:
 
         # get edit summary message if it's empty
         if (self.editSummary==''):
-            Param = {'list': (', ').join(self.templates.keys()),
+            Param = {'list': pywikibot.comma(site.language()).join(self.templates.keys()),
                      'num' : len(self.templates)}
             if self.remove:
                 self.editSummary = i18n.twntranslate(
