@@ -12,7 +12,6 @@ Please refer to delinker.txt for full documentation.
 __version__ = '$Id$'
 import config, wikipedia, simplejson
 import re, time
-import threadpool
 import sys, os, signal, traceback
 
 from delinker import wait_callback, output, connect_database
@@ -54,8 +53,9 @@ class Replacer(object):
 
         self.first_revision = 0
         if self.config.get('replacer_report_replacements', False):
-            self.reporters = threadpool.ThreadPool(Reporter, 1, self.site, self.config)
-            self.reporters.start()
+            self.reporters = []
+        else:
+            self.reporters = None
 
 
     def read_replace_log(self):
@@ -217,13 +217,19 @@ class Replacer(object):
 
 
     def start(self):
+        if self.config.get('replacer_run_once', False):
+            self.run_once()
+            return
+        
         while True:
-            self.read_replace_log()
-            if self.config.get('replacer_report_replacements', False):
-                self.read_finished_replacements()
+            self.run_once()
+            time.sleep(self.config['replacer_timeout'])
 
-            # Replacer should not loop as often as delinker
-            time.sleep(self.config['timeout'] * 2)
+    def run_once(self):
+        self.read_replace_log()
+        if self.config.get('replacer_report_replacements', False):
+            self.read_finished_replacements()
+            self.process_reports()
 
     def allowed_replacement(self, replacement):
         """ Method to prevent World War III """
@@ -234,26 +240,14 @@ class Replacer(object):
                 return False
         return True
 
-class Reporter(threadpool.Thread):
-    """ Asynchronous worker to report finished replacements to file pages. """
-
-    def __init__(self, pool, site, config):
-        self.site = wikipedia.getSite(site.lang, site.family,
-            site.user, True)
-        self.config = config
-
-        threadpool.Thread.__init__(self, pool)
-
-    def do(self, args):
-        try:
-            self.report(args)
-        except Exception, e:
-            output(u'A critical error during reporting has occured!', False)
-            output('%s: %s' % (e.__class__.__name__, str(e)), False)
-            traceback.print_exc(file = sys.stderr)
-            sys.stderr.flush()
-            self.exit()
-            os.kill(0, signal.SIGTERM)
+    def process_reports(self):
+        end_time = time.time() + self.config['replacer_timeout']
+        
+        while self.reporters and time.time() < end_time:
+            report = self.reporters[0]
+            del self.reporters[0]
+            
+            self.report(*report)
 
     def report(self, (old_image, new_image, user, comment, not_ok)):
         not_ok_items = []
@@ -322,10 +316,6 @@ def main():
             output('A critical error has occured! Aborting!')
             traceback.print_exc(file = sys.stderr)
     finally:
-        try:
-            R.reporters.exit()
-        except:
-            pass
         wikipedia.stopme()
 
 if __name__ == '__main__': main()
