@@ -2334,9 +2334,11 @@ def compareLanguages(old, new, insite):
 
         mcomment += globalvar.summary
 
-        changes = {'adding':    ', '.join([fmt(new, x) for x in adding]),
-                   'removing':  ', '.join([fmt(old, x) for x in removing]),
-                   'modifying': ', '.join([fmt(new, x) for x in modifying]),
+        comma = i18n.twtranslate(insite.lang, 'interwiki-comma')
+
+        changes = {'adding':    comma.join([fmt(new, x) for x in adding]),
+                   'removing':  comma.join([fmt(old, x) for x in removing]),
+                   'modifying': comma.join([fmt(new, x) for x in modifying]),
                    'from': u'' if not useFrom else old[modifying[0]]}
 
         mcomment += i18n.twtranslate(insite.lang, commentname) % changes
