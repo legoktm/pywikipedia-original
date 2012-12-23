@@ -213,9 +213,11 @@ class TemplateRobot:
             self.addedCat = catlib.Category(
                 site, u'%s:%s' % (site.namespace(14), self.addedCat))
 
+	comma = self.summary = i18n.twtranslate(site, 'template-comma')
+
         # get edit summary message if it's empty
         if (self.editSummary==''):
-            Param = {'list': site.mediawiki_message(u"Comma-separator").join(self.templates.keys()),
+            Param = {'list': comma.join(self.templates.keys()),
                      'num' : len(self.templates)}
             if self.remove:
                 self.editSummary = i18n.twntranslate(
