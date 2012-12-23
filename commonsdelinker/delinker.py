@@ -849,6 +849,8 @@ class CommonsDelinker(object):
         self.database.commit()
 
     def start(self):
+        start_time = time.time()
+        
         # Gracefully exit all threads on SIG_INT or SIG_TERM
         threadpool.catch_signals()
 
@@ -871,7 +873,21 @@ class CommonsDelinker(object):
                     self.read_deletion_log()
             if self.config.get('enable_replacer', False):
                 self.read_replacement_log()
-
+            
+            if 'max_runtime' in self.config:
+                if (self.config['max_runtime'] + start_time) < time.time():
+                    output(u'Maximum run time exceeded; trying to shutdown')
+                    while not (self.CheckUsages.is_idle() and
+                               self.Delinkers.is_idle() and
+                               self.Loggers.is_idle()):
+                        time.sleep(self.config['timeout'])
+                    
+                    self.CheckUsages.exit()
+                    self.Delinkers.exit()
+                    self.Loggers.exit()
+                    output(u'All work done; exiting')
+                    return
+                    
             time.sleep(self.config['timeout'])
 
     def thread_died(self):

@@ -247,7 +247,7 @@ class Replacer(object):
             report = self.reporters[0]
             del self.reporters[0]
             
-            self.report(*report)
+            self.report(report)
 
     def report(self, (old_image, new_image, user, comment, not_ok)):
         not_ok_items = []
@@ -316,6 +316,7 @@ def main():
             output('A critical error has occured! Aborting!')
             traceback.print_exc(file = sys.stderr)
     finally:
+        output('Exitting replacer')
         wikipedia.stopme()
 
 if __name__ == '__main__': main()

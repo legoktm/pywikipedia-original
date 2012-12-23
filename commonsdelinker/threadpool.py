@@ -86,12 +86,23 @@ class ThreadPool(dict):
         finally:
             self.jobLock.release()
 
+    def is_idle(self):
+        self.jobLock.acquire()
+        try:
+            idle = len(self.jobQueue) == 0
+            for thread in self.threads:
+                idle = idle and thread.is_idle
+        finally:
+            self.jobLock.release()
+        return idle
+
 class Thread(threading.Thread):
     timeout = None
     def __init__(self, pool):
         threading.Thread.__init__(self)
         self.pool = pool
         self.quit = False
+        self.is_idle = True
 
     def run(self):
         while True:
@@ -118,9 +129,11 @@ class Thread(threading.Thread):
                     if self.starve(): return
                 continue
             job = self.pool.jobQueue.pop(0)
+            self.is_idle = False
             self.pool.jobLock.release()
 
             self.do(job)
+            self.is_idle = True
 
     def exit(self):
         self.pool.jobLock.acquire()
