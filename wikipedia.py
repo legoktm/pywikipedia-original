@@ -4043,15 +4043,18 @@ class wikidataPage(Page):
     Supports the same interface as Page, with the following added methods:
 
     setitem          : Setting item(s) on a page
+    setclaimvalue    : Set the value of a Wikibase claim
+    createclaim      : Create Wikibase claims
 
     getentity        : Getting item(s) of a page
+    getentities      : Get the data for multiple Wikibase entities
 
     """
     def __init__(self, site, *args, **kwargs):
         if isinstance(site, basestring):
             site = getSite(site)
         self._originSite = site
-        Page.__init__(self, site.data_repository(), *args, **kwargs)
+        Page.__init__(self, site, *args, **kwargs)
 
     def setitem(self, summary=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
@@ -4168,6 +4171,57 @@ class wikidataPage(Page):
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
 
+    def setclaimvalue(self, guid, value, comment=None, token=None, sysop=False, botflag=True):
+        """API module for setting the value of a Wikibase claim.
+        """
+        params = {
+            'action': 'wbsetclaimvalue',
+            'claim': guid,
+            'snaktype': 'value',
+            'value': value,
+        }
+        if token:
+            params['token'] = token
+        else:
+            params['token'] = self.site().getToken(sysop = sysop)
+        #if botflag:
+        #    params['bot'] = 1
+        # retrying is done by query.GetData
+        data = query.GetData(params, self.site(), sysop=sysop)
+
+        if 'error' in data:
+            raise RuntimeError("API query error: %s" % data)
+        if u'warnings' in data:
+            output(str(data[u'warnings']))
+
+        return
+
+    def createclaim(self, prop, value, comment=None, token=None, sysop=False, botflag=True):
+        """API module for creating Wikibase claims.
+        """
+        params = {
+            'action': 'wbcreateclaim',
+            'entity': self.title(),
+            'snaktype': 'value',
+            'property': prop,
+            'value': value,
+        }
+        if token:
+            params['token'] = token
+        else:
+            params['token'] = self.site().getToken(sysop = sysop)
+        #if botflag:
+        #    params['bot'] = 1
+        # retrying is done by query.GetData
+        data = query.GetData(params, self.site(), sysop=sysop)
+
+        if 'error' in data:
+            raise RuntimeError("API query error: %s" % data)
+        if u'warnings' in data:
+            output(str(data[u'warnings']))
+
+        return
+
     def getentity(self,force=False, get_redirect=False, throttle=True,
             sysop=False, change_edit_time=True):
         """Returns items of a entity in a dictionary
@@ -4272,6 +4326,29 @@ class wikidataPage(Page):
             except AttributeError:
                 raise SectionError # Page has no section by this name
         return pagetext
+
+    def getentities(self, sysop=False):
+        """API module to get the data for multiple Wikibase entities.
+        """
+        params = {
+            'action': 'wbgetentities',
+            'ids': self.title(),
+        }
+        # retrying is done by query.GetData
+        data = query.GetData(params, self.site(), sysop=sysop)
+        entities  = data['entities'][self.title().lower()]
+        debuginfo = data['debuginfo']
+
+        if 'error' in data:
+            raise RuntimeError("API query error: %s" % data)
+        pageInfo = entities
+        if 'missing' in pageInfo:
+            raise NoPage(self.site(), unicode(self),
+"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
+        elif 'invalid' in pageInfo:
+            raise BadTitle('BadTitle: %s' % self)
+
+        return entities
 
 
 class ImagePage(Page):
