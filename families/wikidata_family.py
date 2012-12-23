@@ -12,6 +12,7 @@ class Family(family.Family):
         self.name = 'wikidata'
         self.langs = {
             'wikidata': 'wikidata.org',
+            'test':     'wikidata-test-repo.wikimedia.de',
         }
 
         self.namespaces[4] = {
