@@ -193,12 +193,12 @@ class Replacer(object):
 
         self.cursor.execute('START TRANSACTION WITH CONSISTENT SNAPSHOT')
         self.cursor.execute("""SELECT old_image, new_image, user, comment FROM
-            %s WHERE status = 'done' AND timestamp >= %i""" % \
-            (self.config['replacer_table'], self.first_revision))
+            %s WHERE status = 'done'""" % \
+            (self.config['replacer_table'], ))
         finished_images = list(self.cursor)
         self.cursor.execute("""UPDATE %s SET status = 'reported'
-            WHERE status = 'done' AND timestamp >= %i""" % \
-            (self.config['replacer_table'], self.first_revision))
+            WHERE status = 'done'""" % \
+            (self.config['replacer_table'], ))
         self.cursor.commit()
 
         for old_image, new_image, user, comment in finished_images:
