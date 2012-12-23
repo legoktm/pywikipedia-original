@@ -1,6 +1,6 @@
 # -*- coding: utf-8  -*-
 
-__version__ = '$Id: wikidata_family.py 10591 2012-10-20 amir $'
+__version__ = '$Id$'
 
 import family
 
