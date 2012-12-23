@@ -153,7 +153,6 @@ class SubsterBot(basic.AutoBasicBot):
 
         self._debug = debug
 
-
         # init constants
         self._userListPage        = pywikibot.Page(self.site, bot_config['TemplateName'])
         self._ConfCSSpostprocPage = pywikibot.Page(self.site, bot_config['ConfCSSpostproc'])
@@ -197,6 +196,18 @@ class SubsterBot(basic.AutoBasicBot):
             # output result to page or return directly
             if sim:
                 return substed_content
+            elif (self.site.family.name == 'wikidata'):     # DRTRIGON-130
+                # convert talk page result to wikidata(base)
+                data = self.WD_convertContent(substed_content)
+                #outpage = page.toggleTalkPage()
+                outpage = pywikibot.wikidataPage(self.site, page.toggleTalkPage().title())
+                #dic = json.loads(outpage.get())
+                dic = outpage.getentities()
+
+                # check for changes and then write/change/set values
+                summary = u'Bot: update data because of configuration on %s.' % page.title(asLink=True)
+                if not self.WD_save(outpage, dic[u'claims'], {u'p32': data}, summary):
+                    pywikibot.output(u'NOTHING TO DO!')
             else:
                 # if changed, write!
                 if (substed_content != content):
@@ -447,6 +458,68 @@ class SubsterBot(basic.AutoBasicBot):
         pywikibot.output(u'--- ' * 15)
         pywikibot.output(u''.join(diff))
         pywikibot.output(u'--- ' * 15)
+
+    def WD_convertContent(self, substed_content):
+        """Converts the substed content to Wikidata format in order to save.
+           (1 line of wiki text is converted to 1 claim/statement)
+
+           @param substed_content: New content (with tags).
+           @type  substed_content: string
+        """
+        # DRTRIGON-130: convert talk page result to wikidata(base)
+        #res, i = {}, 0
+        res = []
+        for line in substed_content.splitlines():
+            #data = self.get_var_regex('(.*?)', '(.*?)').findall(line)
+            data = self.get_var_regex('.*?', '(.*?)').sub('\g<1>', line)
+            #if not data:
+            if data == line:
+                continue
+            #buf = []
+            #for item in data:
+            #    #print item[0], item[1]
+            #    params = { u'property':  u'p%i' % i,
+            #               u'value': item[1] }
+            #    buf.append(params)
+            #res[u'p%i' % i] = buf
+            #i += 1
+            res.append(data)
+
+        return res
+
+    def WD_save(self, outpage, dic, data, comment=None):
+        """Stores the content to Wikidata.
+
+           @param dic: Original content.
+           @type  dic: dict
+           @param data: New content.
+           @type  data: dict
+
+           Returns nothing, but stores the changed content.
+        """
+        # DRTRIGON-130: check for changes and then write/change/set values
+        changed = False
+        for prop in data:
+            pywikibot.output(u'Checking claim with %i values' % len(data[prop]))
+            for i, item in enumerate(data[prop]):
+                if (i < len(dic[prop])) and \
+                  (dic[prop][i][u'mainsnak'][u'datavalue'][u'value'] == item):
+                    pass    # same value; nothing to do
+                else:
+                    # changes; update or create claim
+                    changed = True
+                    if (i < len(dic[prop])):
+                        #print item, dic[prop][i][u'mainsnak'][u'datavalue'][u'value']
+                        pywikibot.output(u'Updating claim with value: %s' % item)
+                        outpage.setclaimvalue(dic[prop][i][u'id'], item, comment=comment)
+                    else:
+                        pywikibot.output(u'Creating new claim with value: %s' % item)
+                        outpage.createclaim(prop, item, comment=comment)
+        # speed-up by setting everything at once (in one single write attempt)
+        #outpage.editentity(data = {u'claims': data})
+        #outpage.setitem()
+
+        return changed
 
     def get_var_regex(self, var, cont='.*?'):
         """Get regex used/needed to find the tags to replace.
