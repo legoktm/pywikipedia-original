@@ -18,7 +18,7 @@ Please refer to delinker.txt for full documentation.
 #
 # (C) Kyle/Orgullomoore, 2006-2007
 # (C) Siebrand Mazeland, 2006-2007
-# (C) Bryan Tong Minh, 2007-2008
+# (C) Bryan Tong Minh, 2007-2008, 2012
 #
 # Distributed under the terms of the MIT license.
 #
@@ -478,7 +478,8 @@ class CheckUsage(threadpool.Thread):
                 use_autoconn = True,
                 http_callback = wait_callback,
                 mysql_callback = wait_callback,
-                mysql_host_suffix = '-fast')
+                mysql_host_suffix = '-fast',
+                no_db = config['global'] == 'live')
         else:
             self.CheckUsage = checkusage.CheckUsage(sys.maxint,
                 http_callback = wait_callback, no_db = True)
@@ -508,7 +509,10 @@ class CheckUsage(threadpool.Thread):
 
 
         if self.CommonsDelinker.config['global']:
-            usage = self.CheckUsage.get_usage(image)
+            if self.CommonsDelinker.config['global'] == 'live':
+                usage = self.CheckUsage.get_globalusage(self.site, image, True)
+            else:
+                usage = self.CheckUsage.get_usage(image)
             usage_domains = {}
 
             count = 0

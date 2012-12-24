@@ -327,6 +327,43 @@ class CheckUsage(object):
             else:
                 title = stripped_title
             yield page_namespace, stripped_title, title
+            
+    def get_globalusage(self, site, image, shared = False):
+        self.connect_http()
+        if type(site) is str:
+            hostname = site
+            apipath = '/w/api.php'
+        else:
+            hostname = site.hostname()
+            apipath = site.apipath()
+
+        kwargs = {'action': 'query', 'titles': u'File:' + image,
+                  'prop': 'globalusage|imageinfo', 
+                  'iiprop': '', 'guprop': 'namespace', 'gulimit': '500'}
+
+        while True:
+            res = self.http.query_api(hostname, apipath, **kwargs)
+            if not res or not res['query'] or not res['query']['pages']:
+                return
+            if res['query']['pages'].values()[0].get('imagerepository') == 'local' and shared:
+                return
+
+            usages = res['query']['pages'].values()[0].get('globalusage', ())
+            for usage in usages:
+                title = usage['title'].replace(' ', '_')
+                namespace = int(usage['ns'])
+                site = family(usage['wiki'])
+
+                if namespace != 0:
+                    yield site, (namespace, strip_ns(title), title)
+                else:
+                    yield site, (namespace, title, title)
+
+            if 'globalusage' in res.get('query-continue', ()):
+                kwargs.update(res['query-continue']['globalusage'])
+            else:
+                return
+
 
     def get_usage_live(self, site, image, shared = False):
         self.connect_http()
@@ -369,13 +406,13 @@ class CheckUsage(object):
     def exists(self, site, image):
         self.connect_http()
         # Check whether the image still is deleted on Commons.
-        # BUG: This also returns true for images with a page, but
-        # without the image itself. Can be fixed by querying query.php
-        # instead of api.php.
-        # BUG: This is ugly.
-        return '-1' not in self.http.query_api(site.hostname(), site.apipath(),
-            action = 'query', titles = 'Image:' + image)['query']['pages']
-
+        res = self.http.query_api(site.hostname(), site.apipath(),
+                                  action = 'query', titles = u'Image:' + image,
+                                  prop = 'imageinfo', iiprop = '')
+        
+        if not res or not res['query'] or not res['query']['pages']:
+            return
+        return res['query']['pages'].values()[0].get('imagerepository') == 'local'
 
     def close(self):
         if getattr(self, 'http'):
