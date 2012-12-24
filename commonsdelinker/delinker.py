@@ -681,6 +681,14 @@ class CommonsDelinker(object):
                 config.sysopnames = dict([(fam, {}) for fam in config.sysopnames.keys()])
 
         self.last_check = time.time()
+        if 'deletion_log_store' in self.config:
+            last_check = int(open(self.config['deletion_log_store'], 'r').read())
+            if (last_check > self.last_check) or (self.last_check - last_check) > \
+                    self.config.get('max_session_restore_time', 3600):
+                output(u'Not restoring last session; delta: %i' % (self.last_check - last_check))
+            else:
+                self.last_check = last_check
+                output(u'Restoring last session ended at %i' % self.last_check)
 
         #if 'bot' in self.site.userGroups:
         #    self.log_limit = '5000'
@@ -886,9 +894,15 @@ class CommonsDelinker(object):
                     self.Delinkers.exit()
                     self.Loggers.exit()
                     output(u'All work done; exiting')
-                    return
+                    break
                     
             time.sleep(self.config['timeout'])
+            
+        # Store the last time the deletion log was checked
+        if 'deletion_log_store' in self.config:
+            open(self.config['deletion_log_store'], 'w').write(str(self.last_check))
+            output(u'Storing session end at %i' % self.last_check)
+
 
     def thread_died(self):
         # Obsolete
