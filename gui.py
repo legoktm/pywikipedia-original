@@ -43,8 +43,9 @@ class TextEditor(ScrolledText):
                         'hilite', fgBg='bg'),
                       insertbackground=idleConf.GetHighlight(currentTheme,
                         'cursor', fgBg='fg'),
-                      width=idleConf.GetOption('main','EditorWindow','width'),
-                      height=idleConf.GetOption('main','EditorWindow','height')
+                      width=idleConf.GetOption('main', 'EditorWindow', 'width'),
+                      height=idleConf.GetOption('main', 'EditorWindow',
+                                                'height')
                     )
         fontWeight = 'normal'
         if idleConf.GetOption('main', 'EditorWindow', 'font-bold', type='bool'):

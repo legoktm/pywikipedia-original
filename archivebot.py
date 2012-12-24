@@ -238,27 +238,30 @@ class DiscussionThread(object):
             if not TIME:
                 TIME = txt2timestamp(TM.group(0), "%Y. %B %d., %H:%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0),"%d. %b %Y kl.%H:%M (%Z)")
+                TIME = txt2timestamp(TM.group(0), "%d. %b %Y kl.%H:%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)),"%H:%M, %d %B %Y")
+                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)),
+                                     "%H:%M, %d %B %Y")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0),"%H:%M, %d %b %Y (%Z)")
+                TIME = txt2timestamp(TM.group(0), "%H:%M, %d %b %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *','',TM.group(0)),"%H:%M, %d %b %Y")
+                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)),
+                                     "%H:%M, %d %b %Y")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0),"%H:%M, %b %d %Y (%Z)")
+                TIME = txt2timestamp(TM.group(0), "%H:%M, %b %d %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0),"%H:%M, %B %d %Y (%Z)")
+                TIME = txt2timestamp(TM.group(0), "%H:%M, %B %d %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0),"%H:%M, %b %d, %Y (%Z)")
+                TIME = txt2timestamp(TM.group(0), "%H:%M, %b %d, %Y (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0),"%H:%M, %B %d, %Y (%Z)")
+                TIME = txt2timestamp(TM.group(0), "%H:%M, %B %d, %Y (%Z)")
             if not TIME:
                 TIME = txt2timestamp(TM.group(0),"%d. %Bta %Y kello %H.%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(TM.group(0),"%d %B %Y %H:%M (%Z)")
+                TIME = txt2timestamp(TM.group(0), "%d %B %Y %H:%M (%Z)")
             if not TIME:
-                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)), "%H:%M, %d. %b. %Y")
+                TIME = txt2timestamp(re.sub(' *\([^ ]+\) *', '', TM.group(0)),
+                                     "%H:%M, %d. %b. %Y")
             if TIME:
                 self.timestamp = max(self.timestamp, time.mktime(TIME))
 ##                pywikibot.output(u'Time to be parsed: %s' % TM.group(0))
@@ -346,7 +349,7 @@ class DiscussionPage(pywikibot.Page):
         if sortThreads:
             pywikibot.output(u'Sorting threads...')
             self.threads.sort(key = lambda t: t.timestamp)
-        newtext = re.sub('\n*$','\n\n',self.header) #Fix trailing newlines
+        newtext = re.sub('\n*$', '\n\n', self.header) #Fix trailing newlines
         for t in self.threads:
             newtext += t.toText()
         if self.full:
@@ -385,7 +388,7 @@ class PageArchiver(object):
 
     def set(self, attr, value, out=True):
         if attr == 'archive':
-            value = value.replace('_',' ')
+            value = value.replace('_', ' ')
         self.attributes[attr] = [value, out]
 
     def saveables(self):
@@ -437,7 +440,7 @@ class PageArchiver(object):
 
     def analyzePage(self):
         maxArchSize = str2size(self.get('maxarchivesize'))
-        archCounter = int(self.get('counter','1'))
+        archCounter = int(self.get('counter', '1'))
         oldthreads = self.Page.threads
         self.Page.threads = []
         T = time.mktime(time.gmtime())

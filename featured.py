@@ -476,7 +476,7 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
                         if (not interactive or
                             pywikibot.input(
                                 u'Connecting %s -> %s. Proceed? [Y/N]'
-                                % (a.title(), atrans.title())) in ['Y','y']
+                                % (a.title(), atrans.title())) in ['Y', 'y']
                             ):
                             m=re_this_iw.search(text)
                             if not m:
@@ -521,7 +521,7 @@ def featuredWithInterwiki(fromsite, tosite, template_on_top, pType, quiet,
                         if (not interactive or
                             pywikibot.input(
                                 u'Connecting %s -> %s. Proceed? [Y/N]'
-                                % (a.title(), atrans.title())) in ['Y','y']
+                                % (a.title(), atrans.title())) in ['Y', 'y']
                             ):
                             m=re_this_iw.search(text)
                             if not m:

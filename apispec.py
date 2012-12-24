@@ -43,7 +43,7 @@ def iso(t):
 
 def uniso(timestamp):
     """Removes T and Z from an ISO 8601-formatted text for readability."""
-    return timestamp.replace('T',' ').replace('Z','')
+    return timestamp.replace('T', ' ').replace('Z', '')
 
 def dt(timestamp):
     """Converts a MediaWiki timestamp to a Python-compatible datetime object"""
@@ -212,7 +212,7 @@ class Blocks(object):
     #################################################
     def __init__(self, site=site, top='new', limit=5000):
         self.site = site
-        self.bkdir = ['older','newer'][top=='old'] #a bit strange
+        self.bkdir = ['older', 'newer'][top=='old'] #a bit strange
         # bkdir: Direction to list in.
         #older: List newest blocks first (default).
         #Note: bkstart has to be later than bkend.
@@ -439,8 +439,8 @@ class Blocks(object):
         or e-mail it or insert into a wikipage with <pre>.
         """
         w = 21 #width for justification
-        flags = ['automatic','anononly','nocreate','autoblock','noemail',
-                'allowusertalk','hidden']
+        flags = ['automatic', 'anononly', 'nocreate', 'autoblock', 'noemail',
+                 'allowusertalk', 'hidden']
         s = 'Data for block #%s' % block['id']
         s += '\nBlocked user:'.ljust(w)
         try:
@@ -455,8 +455,8 @@ class Blocks(object):
                 (block['rangestart'],block['rangeend'])
         s += '\nAdmin:'.ljust(w) + '%s (#%s)' % (block['by'], block['byid'])
         s += '\nBeginning in UTC:'.ljust(w) + uniso(block['timestamp'])
-        s += (
-         '\nExpiry%s:' % ['',' in UTC'][block['expiry'][0].isdigit()]).ljust(w)
+        s += ('\nExpiry%s:' \
+              % ['', ' in UTC'][block['expiry'][0].isdigit()]).ljust(w)
         s += uniso(block['expiry'])
         s += '\nFlags:'.ljust(w)
         s += ', '.join(filter(lambda x: x in block, flags))

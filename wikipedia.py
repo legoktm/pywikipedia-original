@@ -3567,7 +3567,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
                 'list': 'deletedrevs',
                 'drfrom': self.title(withNamespace=False),
                 'drnamespace': self.namespace(),
-                'drprop': ['revid','user','comment','content'],#','minor','len','token'],
+                'drprop': ['revid', 'user', 'comment', 'content'], # ,'minor', 'len', 'token'],
                 'drlimit': 100,
                 'drdir': 'older',
                 #'': '',
@@ -4645,10 +4645,14 @@ class ImagePage(Page):
                     #FIXME : Should have a cleaner way to get the wiki where the image is used
                     siteparts = gu['wiki'].split('.')
                     if len(siteparts)==3:
-                        if siteparts[0] in self.site().fam().alphabetic and siteparts[1] in ['wikipedia', 'wiktionary', 'wikibooks', 'wikiquote','wikisource']:
+                        if siteparts[0] in self.site().fam().alphabetic and \
+                           siteparts[1] in ['wikipedia', 'wiktionary',
+                                            'wikibooks', 'wikiquote',
+                                            'wikisource']:
                             code = siteparts[0]
                             fam = siteparts[1]
-                        elif siteparts[0] in ['meta', 'incubator'] and siteparts[1]==u'wikimedia':
+                        elif siteparts[0] in ['meta', 'incubator'] and \
+                             siteparts[1] == u'wikimedia':
                             code = code = siteparts[0]
                             fam = code = siteparts[0]
                         else:
@@ -4824,7 +4828,7 @@ class _GetAll(object):
         if not successful:
             output(u"BUG>> title %s (%s) not found in list" % (title, page))
             output(u'Expected one of: %s'
-                   % u','.join([unicode(page2) for page2 in self.pages]))
+                   % u', '.join([unicode(page2) for page2 in self.pages]))
             raise PageNotFound
 
     def headerDone(self, header):
@@ -4992,7 +4996,7 @@ class _GetAll(object):
         if not successful:
             output(u"BUG>> title %s (%s) not found in list" % (title, page))
             output(u'Expected one of: %s'
-                   % u','.join([unicode(page2) for page2 in self.pages]))
+                   % u', '.join([unicode(page2) for page2 in self.pages]))
             raise PageNotFound
 
     def headerDoneApi(self, header):
@@ -6695,7 +6699,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             params = {
                 'action': 'query',
                 'meta': 'userinfo',
-                'uiprop': ['blockinfo','groups','rights','hasmsg'],
+                'uiprop': ['blockinfo', 'groups', 'rights', 'hasmsg'],
             }
             if self.versionnumber() >= 12:
                 params['uiprop'].append('ratelimits')
@@ -6846,7 +6850,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
     @deprecate_arg("get_redirect", None) #20120822
     def newpages(self, user=None, returndict=False,
                  number=10, repeat=False, namespace=0,
-                 rcshow = ['!bot','!redirect']):
+                 rcshow = ['!bot', '!redirect']):
         """Yield new articles (as Page objects) from recent changes.
 
         Starts with the newest article and fetches the number of articles

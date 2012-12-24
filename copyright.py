@@ -262,7 +262,7 @@ sections_to_skip = {
            u'Riferimenti bibliografici', u'Collegamenti esterni',
            u'Pubblicazioni', u'Pubblicazioni principali',
            u'Bibliografia parziale'],
-    'is': [u'Heimildir', u'Tenglar', u'Tengt efni'], 
+    'is': [u'Heimildir', u'Tenglar', u'Tengt efni'],
     'ja': [u'脚注', u'脚注欄', u'脚注・出典', u'出典', u'注釈'],
     'zh': [u'參考文獻', u'参考文献', u'參考資料', u'参考资料', u'資料來源', u'资料来源',
            u'參見', u'参见', u'參閱', u'参阅'],
@@ -433,7 +433,7 @@ class URLExclusion:
 def read_file(filename, cut_comment = False, cut_newlines = False):
     text = u""
 
-    f = codecs.open(filename, 'r','utf-8')
+    f = codecs.open(filename, 'r', 'utf-8')
     text = f.read()
     f.close()
 
@@ -742,12 +742,14 @@ class SearchEngine:
                         comment.append('[http://www.google.com/search?sourceid=navclient&q=cache:%s Google cache]' % urllib.quote(short_url(add_item)))
                     elif engine == 'yahoo':
                         #cache = False
-                        #comment.append('[%s Yahoo cache]' % re.sub('&appid=[^&]*','', urllib2.unquote(cache_url)))
+                        #comment.append('[%s Yahoo cache]' % re.sub('&appid=[^&]*', '', urllib2.unquote(cache_url)))
                         comment.append("''Yahoo cache''")
                     elif engine == 'msn':
-                        comment.append('[%s Live cache]' % re.sub('&lang=[^&]*','', cache_url))
+                        comment.append('[%s Live cache]'
+                                       % re.sub('&lang=[^&]*', '', cache_url))
                 else:
-                    comment.append('[http://web.archive.org/*/%s archive.org]' % short_url(add_item))
+                    comment.append('[http://web.archive.org/*/%s archive.org]'
+                                   % short_url(add_item))
 
         for i in range(len(url)):
             if add_item in url[i]:
