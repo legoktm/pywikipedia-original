@@ -26,7 +26,7 @@ __version__ = '$Id$'
 #
 
 import time
-import pywikibot
+import wikipedia as pywikibot
 import config
 from pywikibot.support import deprecate_arg
 try:
