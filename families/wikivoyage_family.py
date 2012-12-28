@@ -10,15 +10,11 @@ class Family(family.Family):
     def __init__(self):
         family.Family.__init__(self)
         self.name = 'wikivoyage'
-        self.langs = {
-            'de': u'de.wikivoyage.org',
-            'en': u'en.wikivoyage.org',
-            'fr': u'fr.wikivoyage.org',
-            'it': u'it.wikivoyage.org',
-            'nl': u'nl.wikivoyage.org',
-            'ru': u'ru.wikivoyage.org',
-            'sv': u'sv.wikivoyage.org',
-        }
+        self.languages_by_size = [
+            'de','en','fr','it','nl', 'ru','sv',
+        ]
+        
+        self.langs = dict([(lang, '%s.wikivoyage.org' % lang) for lang in self.languages_by_size])
 
         self.namespaces[1] = self.namespaces.get(1, {})
         self.namespaces[1][u'fr'] = [u'Discuter']
@@ -94,9 +90,27 @@ class Family(family.Family):
         self.namespaces[101] = self.namespaces.get(101, {})
         self.namespaces[101][u'de'] = [u'Portal Diskussion']
         self.namespaces[101][u'it'] = [u'Discussioni portale']
+        
+        self.cross_projects = [
+            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',
+            'wikinews', 'wikiversity', 'meta', 'mediawiki', 'test', 'incubator',
+            'commons', 'species',
+        ]
+        
+        
+        
+        
 
     def scriptpath(self, code):
         return u'/w'
 
     def shared_image_repository(self, code):
         return ('commons', 'commons')
+
+    def shared_data_repository(self, code):
+        return ('wikidata', 'wikidata')
+
+    if family.config.SSL_connection:
+
+        def protocol(self, code):
+            return 'https'

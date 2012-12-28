@@ -1226,7 +1226,7 @@ class Family(family.Family):
         self.cross_projects = [
             'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
             'wikiversity', 'meta', 'mediawiki', 'test', 'incubator', 'commons',
-            'species',
+            'species', 'wikivoyage',
         ]
 
         # Global bot allowed languages on
