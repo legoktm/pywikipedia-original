@@ -139,9 +139,9 @@ def JSONRebase(JSONData, JSONBase):
     '''
     for step in JSONBase:
         if JSONData:
-            if type(JSONBase) == dict:
+            if type(JSONData) == dict:
                 JSONData = JSONData.get(step)
-            elif type(JSONBase) == list:
+            elif type(JSONData) == list:
                 # FIXME: Needs error, length etc checking
                 JSONData = JSONData[step]
 
@@ -179,9 +179,9 @@ class DataIngestionBot:
         self.site = site
 
     def _doUpload(self, photo):
-        duplicates = photo.findDuplicateImages(self.site)
-        if duplicates:
-            return duplicates[0]
+        #duplicates = photo.findDuplicateImages(self.site)
+        #if duplicates:
+        #    return duplicates[0]
 
         title = photo.getTitle(self.titlefmt)
         description = photo.getDescription(self.pagefmt)
@@ -193,9 +193,11 @@ class DataIngestionBot:
                                  verifyDescription = False,
                                  ignoreWarning=True,
                                  targetSite = self.site)
-        bot._contents = photo.downloadPhoto().getvalue()
-        bot._retrieved = True
-        bot.run()
+        #bot._contents = photo.downloadPhoto().getvalue()
+        #bot._retrieved = True
+        print title
+        print description
+        #bot.run()
 
         return title
 
