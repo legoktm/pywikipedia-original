@@ -737,8 +737,9 @@ class CosmeticChangesToolkit:
         pattern = re.compile(u'\[\[(' + '|'.join(namespaces) + '):.+?\.\w+? *(\|((\[\[.*?\]\])|.)*)?\]\]',
                              re.UNICODE)
         #not to let bot edits in latin content
-        exceptions.append(re.compile(u"[A-Za-z\d]+? *?, *?[A-Za-z\d]+?"))
+        exceptions.append(re.compile(u"[A-Za-z\d]+? *?\"*? *?, *?[A-Za-z\d]+?"))
         exceptions.append(pattern)
+        text = pywikibot.replaceExcept(text, u',', u'،', exceptions)
         if self.site.lang=='ckb':
             text = pywikibot.replaceExcept(text,
                                            ur'ه([.،_<\]\s])',
