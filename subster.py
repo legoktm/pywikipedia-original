@@ -18,6 +18,28 @@ Other scripts and tools related to this bot are:
 - subster_irc.py            IRC Robot
 - substersim.py             Subster simulation panel
 - subster_mail_queue.py     Subster mail queue
+
+The following parameters are supported:
+
+&params;
+
+All other parameters will be ignored.
+
+Syntax example:
+    python subster.py
+        Default operating mode.
+
+    python subster.py -lang:en
+        Run bot on another site language than configured as default. E.g. 'en'.
+
+    python subster.py -family:meta -lang:
+    python subster.py -family:wikidata -lang:repo
+        Run bot on another site family and language than configured as default.
+        E.g. 'meta' or 'wikidata'.
+
+    python subster_irc.py
+        Default operating mode for IRC Robot. The IRC bot uses this script as
+        subclass.
 """
 ## @package subster
 #  @brief   Dynamic Text Substitutions Robot
