@@ -4,11 +4,11 @@
 A generic bot to do data ingestion (batch uploading) to Commons
 
 '''
-import pywikibot
+import pywikibot, upload
 import posixpath, urlparse
 import urllib
 import hashlib, base64
-import StringIO
+import StringIO, json
 
 class Photo(object):
     '''
@@ -64,7 +64,7 @@ class Photo(object):
         params = {}
         params.update(self.metadata)
         params.update(extraparams)
-        description = u'{{%s\n' % template
+        description = u'{{subst:%s|subst=subst:\n' % template
         for key in sorted(params.keys()):
             value = params[key]
             if not key.startswith("_"):
@@ -83,6 +83,80 @@ def CSVReader(fileobj, urlcolumn, *args, **kwargs):
     for line in reader:
         yield Photo(line[urlcolumn], line)
 
+
+def JSONReader(baseurl, start=0, end=100, JSONBase=None, metadataFunction=None, fileurl=u'fileurl'):
+    '''
+    Loops over a bunch of json objects.
+    For each json page you can rebase it to not get all the crap
+    You can apply a custom metadata function to do some modification on the metadata and checking
+    By default the field 'fileurl' is expected in the metadata to contain the file. You can change this.
+
+    Will a Photo object with metadata
+    '''
+    if baseurl:
+        for i in range(start , end): 
+            # How to do recursion?
+            JSONPage = urllib.urlopen(baseurl % (i,))
+            JSONData = json.load(JSONPage)
+            JSONPage.close()
+
+            # Rebase based on jsonBase
+            if JSONBase:
+                JSONData = JSONRebase(JSONData, JSONBase)
+
+            if JSONData:
+                # If rebasing worked, get the metadata
+                metadata = dict()
+                fieldlist = [u'']
+                metadata = JSONTree(metadata, [], JSONData)
+
+                # If a metadataFunction is set, apply it
+                if metadataFunction:
+                    metadata = metadataFunction(metadata)
+
+                # If the metadataFunction didn't return none (something was wrong). Yield the photo
+                if metadata:
+                    yield Photo(metadata.get(fileurl), metadata)
+
+def JSONRebase(JSONData, JSONBase):
+    '''
+    Moves the base of the JSON object to the part you're intrested in.
+    JSONBase is a list to crawl the tree. If one of the steps is not found, return None
+    '''
+    for step in JSONBase:
+        if JSONData:
+            if type(JSONBase) == dict:
+                JSONData = JSONData.get(step)
+            elif type(JSONBase) == list:
+                # FIXME: Needs error, length etc checking
+                JSONData = JSONData[step]
+
+    return JSONData
+
+
+def JSONTree(metadata, fieldlist, record):
+    '''
+    metadata: Dict with end result
+    key: The key we encountered
+    record: Record to work on
+    '''
+    if type(record) == list:
+        for r in record:
+            metadata = JSONTree(metadata, fieldlist, r)
+    elif type(record) == dict:
+        for k,v in record.items():
+            metadata = JSONTree(metadata, fieldlist + [k], v)
+    elif type(record) == unicode:
+        key = u'_'.join(fieldlist)
+        if not key in metadata:
+            metadata[key] = record
+        else:
+            newkey = key + u'_2'
+            if not newkey in metadata:
+                metadata[newkey] = record
+        
+    return metadata
+
 class DataIngestionBot:
     def __init__(self, reader, titlefmt, pagefmt, site=pywikibot.getSite(u'commons', u'commons')):
         self.reader = reader
@@ -93,7 +167,6 @@ class DataIngestionBot:
     def _doUpload(self, photo):
         duplicates = photo.findDuplicateImages(self.site)
         if duplicates:
-            pywikibot.output(u"Skipping duplicate of %r" % (duplicates, ))
             return duplicates[0]
 
         title = photo.getTitle(self.titlefmt)
@@ -104,6 +177,7 @@ class DataIngestionBot:
                                  useFilename = title,
                                  keepFilename = True,
                                  verifyDescription = False,
+                                 ignoreWarning=True,
                                  targetSite = self.site)
         bot._contents = photo.downloadPhoto().getvalue()
         bot._retrieved = True
