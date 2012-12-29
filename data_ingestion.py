@@ -86,37 +86,51 @@ def CSVReader(fileobj, urlcolumn, *args, **kwargs):
 
 def JSONReader(baseurl, start=0, end=100, JSONBase=None, metadataFunction=None, fileurl=u'fileurl'):
     '''
-    Loops over a bunch of json objects.
-    For each json page you can rebase it to not get all the crap
+    Loops over a bunch of json page and process them with processJSONPage().
+
+    Will yield Photo objects with metadata
+    '''
+    if baseurl:
+        for i in range(start , end):
+            url = baseurl % (i,)
+            photo = processJSONPage(url, JSONBase=JSONBase, metadataFunction=metadataFunction, fileurl=u'fileurl')
+            if photo:
+                yield photo
+                
+
+
+def processJSONPage(url, JSONBase=None, metadataFunction=None, fileurl=u'fileurl'):
+    '''
+    Process a single JSON page.
+    For the JSON page you can rebase it to not get all the crap
     You can apply a custom metadata function to do some modification on the metadata and checking
     By default the field 'fileurl' is expected in the metadata to contain the file. You can change this.
 
-    Will a Photo object with metadata
+    Will a return Photo object with metadata or None if something is wrong
     '''
-    if baseurl:
-        for i in range(start , end): 
-            # How to do recursion?
-            JSONPage = urllib.urlopen(baseurl % (i,))
-            JSONData = json.load(JSONPage)
-            JSONPage.close()
+    JSONPage = urllib.urlopen(url)
+    JSONData = json.load(JSONPage)
+    JSONPage.close()
 
-            # Rebase based on jsonBase
-            if JSONBase:
-                JSONData = JSONRebase(JSONData, JSONBase)
+    # Rebase based on jsonBase
+    if JSONBase:
+        JSONData = JSONRebase(JSONData, JSONBase)
 
-            if JSONData:
-                # If rebasing worked, get the metadata
-                metadata = dict()
-                fieldlist = [u'']
-                metadata = JSONTree(metadata, [], JSONData)
+    if JSONData:
+        # If rebasing worked, get the metadata
+        metadata = dict()
+        fieldlist = [u'']
+        metadata = JSONTree(metadata, [], JSONData)
 
-                # If a metadataFunction is set, apply it
-                if metadataFunction:
-                    metadata = metadataFunction(metadata)
+        # If a metadataFunction is set, apply it
+        if metadataFunction:
+            metadata = metadataFunction(metadata)
 
-                # If the metadataFunction didn't return none (something was wrong). Yield the photo
-                if metadata:
-                    yield Photo(metadata.get(fileurl), metadata)
+        # If the metadataFunction didn't return none (something was wrong). Return the photo
+        if metadata:
+            return Photo(metadata.get(fileurl), metadata)
+
+    return False
 
 def JSONRebase(JSONData, JSONBase):
     '''
