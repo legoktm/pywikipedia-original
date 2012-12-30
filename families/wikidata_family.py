@@ -18,9 +18,13 @@ class Family(family.Family):
 
         self.namespaces[4] = {
             '_default': [u'Wikidata', u'WD', 'Project'],
+            'client': u'Wikidata-test-client',
+            'repo': u'Wikidata-test-repo',
         }
         self.namespaces[5] = {
             '_default': [u'Wikidata talk', u'WT', 'Project talk'],
+            'client': u'Wikidata-test-client talk',
+            'repo': u'Wikidata-test-repo talk',
         }
         self.namespaces[120] = {
             '_default': u'Property',
