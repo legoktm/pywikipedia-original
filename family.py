@@ -3677,6 +3677,9 @@ class Family:
             '_default': []
         }
 
+        # A list of languages that use hard (instead of soft) category redirects
+        self.use_hard_category_redirects = []
+
         # A list of disambiguation template names in different languages
         self.disambiguationTemplates = {
             '_default': []
