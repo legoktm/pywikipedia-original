@@ -169,6 +169,14 @@ def workon(page):
     for page2 in links:
         try:
             target = page2.getRedirectTarget()
+        except pywikibot.NoPage:
+            gen = s.logpages(number=1, mode='move', title=page2.title(),
+                             dump=True)
+            try:
+                lastmove = gen.next()['move']
+            except StopIteration:
+                continue
+            target = pywikibot.Page(mysite, lastmove['new_title'])
         except (pywikibot.Error, pywikibot.SectionError):
             continue
         # no fix to user namespaces
