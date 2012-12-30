@@ -219,5 +219,29 @@ class Family(family.Family):
         self.namespaces[1245] = {
             '_default': [u'Kiwix talk'],
         }
+        self.namespaces[1246] = {
+            '_default': [u'Mozilla'],
+        }
+        self.namespaces[1247] = {
+            '_default': [u'Mozilla talk'],
+        }
+        self.namespaces[1248] = {
+            '_default': [u'FrontlineSMS'],
+        }
+        self.namespaces[1249] = {
+            '_default': [u'FrontlineSMS talk'],
+        }
+        self.namespaces[1250] = {
+            '_default': [u'EtherpadLite'],
+        }
+        self.namespaces[1251] = {
+            '_default': [u'EtherpadLite talk'],
+        }
+        self.namespaces[1252] = {
+            '_default': [u'Vicuna'],
+        }
+        self.namespaces[1253] = {
+            '_default': [u'Vicuna talk'],
+        }
     def version(self, code):
-        return "1.20alpha"
+        return "1.21alpha"
