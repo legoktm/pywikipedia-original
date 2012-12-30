@@ -6775,14 +6775,16 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
 
     # TODO: avoid code duplication for the following methods
 
-    def logpages(self, number = 50, mode = '', title = None, user = None, repeat = False,
-                 namespace = [], start = None, end = None, tag = None, newer = False, dump = False):
+    def logpages(self, number=50, mode='', title=None, user=None, repeat=False,
+                 namespace=[], start=None, end=None, tag=None, newer=False,
+                 dump=False, offset=None):
 
         if not self.has_api() or self.versionnumber() < 11 or \
            mode not in ('block', 'protect', 'rights', 'delete', 'upload',
                         'move', 'import', 'patrol', 'merge', 'suppress',
                         'review', 'stable', 'gblblock', 'renameuser',
-                        'globalauth', 'gblrights', 'abusefilter', 'newusers'):
+                        'globalauth', 'gblrights', 'abusefilter',
+                        'articlefeedbackv5', 'newusers'):
             raise NotImplementedError, mode
         params = {
             'action'    : 'query',
@@ -6790,7 +6792,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             'letype'    : mode,
             'lelimit'   : int(number),
             'ledir'     : 'older',
-            'leprop'    : ['ids', 'title', 'type', 'user', 'timestamp', 'comment', 'details',],
+            'leprop'    : ['ids', 'title', 'type', 'user', 'timestamp',
+                           'comment', 'details',],
         }
 
         if number > config.special_page_limit:
@@ -6805,6 +6808,14 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             params['letitle'] = title
         if start:
             params['lestart'] = start
+            if offset and offset > 0:
+                output(u'WARNING: offset parameter %s ignored,\n'
+                       u'         start parameter is set to %s'
+                       % (offset, start))
+        # offset in hours from now
+        elif offset and offset > 0:
+            start = Timestamp.utcnow() - datetime.timedelta(0, offset*3600)
+            params['lestart'] = str(start) 
         if end:
             params['leend'] = end
         if tag and self.versionnumber() >= 16: # tag support from mw:r58399
