@@ -18,12 +18,12 @@ class Family(family.Family):
 
         self.namespaces[4] = {
             'de': u'Wikivoyage',
-            'en': [u'Wikivoyage', u'WV'],
-            'fr': [u'Wikivoyage', u'WV'],
-            'it': [u'Wikivoyage', u'WV'],
-            'nl': [u'Wikivoyage', u'WV'],
-            'ru': [u'Wikivoyage', u'WV'],
-            'sv': [u'Wikivoyage', u'WV'],
+            'en': u'Wikivoyage',
+            'fr': u'Wikivoyage',
+            'it': u'Wikivoyage',
+            'nl': u'Wikivoyage',
+            'ru': u'Wikivoyage',
+            'sv': u'Wikivoyage',
         }
 
         self.namespaces[5] = {
