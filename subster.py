@@ -537,6 +537,30 @@ class SubsterBot(basic.AutoBasicBot):
                     else:
                         pywikibot.output(u'Creating new claim with value: %s' % item)
                         outpage.createclaim(prop, item, comment=comment)
+                # search linked items and update them too
+                # VERY HACKY, HAS TO BE CONCEPTIONALLY IMPROVED:
+                # link any "key = value" pair to any other item by adding "key"
+                # to the items 'aliases' (could also use 'description' or even
+                # a redirect)
+                (key, value) = map(string.strip, item.split('='))
+                for linked in outpage.searchentities(key):
+                    outpage = pywikibot.wikidataPage(self.site, linked[u'id'])
+                    #attr = outpage.getentities()
+                    attr = linked
+                    if (u'aliases' in attr) and (key in attr[u'aliases']):
+                        pywikibot.output(u'Item %s linked to key %s ...' % (outpage.title(asLink=True), key))
+                        data = outpage.getentities()
+                        if u'claims' in data:
+                            if (data[u'claims'][u'p32'][0][u'mainsnak'][u'datavalue'][u'value'].strip() == value):
+                                pywikibot.output(u'... ok')
+                                continue
+                            changed = True
+                            pywikibot.output(u'... updating claim with value: %s' % value)
+                            outpage.setclaimvalue(data[u'claims'][u'p32'][0][u'id'], value, comment=comment)
+                        else:
+                            changed = True
+                            pywikibot.output(u'... creating new claim with value: %s' % value)
+                            outpage.createclaim(prop, value, comment=comment)
         # speed-up by setting everything at once (in one single write attempt)
         #outpage.editentity(data = {u'claims': data})
         #outpage.setitem()

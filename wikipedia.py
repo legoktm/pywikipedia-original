@@ -4048,6 +4048,7 @@ class wikidataPage(Page):
 
     getentity        : Getting item(s) of a page
     getentities      : Get the data for multiple Wikibase entities
+    searchentities   : Search for entities
 
     """
     def __init__(self, site, *args, **kwargs):
@@ -4173,6 +4174,8 @@ class wikidataPage(Page):
 
     def setclaimvalue(self, guid, value, comment=None, token=None, sysop=False, botflag=True):
         """API module for setting the value of a Wikibase claim.
+
+        (independent of page object and could thus be extracted from this class)
         """
         params = {
             'action': 'wbsetclaimvalue',
@@ -4349,6 +4352,33 @@ class wikidataPage(Page):
             raise BadTitle('BadTitle: %s' % self)
 
         return entities
+
+    def searchentities(self, search, sysop=False):
+        """API module to search for entities.
+
+        (independent of page object and could thus be extracted from this class)
+        """
+        params = {
+            'action': 'wbsearchentities',
+            'search': search,
+            #'language': self.site().language(),
+            'language': 'en',
+        }
+        # retrying is done by query.GetData
+        data = query.GetData(params, self.site(), sysop=sysop)
+        search  = data['search']
+        debuginfo = data['debuginfo']
+
+        if 'error' in data:
+            raise RuntimeError("API query error: %s" % data)
+        pageInfo = search
+        if 'missing' in pageInfo:
+            raise NoPage(self.site(), unicode(self),
+"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
+        elif 'invalid' in pageInfo:
+            raise BadTitle('BadTitle: %s' % self)
+
+        return search
 
 
 class ImagePage(Page):
