@@ -49,7 +49,7 @@ templates = ['ref', 'note', 'ref label', 'note label', 'reflist']
 class TemplateCountRobot:
 
     @staticmethod
-    def countTemplates(templates, namespace):
+    def countTemplates(templates, namespaces):
         mysite = pywikibot.getSite()
         total = 0
         # The names of the templates are the keys, and the numbers of
