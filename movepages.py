@@ -50,27 +50,6 @@ docuReplacements = {
     '&params;':     pagegenerators.parameterHelp,
 }
 
-summary={
-    'ar': u'روبوت: نقل الصفحة',
-    'cs': u'Robot přesunul stránku',
-    'de': u'Bot: Seite verschoben',
-    'el': u'Μετακίνηση σελίδων με bot',
-    'en': u'Bot: Moved page',
-    'fa': u'ربات: صفحه منتقل شد',
-    'fi': u'Botti siirsi sivun',
-    'fr': u'Bot: Page renommée',
-    'frr':u'Bot: Sidj fersköwen',
-    'ja': u'ロボットによる: ページの移動',
-    'he': u'בוט: מעביר דף',
-    'nl': u'Bot: paginanaam gewijzigd',
-    'nn': u'robot: flytta sida',
-    'pl': u'Przeniesienie artykułu przez robota',
-    'pt': u'Bot: Página movida',
-    'ru': u'Переименование страницы при помощи робота',
-    'uk': u'Робот:перейменування сторінки',
-    'zh': u'機器人:移動頁面',
-}
-
 
 class MovePagesBot:
     def __init__(self, generator, addprefix, noredirect, always, skipredirects,
