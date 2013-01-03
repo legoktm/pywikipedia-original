@@ -32,7 +32,7 @@ Furthermore, the following command line parameters are supported:
 #
 # (C) Leonardo Gregianin, 2006
 # (C) Andreas J. Schwab, 2007
-# (C) Pywikipedia bot team, 2006-2011
+# (C) Pywikipedia bot team, 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -77,7 +77,7 @@ class MovePagesBot:
                  summary):
         self.generator = generator
         self.addprefix = addprefix
-        self.noredirect = noredirect
+        self.leaveRedirect = not noredirect
         self.always = always
         self.skipredirects = skipredirects
         self.summary = summary
@@ -91,7 +91,7 @@ class MovePagesBot:
                              % (page.title(asLink=True),
                                 newPageTitle))
             page.move(newPageTitle, msg, throttle=True,
-                      leaveRedirect=self.noredirect)
+                      leaveRedirect=self.leaveRedirect)
         except pywikibot.NoPage:
             pywikibot.output(u'Page %s does not exist!' % page.title())
         except pywikibot.IsRedirectPage:
@@ -233,7 +233,7 @@ def main():
     prefix = None
     oldName = None
     newName = None
-    noredirect = True
+    noredirect = False
     always = False
     skipredirects = False
     summary = None
@@ -262,7 +262,7 @@ def main():
                 pywikibot.output(
                     u'WARNING: file %s contains odd number of links' % filename)
         elif arg == '-noredirect':
-            noredirect = False
+            noredirect = True
         elif arg == '-always':
             always = True
         elif arg == '-skipredirects':
