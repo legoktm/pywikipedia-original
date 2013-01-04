@@ -48,8 +48,8 @@ Please fix these if you are capable and motivated:
 #
 # (C) Wikipedian, 2006-2007
 # (C) Siebrand Mazeland, 2007-2008
-# (C) xqt,2010-2012
-# (C) Pywikipedia bot team, 2006-2011
+# (C) xqt, 2010-2012
+# (C) Pywikipedia bot team, 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -150,6 +150,7 @@ nowCommons = {
         u'Now Commons',
         u'Db-commons',
         u'Перенесено на Викисклад',
+        u'На Викискладе',
     ],
     'zh':[
         u'NowCommons',
