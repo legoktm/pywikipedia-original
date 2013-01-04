@@ -11,17 +11,20 @@ class Family(family.Family):
         family.Family.__init__(self)
         self.name = 'wikivoyage'
         self.languages_by_size = [
-            'de', 'en', 'fr', 'it', 'nl', 'ru','sv',
+            'de', 'en', 'fr', 'it', 'nl', 'ru', 'sv', 'pt', 'es',
         ]
 
-        self.langs = dict([(lang, '%s.wikivoyage.org' % lang) for lang in self.languages_by_size])
+        self.langs = dict([(lang, '%s.wikivoyage.org' % lang)
+                           for lang in self.languages_by_size])
 
         self.namespaces[4] = {
             'de': u'Wikivoyage',
             'en': u'Wikivoyage',
+            'es': u'Wikiviajes',
             'fr': u'Wikivoyage',
             'it': u'Wikivoyage',
             'nl': u'Wikivoyage',
+            'pt': u'Wikivoyage',
             'ru': u'Wikivoyage',
             'sv': u'Wikivoyage',
         }
@@ -29,9 +32,11 @@ class Family(family.Family):
         self.namespaces[5] = {
             'de': u'Wikivoyage Diskussion',
             'en': u'Wikivoyage talk',
+            'es': u'Wikiviajes discusión',
             'fr': u'Discussion Wikivoyage',
             'it': u'Discussioni Wikivoyage',
             'nl': u'Overleg Wikivoyage',
+            'pt': u'Wikivoyage Discussão',
             'ru': u'Обсуждение Wikivoyage',
             'sv': u'Wikivoyagediskussion',
         }
