@@ -137,6 +137,7 @@ import unicodedata
 import xmlreader
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup, SoupStrainer
 import weakref
+import logging, logging.handlers
 # Splitting the bot into library parts
 from pywikibot.support import *
 import config, login, query, version
@@ -8645,7 +8646,7 @@ if unicode_error:
 
 default_family = config.family
 default_code = config.mylang
-logfile = None
+logger = None
 # Check
 
 # if the default family+wiki is a non-public one,
@@ -8680,18 +8681,48 @@ def writeToCommandLogFile():
     commandLogFile.close()
 
 def setLogfileStatus(enabled, logname = None):
-    global logfile
+    # NOTE-1: disable 'fh.setFormatter(formatter)' below in order to get "old"
+    #         logging format (without additional info)
+    # NOTE-2: enable 'logger.addHandler(ch)' below in order output to console
+    #         also (e.g. for simplifying 'pywikibot.output')
+    global logger
     if enabled:
         if not logname:
             logname = '%s.log' % calledModuleName()
         logfn = config.datafilepath('logs', logname)
-        try:
-            logfile = codecs.open(logfn, 'a', 'utf-8')
-        except IOError:
-            logfile = codecs.open(logfn, 'w', 'utf-8')
+
+        logger = logging.getLogger()    # root logger
+        logger.setLevel(logging.DEBUG)
+        # create file handler which logs even debug messages
+        fh = logging.handlers.TimedRotatingFileHandler(logfn,
+                                                       when='midnight',
+                                                       utc=False,
+                                                       #encoding='bz2-codec')
+                                                       encoding='utf-8')
+        #fh.setLevel(logging.DEBUG if debug else logging.INFO)
+        fh.setLevel(logging.DEBUG)
+        # create console handler with a higher log level
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.INFO)
+        # create formatter and add it to the handlers
+        formatter = logging.Formatter('%(asctime)s %(name)-20s %(levelname)-8s %(message)s')
+        fh.setFormatter(formatter)
+        #ch.setFormatter(formatter)
+        # add the handlers to logger
+        logger.addHandler(fh)           # output to logfile
+        #logger.addHandler(ch)           # output to terminal/shell console
+
+        # patch for Issue 8117: TimedRotatingFileHandler doesn't rotate log file at startup.
+        # applies to python2.6 only, solution from python2.7 source:
+        # http://hg.python.org/cpython-fullhistory/diff/a566e53f106d/Lib/logging/handlers.py
+        if os.path.exists(logfn):
+            t = os.stat(logfn).st_mtime
+            logger.handlers[0].rolloverAt = logger.handlers[0].computeRollover(t)
+
+        logger = logging.getLogger('pywikibot')
     else:
         # disable the log file
-        logfile = None
+        logger = None
 
 if '*' in config.log or calledModuleName() in config.log:
     setLogfileStatus(True)
@@ -8702,12 +8733,17 @@ colorTagR = re.compile('\03{.*?}', re.UNICODE)
 
 def log(text):
     """Write the given text to the logfile."""
-    if logfile:
+    if logger:
         # remove all color markup
         plaintext = colorTagR.sub('', text)
         # save the text in a logfile (will be written in utf-8)
-        logfile.write(plaintext)
-        logfile.flush()
+        type = plaintext.split(':')
+        func = 'info'
+        if len(type):
+            for func in ['debug', 'warning', 'error', 'critical', 'info']:
+                if func == type[0].strip().lower():
+                    break
+        getattr(logger, func)(plaintext.strip())
 
 output_lock = threading.Lock()
 input_lock = threading.Lock()
