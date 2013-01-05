@@ -65,15 +65,14 @@ __version__ = '$Id$'
 #
 
 
-import re, sys, os, string, time
-import difflib
+import re, sys, os, string, time, copy
+import difflib, traceback
 import BeautifulSoup
 import StringIO, zipfile, csv, urllib
 import mailbox, mimetypes, datetime, email.utils
 import openpyxl.reader.excel
 import crontab
 import logging
-import copy
 import ast
 
 import pagegenerators, basic
@@ -272,7 +271,7 @@ class SubsterBot(basic.AutoBasicBot):
             substed_tags += tags
         except:
             exc_info = sys.exc_info()
-            (exception_only, result) = pywikibot.gettraceback(exc_info)
+            result = u''.join(traceback.format_exception(exc_info[0], exc_info[1], exc_info[2]))
             substed_content += ast.literal_eval(self._param_default['error']) %\
                                {'error': bot_config['ErrorTemplate'] %\
                                  ( pywikibot.Timestamp.now().isoformat(' '),
@@ -289,7 +288,7 @@ class SubsterBot(basic.AutoBasicBot):
                 substed_tags += tags
             except:
                 exc_info = sys.exc_info()
-                (exception_only, result) = pywikibot.gettraceback(exc_info)
+                result = u''.join(traceback.format_exception(exc_info[0], exc_info[1], exc_info[2]))
                 substed_content += ast.literal_eval(item['error']) %\
                                    {'error': bot_config['ErrorTemplate'] %\
                                      ( item['value'],

@@ -999,7 +999,7 @@ class SumDiscBot(basic.AutoBasicBot):
                 page = pywikibot.Page(self.site(), data[u'link'])
                 page.globalwikinotify = data
                 yield (page, data)
-            except pywikibot.exceptions.NoPage, e:
+            except pywikibot.NoPage, e:
                 pywikibot.output(u'%s' %e)
                 
     ## @since   10332
@@ -1159,7 +1159,7 @@ class SumDiscPages(object):
         for name in hist.keys():
             try:
                 page = pywikibot.Page(self.site, name)
-            except pywikibot.exceptions.NoPage, e:
+            except pywikibot.NoPage, e:
                 pywikibot.output(u'%s' %e)
                 del hist[name]
                 continue
