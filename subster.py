@@ -335,7 +335,8 @@ class SubsterBot(basic.AutoBasicBot):
             mbox.close()
         elif (param['url'][:8] == u'local://'):             # DRTRIGON-131
             if (param['url'][8:] == u'cache/state_bots'):
-                d = shelve.open('cache/state_bots')     # filename hard-coded
+                # filename hard-coded
+                d = shelve.open(pywikibot.config.datafilepath('cache', 'state_bots'))
                 external_buffer = pprint.pformat(d)
                 d.close()
             else:
