@@ -74,6 +74,7 @@ import openpyxl.reader.excel
 import crontab
 import logging
 import ast
+import shelve, pprint
 
 import pagegenerators, basic
 # Splitting the bot into library parts
@@ -109,7 +110,6 @@ bot_config = {    # unicode values
             #'postproc':        '("","")',
             'postproc':        '(\'\', \'\')',
             'wiki':            'False',         # may be change to url='wiki://'
-            'magicwords_only': 'False',
             'beautifulsoup':   'False',         # DRTRIGON-88
             'expandtemplates': 'False',         # DRTRIGON-93 (only with 'wiki')
             'simple':          '',              # DRTRIGON-85
@@ -127,10 +127,6 @@ bot_config = {    # unicode values
         # this is a system parameter and should not be changed! (copy.deepcopy)
         'EditFlags':        {'minorEdit': True, 'botflag': True},
 }
-
-## used/defined magic words, look also at bot_control
-#  use, for example: '\<!--SUBSTER-BOTerror--\>\<!--SUBSTER-BOTerror--\>'
-magic_words = {} # no magic word substitution (for empty dict)
 
 # debug tools
 # (look at 'bot_control.py' for more info)
@@ -265,22 +261,6 @@ class SubsterBot(basic.AutoBasicBot):
         substed_content = content
         substed_tags = []  # DRTRIGON-73
 
-        # 0.) subst (internal) magic words
-        try:
-            (substed_content, tags) = self.subBotMagicWords(substed_content)
-            substed_tags += tags
-        except:
-            exc_info = sys.exc_info()
-            result = u''.join(traceback.format_exception(exc_info[0], exc_info[1], exc_info[2]))
-            substed_content += ast.literal_eval(self._param_default['error']) %\
-                               {'error': bot_config['ErrorTemplate'] %\
-                                 ( pywikibot.Timestamp.now().isoformat(' '),
-                                   u' ' + result.replace(u'\n', u'\n ').rstrip() ) }
-            substed_tags.append( u'>error:BotMagicWords<' )
-
-        if (len(params) == 1) and ast.literal_eval(params[0]['magicwords_only']):
-            return (substed_content, substed_tags)
-
         for item in params:
             # 1.) - 5.) subst templates
             try:
@@ -297,28 +277,6 @@ class SubsterBot(basic.AutoBasicBot):
                 substed_tags.append( u'>error:%s<' % item['value'] )
 
         return (substed_content, substed_tags)
-
-    def subBotMagicWords(self, content):
-        """Substitute the DrTrigonBot Magic Word (tag)s in content.
-
-           @param content: Content with tags to substitute.
-           @type  content: string
-
-           Returns a tuple containig the new content with tags
-           substituted and a list of those tags.
-        """
-
-        substed_tags = []  # DRTRIGON-73
-
-        # 0.) subst (internal) magic words
-        for subitem in magic_words.keys():
-            prev_content = content
-            content = self.get_var_regex(subitem).sub( (self._var_regex_str%{'var':subitem,'cont':magic_words[subitem]}),
-                                                       content, 1)  # subst. once
-            if (content != prev_content):
-                substed_tags.append(subitem)
-
-        return (content, substed_tags)
 
     def subTemplate(self, content, param):
         """Substitute the template tags in content according to param.
@@ -359,7 +317,7 @@ class SubsterBot(basic.AutoBasicBot):
         # (security: check url not to point to a local file on the server,
         #  e.g. 'file://' - same as used in xsalt.py)
         secure = False
-        for item in [u'http://', u'https://', u'mail://']:
+        for item in [u'http://', u'https://', u'mail://', u'local://']:
             secure = secure or (param['url'][:len(item)] == item)
         param['wiki'] = ast.literal_eval(param['wiki'])
         param['zip']  = ast.literal_eval(param['zip'])
@@ -370,11 +328,18 @@ class SubsterBot(basic.AutoBasicBot):
                 external_buffer = pywikibot.Page(self.site, param['url']).get(expandtemplates=True)
             else:
                 external_buffer = self.load( pywikibot.Page(self.site, param['url']) )
-        elif (param['url'][:7] == u'mail://'): # DRTRIGON-101
+        elif (param['url'][:7] == u'mail://'):              # DRTRIGON-101
             param['url'] = param['url'].replace(u'{{@}}', u'@')     # e.g. nlwiki
             mbox = SubsterMailbox(pywikibot.config.datafilepath(bot_config['data_path'], bot_config['mbox_file'], ''))
             external_buffer = mbox.find_data(param['url'])
             mbox.close()
+        elif (param['url'][:8] == u'local://'):             # DRTRIGON-131
+            if (param['url'][8:] == u'cache/state_bots'):
+                d = shelve.open('cache/state_bots')     # filename hard-coded
+                external_buffer = pprint.pformat(d)
+                d.close()
+            else:
+                external_buffer = u'n/a'
         elif param['zip']:
             external_buffer = urllib.urlopen(param['url']).read()
             # issue with r355: http://de.wikipedia.org/w/index.php?title=Vorlage:Infobox_Kreditinstitut/DatenDE&oldid=105472739

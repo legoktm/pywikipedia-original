@@ -42,10 +42,6 @@ bot_config = {    'BotName':    pywikibot.config.usernames[pywikibot.config.fami
             'ConfCSSconfig':    u'User:DrTrigon/DrTrigonBot/subster-config.css',
 }
 
-## used/defined magic words, look also at bot_control
-#  use, for example: '\<!--SUBSTER-BOTerror--\>\<!--SUBSTER-BOTerror--\>'
-magic_words = {} # no magic word substitution (for empty dict)
-
 # debug tools
 # (look at 'bot_control.py' and 'subster.py' for more info)
 debug = []
@@ -151,8 +147,7 @@ def main_subster(page, params=None):
     del bot
 
 def main():
-    subster.magic_words = magic_words
-    subster.debug       = debug
+    subster.debug = debug
     site = pywikibot.getSite()
     site.forceLogin()
     chan = '#' + site.language() + '.' + site.family.name
