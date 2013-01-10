@@ -12,6 +12,7 @@ __version__ = '$Id$'
 import os
 import time
 import sys
+import urllib
 import config
 
 cache = None
@@ -48,8 +49,8 @@ def getversiondict():
     cache = dict(tag=tag, rev=rev, date=datestring)
     return cache
 
-def getversion_svn():
-    _program_dir = os.path.normpath(os.path.dirname(sys.argv[0]))
+def getversion_svn(path=None):
+    _program_dir = path or os.path.normpath(os.path.dirname(sys.argv[0]))
 #   if not os.path.isabs(_program_dir):
 #      _program_dir = os.path.normpath(os.path.join(os.getcwd(), _program_dir))
     entries = open(os.path.join(_program_dir, '.svn/entries'))
@@ -78,7 +79,7 @@ def getversion_svn():
         date = time.strptime(entries.readline()[:19],'%Y-%m-%dT%H:%M:%S')
         rev = entries.readline()[:-1]
         entries.close()
-    if not date or not tag or not rev:
+    if (not date or not tag or not rev) and not path:
         raise ParseError
     return (tag, rev, date)
 
@@ -90,6 +91,18 @@ def getversion_nightly():
     if not date or not tag or not rev:
         raise ParseError
     return (tag, rev, date)
+
+## Retrieve revision number of framework online repository's svnroot
+#
+def getversion_onlinerepo(repo=None):
+    url = repo or 'http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia/'
+    rev = None
+    try:
+        buf = urllib.urlopen(url).read()
+        rev = buf.split(' ')[3][:-1]
+    except:
+        raise ParseError
+    return rev
 
 if __name__ == '__main__':
     print 'Pywikipedia %s' % getversion()
