@@ -291,7 +291,6 @@ class SubsterBot(basic.AutoBasicBot):
         """
 
         substed_tags = []  # DRTRIGON-73
-        prev_content = content
 
         # 0.2.) check for 'simple' mode and get additional params
         if param['simple']:
@@ -337,7 +336,7 @@ class SubsterBot(basic.AutoBasicBot):
             if (param['url'][8:] == u'cache/state_bots'):
                 # filename hard-coded
                 d = shelve.open(pywikibot.config.datafilepath('cache', 'state_bots'))
-                external_buffer = pprint.pformat(d)
+                external_buffer = pprint.pformat(ast.literal_eval(pprint.pformat(d)))
                 d.close()
             else:
                 external_buffer = u'n/a'
@@ -403,6 +402,7 @@ class SubsterBot(basic.AutoBasicBot):
                 logging.getLogger('subster').debug( external_data )
 
                 # 5.) subst content
+                prev_content = content
                 var_regex = self.get_var_regex(value)
                 content = var_regex.sub((self._var_regex_str%{'var':value,'cont':external_data}), content, int(param['count']))
                 if (content != prev_content):
@@ -417,6 +417,8 @@ class SubsterBot(basic.AutoBasicBot):
             BS_tags = self.get_BS_regex(value).findall(content)
 
             pywikibot.output(u'BeautifulSoup tags found by regex: %i' % len(BS_tags))
+
+            prev_content = content
 
             BS = BeautifulSoup.BeautifulSoup(external_buffer)
             for item in BS_tags:
