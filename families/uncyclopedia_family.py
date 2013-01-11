@@ -36,7 +36,7 @@ class Family(family.Family):
             'de': 'de.uncyclopedia.org',
             'dlm': 'dlm.neciklopedija.org',
             'el': 'frikipaideia.wikia.com',
-            'en': 'uncyclopedia.wikia.com',
+            'en': 'en.uncyclopedia.co',
             'eo': 'neciklopedio.wikia.com',
             'es': 'inciclopedia.wikia.com',
             'et': 'ebatsuklopeedia.org',
@@ -2099,20 +2099,22 @@ class Family(family.Family):
         ]
 
     def scriptpath(self, code):
-        if code == 'ko':
+        if code in ('ko', 'en'):
             return '/w'
         return ''
 
     def version(self, code):
         if code == 'ru':
             return '1.16.0'
-        if code in ['ar', 'ast', 'ca', 'cs', 'da', 'de', 'el', 'en', 'eo', 'es',
+        if code in ['ar', 'ast', 'ca', 'cs', 'da', 'de', 'el', 'eo', 'es',
                     'fr', 'he', 'id', 'it', 'jv', 'pl', 'sk', 'su', 'yi', 'zh']:
             return '1.16.5'
         if code in ['bar', 'ko']:
             return '1.17.0'
         if code in ['af', 'fo', 'fy', 'ie', 'io', 'is', 'mwl', 'vls']:
             return '1.19'
+        if code in ['en']:
+            return '1.20'
         return '1.17alpha'
 
     def code2encoding(self,code):
