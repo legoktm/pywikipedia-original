@@ -59,6 +59,7 @@ stopPage = {'fr':u'Utilisateur:DumZiBoT/EditezCettePagePourMeStopper',
             'hu':'User:Damibot/EditThisPageToStopMe',
             'en':u'User:DumZiBoT/EditThisPageToStopMe',
             'pl':u'Wikipedysta:MastiBot/EditThisPageToStopMe',
+            'ru':'User:LankLinkBot/EditThisPageToStopMe',
             'zh':u'User:Sz-iwbot',
 }
 
