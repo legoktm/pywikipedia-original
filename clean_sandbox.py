@@ -31,7 +31,7 @@ This script understands the following command-line arguments:
 # (C) Wikipedian, 2006-2007
 # (C) Andre Engels, 2007
 # (C) Siebrand Mazeland, 2007
-# (C) xqt, 2009
+# (C) xqt, 2009-2013
 # (C) Dr. Trigon, 2011-2012
 #
 # DrTrigonBot: http://de.wikipedia.org/wiki/Benutzer:DrTrigonBot
@@ -87,7 +87,7 @@ sandboxTitle = {
     'als':u'Project:Sandchaschte',
     'ar': u'Project:ملعب',
     'az': u'Vikipediya:Qaralama dəftəri',
-    'bar':u'Project:Spielwiese',
+    'bar':u'Project:Spuiwiesn',
     'cs': u'Project:Pískoviště',
     'da': u'Project:Sandkassen',
     'de': u'Project:Spielwiese',
