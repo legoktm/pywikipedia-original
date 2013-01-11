@@ -40,11 +40,12 @@ except ImportError:
 import wikipediatools
 wikipediatools.get_base_dir = lambda: '.'
 
-# Monkey-patch os.path.exists to prevent config.py from loading user_config.py
-import os.path
-os.path.exists = lambda x: False
+# Set some config settings
+import config
+config.mylang = 'en'
 
-# Now we can load family.py
+# Now we can boot the framework
+import wikipedia
 import family
 
 class FamilyFileGenerator(object):
