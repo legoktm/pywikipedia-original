@@ -123,10 +123,23 @@ globalbadtitles = """
             |subscribe
             |sign[ \-]?up
             |log[ \-]?on
-            |untitled *(document|page|$)
+            |untitled[ ]?(document|page|\d+|$)
+            |404[ ]
         ).*
 # anywhere
-    |.*(404|page|file).*not([ ]*be)?[ ]*found.*
+    |.*(
+            403[ ]forbidden
+            |(404|page|file|information|resource).*not([ ]*be)?[ ]*(available|found)
+            |site.*disabled
+            |error[ ]404
+            |error.+not[ ]found
+            |not[ ]found.+error
+            |404[ ]error
+            |\D404\D
+            |check[ ]browser[ ]settings
+            |log[ \-]?(on|in)[ ]to
+            |site[ ]redirection
+     ).*
 # ends with
     |.*(
             register
