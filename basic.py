@@ -156,7 +156,7 @@ class AutoBasicBot(BasicBot):
                 # Save the page
                 page.put(text, comment=comment, minorEdit=minorEdit, botflag=botflag)
             except pywikibot.LockedPage:
-                pywikibot.output(u"\03{lightblue}Page %s is locked; skipping.\03{default}" % page.aslink())
+                pywikibot.output(u"\03{lightblue}Page %s is locked; skipping.\03{default}" % page.title(asLink=True))
             except pywikibot.EditConflict:
                 pywikibot.output(u'\03{lightblue}Skipping %s because of edit conflict\03{default}' % (page.title()))
             except pywikibot.SpamfilterError, error:
