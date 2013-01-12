@@ -8506,6 +8506,8 @@ def handleArgs(*args):
             setLogfileStatus(True)
         elif arg.startswith('-log:'):
             setLogfileStatus(True, arg[5:])
+        elif arg.startswith('-loghandler:'):
+            config.loghandler = arg[12:]
         elif arg == '-nolog':
             setLogfileStatus(False)
         elif arg in ['-verbose', '-v']:
@@ -8586,17 +8588,21 @@ Global arguments available for all bots:
 
 -help             Show this help text.
 
+-loghandler:xyz   Choose a value for 'xyz' from 'TRFH' (TimedRotatingFile-
+                  Handler) or 'RFH' (RotatingFileHandler). Has to be defined
+                  before '-log' on command line.
+
 -log              Enable the logfile, using the default filename
                   "%s.log"
                   Logs will be stored in the logs subdirectory.
 
 -log:xyz          Enable the logfile, using 'xyz' as the filename.
 
+-nolog            Disable the logfile (if it is enabled by default).
+
 -maxlag           Sets a new maxlag parameter to a number of seconds. Defer bot
                   edits during periods of database server lag. Default is set by
                   config.py
-
--nolog            Disable the logfile (if it is enabled by default).
 
 -putthrottle:n    Set the minimum time (in seconds) the bot will wait between
 -pt:n             saving pages.
@@ -8699,11 +8705,24 @@ def setLogfileStatus(enabled, logname = None):
             return
         logger.setLevel(logging.DEBUG)
         # create file handler which logs even debug messages
-        fh = logging.handlers.TimedRotatingFileHandler(logfn,
-                                                       when='midnight',
-                                                       utc=False,
-                                                       #encoding='bz2-codec')
-                                                       encoding='utf-8')
+        if config.loghandler.upper() == 'TRFH':
+            fh = logging.handlers.TimedRotatingFileHandler(logfn,
+                                                           when='midnight',
+                                                           utc=False,
+                                                           #encoding='bz2-codec')
+                                                           encoding='utf-8')
+            # patch for "Issue 8117: TimedRotatingFileHandler doesn't rotate log
+            # file at startup."
+            # applies to python2.6 only, solution filched from python2.7 source:
+            # http://hg.python.org/cpython-fullhistory/diff/a566e53f106d/Lib/logging/handlers.py
+            if os.path.exists(logfn):
+                t = os.stat(logfn).st_mtime
+                fh.rolloverAt = fh.computeRollover(t)
+        elif config.loghandler.upper() == 'RFH':
+            fh = logging.handlers.RotatingFileHandler(filename=logfn,
+                                           maxBytes=1024 * config.logfilesize,
+                                           backupCount=config.logfilecount,
+                                           encoding='utf-8')
         #fh.setLevel(logging.DEBUG if debug else logging.INFO)
         fh.setLevel(logging.DEBUG)
         # create console handler with a higher log level
@@ -8719,14 +8738,6 @@ def setLogfileStatus(enabled, logname = None):
         # add the handlers to logger
         logger.addHandler(fh)           # output to logfile
         #logger.addHandler(ch)           # output to terminal/shell console
-
-        # patch for "Issue 8117: TimedRotatingFileHandler doesn't rotate log
-        # file at startup."
-        # applies to python2.6 only, solution filched from python2.7 source:
-        # http://hg.python.org/cpython-fullhistory/diff/a566e53f106d/Lib/logging/handlers.py
-        if os.path.exists(logfn):
-            t = os.stat(logfn).st_mtime
-            logger.handlers[0].rolloverAt=logger.handlers[0].computeRollover(t)
 
         logger = logging.getLogger('pywikibot')
     else:
@@ -8745,7 +8756,7 @@ def log(text):
         # save the text in a logfile (will be written in utf-8)
         type = plaintext.split(':')
         func = 'info'
-        if len(type):
+        if len(type) > 1:
             func = type[0].strip().lower()
             if func not in ['debug', 'warning', 'error', 'critical', 'info']:
                 func = 'info'
