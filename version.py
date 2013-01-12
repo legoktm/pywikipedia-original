@@ -3,7 +3,7 @@
 #
 # (C) Merlijn 'valhallasw' van Deen, 2007-2008
 # (C) xqt, 2010-2011
-# (C) Pywikipedia bot team, 2007-2011
+# (C) Pywikipedia bot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -110,10 +110,6 @@ def getversion_onlinerepo(repo=None):
     except:
         raise ParseError
     return rev
-
-## Simple version comparison
-#
-cmp_ver = lambda a, b, tol=1: {-1: '<', 0: '~', 1: '>'}[cmp((a-b)//tol, 0)]
 
 if __name__ == '__main__':
     print 'Pywikipedia %s' % getversion()
