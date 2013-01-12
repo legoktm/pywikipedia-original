@@ -401,16 +401,17 @@ class CategoryMoveRobot:
         site = pywikibot.getSite()
         newCat = catlib.Category(site, self.newCatTitle)
         # set edit summary message
-        if not self.editSummary:
-            self.editSummary = i18n.twtranslate(site, 'category-changing') \
-                               % {'oldcat':self.oldCat.title(),
-                                  'newcat':newCat.title()}
 
         if self.useSummaryForDeletion and self.editSummary:
             reason = self.editSummary
         else:
-            reason = i18n.twtranslate(site, deletion_reason_move) \
+            reason = i18n.twtranslate(site, 'category-was-moved') \
                      % {'newcat': self.newCatTitle, 'title': self.newCatTitle}
+            
+        if not self.editSummary:
+            self.editSummary = i18n.twtranslate(site, 'category-changing') \
+                               % {'oldcat':self.oldCat.title(),
+                                  'newcat':newCat.title()}
 
         # Copy the category contents to the new category page
         copied = False
