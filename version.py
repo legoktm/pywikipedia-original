@@ -25,7 +25,7 @@ def getversion():
     try:
         rev2 = int(getversion_onlinerepo())
         rev1 = int(str(data['rev']).split()[0])
-        data['cmp_ver'] = 'OUTDATED' if cmp_ver(rev1, rev2)=='<' else 'ok'
+        data['cmp_ver'] = 'OUTDATED' if rev1 < rev2 else 'ok'
     except ParseError:
         data['cmp_ver'] = 'n/a'
     return '%(tag)s (r%(rev)s, %(date)s, %(cmp_ver)s)' % data
