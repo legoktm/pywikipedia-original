@@ -8689,9 +8689,14 @@ def setLogfileStatus(enabled, logname = None):
     if enabled:
         if not logname:
             logname = '%s.log' % calledModuleName()
+            if pywikibot.throttle.pid > 1:
+                logname = '%s.%s.log' % (calledModuleName(), pywikibot.throttle.pid)
         logfn = config.datafilepath('logs', logname)
 
         logger = logging.getLogger()    # root logger
+        if logger.handlers:             # init just once (if re-called)
+            logger = logging.getLogger('pywikibot')
+            return
         logger.setLevel(logging.DEBUG)
         # create file handler which logs even debug messages
         fh = logging.handlers.TimedRotatingFileHandler(logfn,
@@ -8705,27 +8710,28 @@ def setLogfileStatus(enabled, logname = None):
         ch = logging.StreamHandler()
         ch.setLevel(logging.INFO)
         # create formatter and add it to the handlers
-        formatter = logging.Formatter('%(asctime)s %(name)-20s %(levelname)-8s %(message)s')
+        formatter = logging.Formatter(
+                    fmt='%(asctime)s %(name)18s: %(levelname)-8s %(message)s',
+                    datefmt="%Y-%m-%d %H:%M:%S"
+                    )
         fh.setFormatter(formatter)
         #ch.setFormatter(formatter)
         # add the handlers to logger
         logger.addHandler(fh)           # output to logfile
         #logger.addHandler(ch)           # output to terminal/shell console
 
-        # patch for Issue 8117: TimedRotatingFileHandler doesn't rotate log file at startup.
-        # applies to python2.6 only, solution from python2.7 source:
+        # patch for "Issue 8117: TimedRotatingFileHandler doesn't rotate log
+        # file at startup."
+        # applies to python2.6 only, solution filched from python2.7 source:
         # http://hg.python.org/cpython-fullhistory/diff/a566e53f106d/Lib/logging/handlers.py
         if os.path.exists(logfn):
             t = os.stat(logfn).st_mtime
-            logger.handlers[0].rolloverAt = logger.handlers[0].computeRollover(t)
+            logger.handlers[0].rolloverAt=logger.handlers[0].computeRollover(t)
 
         logger = logging.getLogger('pywikibot')
     else:
         # disable the log file
         logger = None
-
-if '*' in config.log or calledModuleName() in config.log:
-    setLogfileStatus(True)
 
 writeToCommandLogFile()
 
@@ -8740,10 +8746,10 @@ def log(text):
         type = plaintext.split(':')
         func = 'info'
         if len(type):
-            for func in ['debug', 'warning', 'error', 'critical', 'info']:
-                if func == type[0].strip().lower():
-                    break
-        getattr(logger, func)(plaintext.strip())
+            func = type[0].strip().lower()
+            if func not in ['debug', 'warning', 'error', 'critical', 'info']:
+                func = 'info'
+        getattr(logger, func)(plaintext.rstrip().lstrip('\n'))
 
 output_lock = threading.Lock()
 input_lock = threading.Lock()
@@ -9048,6 +9054,9 @@ MyURLopener.addheaders = [('User-agent', useragent)]
 
 import pywikibot
 pywikibot.__dict__.update(locals())
+
+if '*' in config.log or calledModuleName() in config.log:
+    setLogfileStatus(True)
 
 if __name__ == '__main__':
     import doctest
