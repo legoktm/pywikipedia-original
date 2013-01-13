@@ -81,7 +81,7 @@ right parameter.
 # (C) Kyle/Orgullomoore, 2006-2007 (newimage.py)
 # (C) Siebrand Mazeland, 2007-2010
 # (C) Filnik, 2007-2011
-# (C) Pywikipedia team, 2007-2012
+# (C) Pywikipedia team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -106,7 +106,7 @@ locale.setlocale(locale.LC_ALL, '')
 n_txt = {
     'commons':u'{{subst:nld}}',
     'ar'     :u'{{subst:لم}}',
-    'de'     :u'{{Benutzer:ABF/D|~~~~}} {{Dateiüberprüfung/benachrichtigt (Kategorie)|{{subst:LOCALYEAR}}|{{subst:LOCALMONTH}}|{{subst:LOCALDAY}}}} {{Dateiüberprüfung/benachrichtigt (Text)|Lizenz|||||}} --This was added by ~~~~-- ',
+    'de'     :u'{{DÜP}}',
     'en'     :u'{{subst:nld}}',
     'fa'     :u'{{جا:حق تکثیر تصویر نامعلوم}}',
     'fr'     :u'{{subst:lid}}',
@@ -294,7 +294,7 @@ nothing_notification = {
 # NOTE: YOUR Botnick is automatically added. It's not required to add it twice.
 bot_list = {
     'commons':[u'Siebot', u'CommonsDelinker', u'Filbot', u'John Bot', u'Sz-iwbot', u'ABFbot'],
-    #'de'     :[u'ABFbot'],
+    'de'     :[u'Xqbot'],
     'en'     :[u'OrphanBot'],
     'fa'     :[u'Amirobot'],
     'ga'     :[u'AllieBot'],
@@ -327,7 +327,7 @@ page_with_settings = {
 # image on commons) This is the page where the bot will store them.
 report_page = {
     'commons':u'User:Filbot/Report',
-    'de'     :u'Benutzer:ABFbot/Report',
+    'de'     :u'Benutzer:Xqbot/Report',
     'en'     :u'User:Filnik/Report',
     'fa'     :u'کاربر:Amirobot/گزارش تصویر',
     'ga'     :u'User:AllieBot/ReportImages',
@@ -475,6 +475,7 @@ duplicatesRegex = {
 category_with_licenses = {
     'commons': 'Category:License tags',
     'ar': 'تصنيف:قوالب حقوق الصور',
+    'de': 'Kategorie:Vorlage:Lizenz für Bilder',
     'en': 'Category:Wikipedia image copyright templates',
     'fa': u'رده:برچسب‌های حق تکثیر نگاره',
     'ga': 'Catagóir:Clibeanna cóipchirt d\'íomhánna',
