@@ -113,7 +113,7 @@ def getversion_onlinerepo(repo=None):
 #
 cmp_ver = lambda a, b, tol=1: {-1: '<', 0: '~', 1: '>'}[cmp((a-b)//tol, 0)]
 
-## Retrieve revision number of file (__version__ variable containing $Id$ tag)
+## Retrieve revision number of file (__version__ variable containing Id tag)
 #  without importing it (thus can be done for any file)
 #
 def getfileversion(filename):
