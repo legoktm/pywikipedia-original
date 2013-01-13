@@ -140,7 +140,8 @@ import weakref
 import logging, logging.handlers
 # Splitting the bot into library parts
 from pywikibot.support import *
-import config, login, query, version
+import config, login, query
+from pywikibot import version
 
 # Check Unicode support (is this a wide or narrow python build?)
 # See http://www.python.org/doc/peps/pep-0261/
