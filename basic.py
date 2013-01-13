@@ -99,8 +99,7 @@ class BasicBot:
             return text
         return None
 
-    def save(self, text, page, comment=None, minorEdit=True,
-             botflag=True):
+    def save(self, text, page, comment=None, **kwargs):
         # only save if something was changed
         if text != page.get():
             # Show the title of the page we're working on.
@@ -117,7 +116,7 @@ class BasicBot:
                 try:
                     # Save the page
                     page.put(text, comment=comment or self.comment,
-                             minorEdit=minorEdit, botflag=botflag)
+                             minorEdit=minorEdit, botflag=botflag, **kwargs)
                 except pywikibot.LockedPage:
                     pywikibot.output(u"Page %s is locked; skipping."
                                      % page.title(asLink=True))
@@ -143,7 +142,7 @@ class AutoBasicBot(BasicBot):
 
     ## @since   10326
     #  @remarks needed by various bots
-    def save(self, page, text, comment=None, minorEdit=True, botflag=True):
+    def save(self, page, text, comment=None, **kwargs):
         pywikibot.output(u'\03{lightblue}Writing to wiki on %s...\03{default}' % page.title(asLink=True))
 
         comment_output = comment or pywikibot.action
@@ -154,7 +153,7 @@ class AutoBasicBot(BasicBot):
         for i in range(3): # try max. 3 times
             try:
                 # Save the page
-                page.put(text, comment=comment, minorEdit=minorEdit, botflag=botflag)
+                page.put(text, comment=comment, **kwargs)
             except pywikibot.LockedPage:
                 pywikibot.output(u"\03{lightblue}Page %s is locked; skipping.\03{default}" % page.title(asLink=True))
             except pywikibot.EditConflict:
@@ -167,14 +166,14 @@ class AutoBasicBot(BasicBot):
 
     ## @since   10326
     #  @remarks needed by various bots
-    def append(self, page, text, comment=None, minorEdit=True, section=None):
+    def append(self, page, text, comment=None, section=None, **kwargs):
         if section:
             pywikibot.output(u'\03{lightblue}Appending to wiki on %s in section %s...\03{default}' % (page.title(asLink=True), section))
 
             for i in range(3): # try max. 3 times
                 try:
                     # Append to page section
-                    page.append(text, comment=comment, minorEdit=minorEdit, section=section)
+                    page.append(text, comment=comment, section=section, **kwargs)
                 except pywikibot.PageNotSaved, error:
                     pywikibot.output(u'\03{lightblue}Cannot change %s because of %s\03{default}' % (page.title(), error))
                 else:
@@ -187,7 +186,7 @@ class AutoBasicBot(BasicBot):
             content += u'\n\n'
             content += text
 
-            return self.save(page, content, comment=comment, minorEdit=minorEdit)
+            return self.save(page, content, comment=comment, **kwargs)
 
     ## @since   10326
     #  @remarks needed by various bots

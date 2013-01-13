@@ -1068,20 +1068,20 @@ class SumDiscBot(basic.AutoBasicBot):
             if not self._mode:
                 # default: write direct to user disc page
                 comment = head + add % {'num':count}
-                #self.append(self._userPage, buf, comment=comment, minorEdit=False)
+                #self.append(self._userPage, buf, comment=comment, minorEdit=False, force=True)
                 (page, text, minEd) = (self._userPage, buf, False)
             else:
                 # enhanced (with template): update user disc page and write to user specified page
                 tmplsite = pywikibot.Page(self.site, self._tmpl_data)
                 comment = head + mod % {'num':count, 'page':tmplsite.title(asLink=True)}
-                self.save(self._userPage, self._content, comment=comment, minorEdit=False)
+                self.save(self._userPage, self._content, comment=comment, minorEdit=False, force=True)
                 comment = head + add % {'num':count}
-                #self.append(tmplsite, buf, comment=comment)
+                #self.append(tmplsite, buf, comment=comment, force=True)
                 (page, text, minEd) = (tmplsite, buf, True) # 'True' is default
             if (self._param['cleanup_count'] < 0):
                 # default mode, w/o cleanup
                 try:
-                    self.append(page, text, comment=comment, minorEdit=minEd)
+                    self.append(page, text, comment=comment, minorEdit=minEd, force=True)
                 except pywikibot.MaxTriesExceededError:
                     logging.getLogger('sum_disc').warning(
                           u'Problem MaxTriesExceededError occurred, thus skipping this user!')
@@ -1091,7 +1091,7 @@ class SumDiscBot(basic.AutoBasicBot):
                 text = self.cleanupDiscSum( self.load(page) or u'', 
                                             days=self._param['cleanup_count'] ) + u'\n\n' + text
                 comment = head + clean % {'num':count}
-                self.save(page, text, comment=comment, minorEdit=minEd)
+                self.save(page, text, comment=comment, minorEdit=minEd, force=True)
             purge = self._userPage.purgeCache()
 
             pywikibot.output(u'\03{lightpurple}*** Discussion updates added to: %s (purge: %s)\03{default}' % (self._userPage.title(asLink=True), purge))
