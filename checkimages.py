@@ -560,7 +560,7 @@ class Global(object):
 
 class main:
     def __init__(self, site, logFulNumber=25000, sendemailActive=False,
-                 duplicatesRepor =False, logFullError=True):
+                 duplicatesReport=False, logFullError=True):
         """ Constructor, define some global variable """
         self.site = site
         self.logFullError = logFullError
@@ -581,7 +581,7 @@ class main:
                                                PageWithAllowedTemplates,
                                                fallback=False)
         # Commento = Summary in italian
-        self.commento = pywikibot.translate(self.site, comm)
+        self.commento = pywikibot.translate(self.site, msg_comm)
         # Adding the bot's nickname at the notification text if needed.
         botolist = pywikibot.translate(self.site, bot_list, fallback=False)
         project = pywikibot.getSite().family.name
@@ -625,7 +625,7 @@ class main:
         # Defining some useful variable for next...
         self.image_to_report = image_to_report
         self.newtext = newtext
-        self.head = head
+        self.head = head or u''
         self.notification = notification
         self.notification2 = notification2
 
@@ -1733,7 +1733,7 @@ def checkbot():
             if len(arg) == 5:
                 wait = True
                 waitTime = int(pywikibot.input(
-                    u'How many time do you want to wait before checking the "
+                    u'How many time do you want to wait before checking the '
                     u'files?'))
             elif len(arg) > 5:
                 wait = True
