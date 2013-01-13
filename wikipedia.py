@@ -8705,7 +8705,12 @@ def setLogfileStatus(enabled, logname = None):
             return
         logger.setLevel(logging.DEBUG)
         # create file handler which logs even debug messages
-        if config.loghandler.upper() == 'TRFH':
+        if config.loghandler.upper() == 'RFH':
+            fh = logging.handlers.RotatingFileHandler(filename=logfn,
+                                           maxBytes=1024 * config.logfilesize,
+                                           backupCount=config.logfilecount,
+                                           encoding='utf-8')
+        else:
             fh = logging.handlers.TimedRotatingFileHandler(logfn,
                                                            when='midnight',
                                                            utc=False,
@@ -8718,13 +8723,7 @@ def setLogfileStatus(enabled, logname = None):
             if os.path.exists(logfn):
                 t = os.stat(logfn).st_mtime
                 fh.rolloverAt = fh.computeRollover(t)
-        elif config.loghandler.upper() == 'RFH':
-            fh = logging.handlers.RotatingFileHandler(filename=logfn,
-                                           maxBytes=1024 * config.logfilesize,
-                                           backupCount=config.logfilecount,
-                                           encoding='utf-8')
-        #fh.setLevel(logging.DEBUG if debug else logging.INFO)
-        fh.setLevel(logging.DEBUG)
+        fh.setLevel(logging.DEBUG if debug else logging.INFO)
         # create console handler with a higher log level
         ch = logging.StreamHandler()
         ch.setLevel(logging.INFO)
