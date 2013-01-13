@@ -115,8 +115,7 @@ class BasicBot:
             if choice == 'y':
                 try:
                     # Save the page
-                    page.put(text, comment=comment or self.comment,
-                             minorEdit=minorEdit, botflag=botflag, **kwargs)
+                    page.put(text, comment=comment or self.comment, **kwargs)
                 except pywikibot.LockedPage:
                     pywikibot.output(u"Page %s is locked; skipping."
                                      % page.title(asLink=True))
