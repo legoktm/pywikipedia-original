@@ -146,7 +146,7 @@ txt_find =  {
 msg_comm = {
     'ar': u'بوت: التعليم على ملف مرفوع حديثا غير موسوم',
     'commons': u'Bot: Marking newly uploaded untagged file',
-    'de': u'Bot: Markierung als Bild ohne Lizenz',
+    'de': u'Bot: Markiere Bild ohne Lizenz mit {{DÜP}}',
     'en': u'Bot: Marking newly uploaded untagged file',
     'fa': u'ربات: حق تکثیر تصویر تازه بارگذاری شده نامعلوم است.',
     'ga': u'Róbó: Ag márcáil comhad nua-uaslódáilte gan ceadúnas',
@@ -259,18 +259,12 @@ msg_del_comm = {
 # header that the bot will add if the image hasn't the license.
 nothing_head = {
     'ar': u"\n== صورة بدون ترخيص ==\n",
-    'commons': u"",# Nothing, the template has already the header inside.
     'de': u"\n== Bild ohne Lizenz ==\n",
     'en': u"\n== Image without license ==\n",
     'ga': u"\n== Comhad gan ceadúnas ==\n",
     'fr': u"\n== Fichier sans licence ==\n",
     'hu': u"\n== Licenc nélküli kép ==\n",
     'it': u"\n\n== File senza licenza ==\n",
-    'ja': u'',
-    'ko': u'',
-    'fa': u'',
-    'ta': u'',
-    'zh': u'',
     }
 # That's the text that the bot will add if it doesn't find the license.
 # Note: every __botnick__ will be repleaced with your bot's nickname (feel free not to use if you don't need it)
@@ -280,7 +274,6 @@ nothing_notification = {
                 "if you still need help ask at the [[File:Human-help-browser.svg|18px|link=Commons:Help desk|?]] '''[[Commons:Help desk|->]]" + \
                 "[[Commons:Help desk]]''' in any language you like to use.'' --__botnick__ ~~~~~""",
     'ar': u"{{subst:مصدر الصورة|File:%s}} --~~~~",
-    'de': u'\n{{subst:Benutzer:ABF/D2|%s}} ~~~~ ',
     'en': u"{{subst:image source|File:%s}} --~~~~",
     'fa': u"{{جا:اخطار نگاره|%s}}",
     'ga': u"{{subst:Foinse na híomhá|File:%s}} --~~~~",
@@ -524,7 +517,6 @@ class NothingFound(pywikibot.Error):
     """
 
 
-# Other common useful functions
 def printWithTimeZone(message):
     """ Function to print the messages followed by the TimeZone encoded
     correctly.
@@ -943,7 +935,7 @@ class checkImagesBot(object):
 
     def checkImageOnCommons(self):
         """ Checking if the file is on commons """
-        pywikibot.output(u'Checking if %s is on commons...' % self.imageName)
+        pywikibot.output(u'Checking if [[%s]] is on commons...' % self.imageName)
         commons_site = pywikibot.getSite('commons', 'commons')
         regexOnCommons = r"\[\[:File:%s\]\] is also on '''Commons''': \[\[commons:File:.*?\]\](?: \(same name\)|)$" \
                          % re.escape(self.imageName)
@@ -1281,7 +1273,7 @@ class checkImagesBot(object):
                                       fallback=False)
         if not catName:
             raise pywikibot.Error(u'No licenses allowed provided, add that option to the code to make the script working correctly')
-        pywikibot.output(u'\n\t...Loading the licenses allowed...\n')
+        pywikibot.output(u'\nLoading the allowed licenses...\n')
         list_licenses = catlib.categoryAllPageObjectsAPI(catName)
         if self.site.lang == 'commons':
             no_licenses_to_skip = catlib.categoryAllPageObjectsAPI(
@@ -1473,7 +1465,7 @@ class checkImagesBot(object):
                                   rep_text=rep_text_license_fake,
                                   addings=False, regex=regexFakeLicense)
             elif self.license_found:
-                printWithTimeZone(u"%s seems ok, license found: %s..."
+                printWithTimeZone(u"[[%s]] seems ok, license found: {{%s}}..."
                                   % (self.imageName, self.license_found))
         return (self.license_found, self.whiteTemplatesFound)
 
@@ -1659,6 +1651,7 @@ class checkImagesBot(object):
         notallowed = ("xcf", "xls", "sxw", "sxi", "sxc", "sxd")
         brackets = False
         delete = False
+        notification = None
         extension = self.imageName.split('.')[-1] # get the extension from the image's name
         # Load the notification messages
         HiddenTN = pywikibot.translate(self.site, HiddenTemplateNotification,
@@ -1717,7 +1710,7 @@ class checkImagesBot(object):
         #if p.exists(): <-- improve thebot, better to make as
         #                   less call to the server as possible
         # Here begins the check block.
-        if brackets and not license_found is None:
+        if brackets and license_found:
             # It works also without this... but i want only to be sure ^^
             brackets = False
             return True
@@ -1732,22 +1725,27 @@ class checkImagesBot(object):
             delete = False
             return True
         elif self.imageCheckText in nothing:
-            pywikibot.output(u"The file's description for %s does not contain a license template!" % self.imageName)
-            if hiddenTemplateFound and HiddenTN != None and HiddenTN != '' and HiddenTN != ' ':
+            pywikibot.output(
+                u"The file's description for %s does not contain a license "
+                u" template!" % self.imageName)
+            if hiddenTemplateFound and HiddenTN:
                 notification = HiddenTN % self.imageName
-            else:
+            elif nn:
                 notification = nn % self.imageName
             head = nh
-            self.report(self.unvertext, self.imageName, notification, head, smwl)
+            self.report(self.unvertext, self.imageName, notification, head,
+                        smwl)
             return True
         else:
-            pywikibot.output(u"%s has only text and not the specific license..." % self.imageName)
-            if hiddenTemplateFound and HiddenTN != None and HiddenTN != '' and HiddenTN != ' ':
+            pywikibot.output(u"%s has only text and not the specific license..."
+                             % self.imageName)
+            if hiddenTemplateFound and HiddenTN:
                 notification = HiddenTN % self.imageName
-            else:
+            elif nn:
                 notification = nn % self.imageName
             head = nh
-            self.report(self.unvertext, self.imageName, notification, head, smwl)
+            self.report(self.unvertext, self.imageName, notification, head,
+                        smwl)
             return True
 
 
