@@ -631,9 +631,7 @@ class checkImagesBot(object):
             self.notification2 = re.sub(r'__botnick__', self.botnick,
                                         notification2)
         self.commTalk = commTalk
-
-        if commImage:
-            self.commImage = commImage or self.comment
+        self.commImage = commImage or self.comment
 
         while True:
             if unver:
