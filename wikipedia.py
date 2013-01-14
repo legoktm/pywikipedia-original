@@ -4915,7 +4915,7 @@ class _GetAll(object):
             if self.site.family.isDefinedNSLanguage(id, lang) and id not in header.namespaces:
                 output(u"WARNING: Family file %s includes namespace['%s'][%i], but it should be removed (namespace doesn't exist in the site)" % (self.site.family.name, lang, id))
 
-    def getData(self):
+    def getData(self, curonly=True):
         address = self.site.export_address()
         pagenames = [page.sectionFreeTitle() for page in self.pages]
         # We need to use X convention for requested page titles.
@@ -4930,8 +4930,9 @@ class _GetAll(object):
         predata = {
             'action': 'submit',
             'pages': pagenames,
-            'curonly': 'True',
         }
+        if curonly:
+            predata['curonly'] = 'True'
         # Slow ourselves down
         get_throttle(requestsize = len(self.pages))
         # Now make the actual request to the server
