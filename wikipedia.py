@@ -8713,9 +8713,16 @@ def setLogfileStatus(enabled, logname = None):
                                            backupCount=config.logfilecount,
                                            encoding='utf-8')
         else:
-            fh = logging.handlers.TimedRotatingFileHandler(logfn,
+            try:
+                fh = logging.handlers.TimedRotatingFileHandler(logfn,
                                                            when='midnight',
                                                            utc=False,
+                                                           #encoding='bz2-codec')
+                                                           encoding='utf-8')
+            except TypeError:
+                # For Python 2.5
+                fh = logging.handlers.TimedRotatingFileHandler(logfn,
+                                                           when='midnight',
                                                            #encoding='bz2-codec')
                                                            encoding='utf-8')
             # patch for "Issue 8117: TimedRotatingFileHandler doesn't rotate log
@@ -8724,7 +8731,12 @@ def setLogfileStatus(enabled, logname = None):
             # http://hg.python.org/cpython-fullhistory/diff/a566e53f106d/Lib/logging/handlers.py
             if os.path.exists(logfn):
                 t = os.stat(logfn).st_mtime
-                fh.rolloverAt = fh.computeRollover(t)
+                try:
+                    fh.rolloverAt = fh.computeRollover(t)
+                except AttributeError:
+                    # Python 2.5 does not have it
+                    pass
+
         fh.setLevel(logging.DEBUG if debug else logging.INFO)
         # create console handler with a higher log level
         ch = logging.StreamHandler()
