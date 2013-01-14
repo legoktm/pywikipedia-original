@@ -800,7 +800,7 @@ not supported by PyWikipediaBot!"""
         # I raise a ServerError() yet, but maybe it should be NoPage().
         if not textareaFound:
             if verbose:
-                print pageInfo
+                output(str(pageInfo))
             raise ServerError('ServerError: No textarea found in %s' % self)
 
         self.editRestriction = ''
@@ -4278,7 +4278,7 @@ class wikidataPage(Page):
         # I raise a ServerError() yet, but maybe it should be NoPage().
         if not textareaFound:
             if verbose:
-                print pageInfo
+                output(str(pageInfo))
             raise ServerError('ServerError: No textarea found in %s' % self)
 
         self.editRestriction = ''
@@ -4924,7 +4924,7 @@ class _GetAll(object):
         pagenames = u'\r\n'.join(pagenames)
         if type(pagenames) is not unicode:
             output(u'Warning: xmlreader.WikipediaXMLHandler.getData() got non-unicode page names. Please report this.')
-            print pagenames
+            output(str(pagenames))
         # convert Unicode string to the encoding used on that wiki
         pagenames = pagenames.encode(self.site.encoding())
         predata = {
@@ -6239,7 +6239,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         try:
             text = unicode(text, charset, errors = 'strict')
         except UnicodeDecodeError, e:
-            print e
+            if verbose:
+                output(e)
             output(u'ERROR: Invalid characters found on %s://%s%s, replaced by \\ufffd.'
                    % (self.protocol(), self.hostname(), address))
             # We use error='replace' in case of bad encoding.
@@ -6548,7 +6549,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         if self.versionnumber() > 10:
             params['siprop'].extend(['statistics', ])
             if key in ['specialpagealiases', 'interwikimap', 'namespacealiases', 'usergroups', ]:
-                if verbose: print 'getting huge siprop %s...' % key
+                if verbose:
+                    output('getting huge siprop %s...' % key)
                 params['siprop'] = [key]
 
         #ver 1.13 handle
@@ -6556,7 +6558,8 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             if key not in ['specialpagealiases', 'interwikimap', 'namespacealiases', 'usergroups', ]:
                 params['siprop'].extend(['fileextensions', 'rightsinfo', ])
             if key in ['magicwords', 'extensions', ]:
-                if verbose: print 'getting huge siprop %s...' % key
+                if verbose:
+                    output('getting huge siprop %s...' % key)
                 params['siprop'] = [key]
         try:
             data = query.GetData(params, self)['query']
@@ -7469,7 +7472,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
                 get_throttle()
             data = query.GetData(params, self)
             if verbose:
-                print 'DEBUG allpages>>> data.keys()', data.keys()
+                output('DEBUG: allpages>>> data.keys() %s' % data.keys())
             if 'warnings' in data:
                 warning = data['warnings']['allpages']['*']
                 raise RuntimeError("API query warning: %s" % warning)
@@ -8805,9 +8808,9 @@ def output(text, decoder=None, newline=True, toStdout=False, **kwargs):
             text = unicode(text, decoder)
         elif type(text) is not unicode:
             if verbose and sys.platform != 'win32':
-                print "DBG> BUG: Non-unicode (%s) passed to wikipedia.output without decoder!" % type(text)
+                print "DEBUG: > BUG: Non-unicode (%s) passed to wikipedia.output without decoder!" % type(text)
                 print traceback.print_stack()
-                print "DBG> Attempting to recover, but please report this problem"
+                print "DEBUG: > Attempting to recover, but please report this problem"
             try:
                 text = unicode(text, 'utf-8')
             except UnicodeDecodeError:
