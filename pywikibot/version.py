@@ -29,6 +29,11 @@ def getversion():
         data['cmp_ver'] = 'n/a'
     return '%(tag)s (r%(rev)s, %(date)s, %(cmp_ver)s)' % data
 
+def unknown_version():
+    """Version cannot be determined"""
+    cache = dict(tag='', rev='-1 (unknown)', date='0 (unknown)')
+    return cache
+
 def getversiondict():
     global cache
     if cache:
@@ -40,16 +45,18 @@ def getversiondict():
             (tag, rev, date) = getversion_nightly()
         except Exception, e:
             version = getfileversion('wikipedia.py')
-            if len(version) == 4:
-                # the value is most likely '$Id' + '$', it means that
-                # wikipedia.py got imported without using svn at all
-                cache = dict(tag='', rev='-1 (unknown)', date='0 (unknown)')
-                return cache
-
-            id, file, rev, date, ts, author, dollar = version.split(' ')
-            tag = ''
-            date = time.strptime('%sT%s' % (date, ts), '%Y-%m-%dT%H:%M:%SZ')
-            rev += ' (wikipedia.py)'
+            if version:
+                   try:
+                       id, file, rev, date, ts, author, dollar = version.split(' ')
+                       tag = ''
+                       date = time.strptime('%sT%s' % (date, ts), '%Y-%m-%dT%H:%M:%SZ')
+                       rev += ' (wikipedia.py)'
+                   except ValueError:
+                       # the value is most likely '$Id' + '$', it means that
+                       # wikipedia.py got imported without using svn at all
+                       return unknown_version()
+            else:
+                return unknown_version()
     datestring = time.strftime('%Y/%m/%d, %H:%M:%S', date)
     cache = dict(tag=tag, rev=rev, date=datestring)
     return cache
