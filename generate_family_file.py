@@ -328,8 +328,8 @@ class Wiki(object):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print "Usage: %s <url> <short name>"
-        print "Example: %s http://www.mywiki.bogus/wiki/Main_Page mywiki"
+        print "Usage: %s <url> <short name>" % sys.argv[0]
+        print "Example: %s http://www.mywiki.bogus/wiki/Main_Page mywiki" % sys.argv[0]
         print "This will create the file families/mywiki_family.py"
 
     FamilyFileGenerator(*sys.argv[1:]).run()
