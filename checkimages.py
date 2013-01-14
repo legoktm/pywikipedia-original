@@ -14,7 +14,7 @@ This script understands the following command-line arguments:
 -limit              The number of images to check (default: 80)
 
 -commons            The Bot will check if an image on Commons has the same name
-                    and if true it report the image.
+                    and if true it reports the image.
 
 -duplicates[:#]     Checking if the image has duplicates (if arg, set how many
                     rollback wait before reporting the image in the report
@@ -404,6 +404,7 @@ PageWithHiddenTemplates = {
 # A page where there's a list of template to consider as licenses.
 PageWithAllowedTemplates = {
     'commons': u'User:Filbot/Allowed templates',
+    'de': u'Benutzer:Xqbot/Lizenzvorlagen',
     'it': u'Progetto:Coordinamento/Immagini/Bot/AllowedTemplates',
     'ko': u'User:Kwjbot_IV/AllowedTemplates',
 }
@@ -418,10 +419,12 @@ HiddenTemplateNotification = {
 
 # In this part there are the parameters for the dupe images.
 
-# Put here the template that you want to put in the image to warn that it's a dupe
-# put __image__ if you want only one image, __images__ if you want the whole list
+# Put here the template that you want to put in the image to warn that it's a
+# dupe. put __image__ if you want only one image, __images__ if you want the
+# whole list
 duplicatesText = {
     'commons': u'\n{{Dupe|__image__}}',
+    'de': u'{{NowCommons}}',
     'it': u'\n{{Progetto:Coordinamento/Immagini/Bot/Template duplicati|__images__}}',
 }
 
@@ -446,6 +449,7 @@ duplicates_comment_talk = {
 # Comment used by the bot while it reports the problem in the image
 duplicates_comment_image = {
     'commons': u'Bot: Tagging dupe file',
+    'de': u'Bot: Datei liegt auf Commons',
     'ar': u'بوت: وسم ملف مكرر',
     'it': u'Bot: File doppio, da cancellare',
 }
@@ -453,6 +457,7 @@ duplicates_comment_image = {
 # Regex to detect the template put in the image's decription to find the dupe
 duplicatesRegex = {
     'commons': r'\{\{(?:[Tt]emplate:|)(?:[Dd]up(?:licat|)e|[Bb]ad[ _][Nn]ame)[|}]',
+    'de': r'\{\{[nN](?:C|ow(?: c|[cC])ommons)[\|\}',
     'it': r'\{\{(?:[Tt]emplate:|)[Pp]rogetto:[Cc]oordinamento/Immagini/Bot/Template duplicati[|}]',
 }
 
@@ -590,13 +595,10 @@ class checkImagesBot(object):
 
         self.botnick = botnick
         botolist.append(botnick)
-
         self.botolist = botolist
 
         self.sendemailActive = sendemailActive
-        # Inizialize the skip list used below
-        self.skip_list = list()
-
+        self.skip_list = []
         self.duplicatesReport = duplicatesReport
 
         self.image_namespace = u"File:"
@@ -609,7 +611,6 @@ class checkImagesBot(object):
 
         """
         self.imageName = imageName
-        # Defing the image's Page Object
         self.image = pywikibot.ImagePage(self.site, self.imageName)
         self.timestamp = timestamp
         self.uploader = uploader
@@ -617,7 +618,6 @@ class checkImagesBot(object):
     def report(self, newtext, image_to_report, notification=None, head=None,
                notification2=None, unver=True, commTalk=None, commImage=None):
         """ Function to make the reports easier. """
-        # Defining some useful variable for next...
         self.image_to_report = image_to_report
         self.newtext = newtext
         self.head = head or u''
@@ -627,19 +627,15 @@ class checkImagesBot(object):
         if self.notification:
             self.notification = re.sub(r'__botnick__', self.botnick,
                                        notification)
-
         if self.notification2:
             self.notification2 = re.sub(r'__botnick__', self.botnick,
                                         notification2)
         self.commTalk = commTalk
 
         if commImage:
-            self.commImage = commImage
-        else:
-            self.commImage = self.comment
+            self.commImage = commImage or self.comment
 
-        # Ok, done, let's loop.
-        while 1:
+        while True:
             if unver:
                 try:
                     resPutMex = self.tag_image()
@@ -731,8 +727,8 @@ class checkImagesBot(object):
             for upBot in upBots:
                 if upBot[0] == luser:
                     luser = self.uploadBotChangeFunction(reportPageText, upBot)
-        talk_page = pywikibot.Page(self.site, u"%s:%s"
-                                   % (self.site.namespace(3), luser))
+        talk_page = pywikibot.Page(self.site,
+                                   u"%s:%s" % (self.site.namespace(3), luser))
         self.talk_page = talk_page
         self.luser = luser
         return True
@@ -828,7 +824,6 @@ class checkImagesBot(object):
         text = self.site.getUrl(link, no_hostname = True)
         results = re.findall(r"""<td valign='top' title='Name'><a href='http://.*?\.org/w/index\.php\?title=(.*?)'>.*?</a></td>""",
                              text)
-
         if results:
             for result in results:
                 wikiPage = pywikibot.ImagePage(self.site, result)
@@ -1471,9 +1466,8 @@ class checkImagesBot(object):
 
     def load(self, raw):
         """ Load a list of object from a string using regex. """
-        list_loaded = list()
+        list_loaded = []
         pos = 0
-        load_2 = True
         # I search with a regex how many user have not the talk page
         # and i put them in a list (i find it more easy and secure)
         regl = r"(\"|\')(.*?)\1(?:,|\])"
@@ -1518,7 +1512,7 @@ class checkImagesBot(object):
         if normal:
             printWithTimeZone(u'Skipping the files uploaded less than %s seconds ago..' % waitTime)
             imagesToSkip = 0
-            while 1:
+            while True:
                 loadOtherImages = True # ensure that all the images loaded aren't to skip!
                 for image in generator:
                     if normal:
