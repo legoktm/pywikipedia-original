@@ -8164,9 +8164,9 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         """Return a tuple of image repositories used by this site."""
         return self.family.shared_image_repository(self.lang)
 
-    def shared_data_repository(self):
+    def shared_data_repository(self, transcluded=False):
         """Return a tuple of image repositories used by this site."""
-        return self.family.shared_image_repository(self.lang)
+        return self.family.shared_data_repository(self.lang, transcluded)
 
     @property
     def has_image_repository(self):
@@ -8175,9 +8175,15 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         return bool(code or fam)
 
     @property
-    def has_data_repository(self):
+    def has_data_repository(self, transcluded=False):
         """Return True if site has a shared image repository like wikidata"""
-        code, fam = self.shared_data_repository()
+        code, fam = self.shared_data_repository(transcluded)
+        return bool(code or fam)
+
+    @property
+    def has_transcluded_data(self):
+        """Return True if site has a shared image repository like wikidata"""
+        code, fam = self.shared_data_repository(True)
         return bool(code or fam)
 
     def image_repository(self):
