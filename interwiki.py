@@ -1714,9 +1714,10 @@ u'NOTE: number of edits are restricted at %s'
                                     % page.site.sitename())
 
                 # if we have an account for this site
-                if site.family.name in config.usernames \
-                   and site.lang in config.usernames[site.family.name] \
-                   and smallWikiAllowed:
+                if site.family.name in config.usernames and \
+                   site.lang in config.usernames[site.family.name] and \
+                   smallWikiAllowed and \
+                   not site.has_transcluded_data:
                     # Try to do the changes
                     try:
                         if self.replaceLinks(page, new, bot):
