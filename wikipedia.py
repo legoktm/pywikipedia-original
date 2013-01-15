@@ -8175,9 +8175,9 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         return bool(code or fam)
 
     @property
-    def has_data_repository(self, transcluded=False):
+    def has_data_repository(self):
         """Return True if site has a shared image repository like wikidata"""
-        code, fam = self.shared_data_repository(transcluded)
+        code, fam = self.shared_data_repository()
         return bool(code or fam)
 
     @property
