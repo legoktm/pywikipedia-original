@@ -212,7 +212,7 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         text = unicode(text, charset, errors = 'strict')
     except UnicodeDecodeError, e:
         if verbose:
-            output(u'%s' %e)
+            pywikibot.output(u'%s' %e)
         if no_hostname:
             pywikibot.output(u'ERROR: Invalid characters found on %s, replaced by \\ufffd.' % uri)
         else:
