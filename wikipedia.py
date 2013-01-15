@@ -6240,7 +6240,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             text = unicode(text, charset, errors = 'strict')
         except UnicodeDecodeError, e:
             if verbose:
-                output(e)
+                output(u'%s' %e)
             output(u'ERROR: Invalid characters found on %s://%s%s, replaced by \\ufffd.'
                    % (self.protocol(), self.hostname(), address))
             # We use error='replace' in case of bad encoding.
