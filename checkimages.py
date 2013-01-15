@@ -108,7 +108,7 @@ locale.setlocale(locale.LC_ALL, '')
 n_txt = {
     'commons': u'{{subst:nld}}',
     'ar': u'{{subst:لم}}',
-    'de': u'{{DÜP}}',
+    'de': u'{{Dateiüberprüfung}}',
     'en': u'{{subst:nld}}',
     'fa': u'{{جا:حق تکثیر تصویر نامعلوم}}',
     'fr': u'{{subst:lid}}',
@@ -146,7 +146,9 @@ txt_find =  {
 msg_comm = {
     'ar': u'بوت: التعليم على ملف مرفوع حديثا غير موسوم',
     'commons': u'Bot: Marking newly uploaded untagged file',
-    'de': u'Bot: Markiere Bild ohne Lizenz mit {{DÜP}}',
+    'de': u'Bot: Markiere mit {{[[Wikipedia:Dateiüberprüfung/Anleitung|DÜP]]}},'
+          u' da keine Lizenzvorlage gefunden — bitte nicht entfernen,'
+          u' Informationen bald auf der Benutzerdiskussion des Uploaders.',
     'en': u'Bot: Marking newly uploaded untagged file',
     'fa': u'ربات: حق تکثیر تصویر تازه بارگذاری شده نامعلوم است.',
     'ga': u'Róbó: Ag márcáil comhad nua-uaslódáilte gan ceadúnas',
@@ -184,7 +186,7 @@ msg_comm2 = {
     'en': u'Robot: Requesting source information.',
     'fa': u'ربات: درخواست منبع تصویر',
     'ga': u'Róbó: Ag iarraidh eolais foinse.',
-    'it':u"Bot: Notifico l'unverified",
+    'it': u"Bot: Notifico l'unverified",
     'hu': u'Robot: Forrásinformáció kérése',
     'ja': u'ロボットによる:著作権情報明記のお願い',
     'ko': u'로봇:라이선스 정보 요청',
@@ -196,10 +198,10 @@ msg_comm2 = {
 # In reality, there aren't unknown extension, they are only not allowed...
 delete_immediately = {
     'commons':u"{{speedy|The file has .%s as extension. Is it ok? Please check.}}",
-    'ar':u"{{شطب|الملف له .%s كامتداد.}}",
-    'en':u"{{db-meta|The file has .%s as extension.}}",
-    'fa':u"{{حذف سریع|تصویر %s اضافی است.}}",
-    'ga':u"{{scrios|Tá iarmhír .%s ar an comhad seo.}}",
+    'ar': u"{{شطب|الملف له .%s كامتداد.}}",
+    'en': u"{{db-meta|The file has .%s as extension.}}",
+    'fa': u"{{حذف سریع|تصویر %s اضافی است.}}",
+    'ga': u"{{scrios|Tá iarmhír .%s ar an comhad seo.}}",
     'hu': u'{{azonnali|A fájlnak .%s a kiterjesztése}}',
     'it': u'{{cancella subito|motivo=Il file ha come estensione ".%s"}}',
     'ja': u'{{db|知らないファイルフォーマット %s}}',
@@ -211,10 +213,10 @@ delete_immediately = {
 # The header of the Unknown extension's message.
 delete_immediately_head = {
     'commons':u"\n== Unknown extension! ==\n",
-    'ar':u"\n== امتداد غير معروف! ==\n",
-    'en':u"\n== Unknown extension! ==\n",
-    'fa':u"\n==بارگذاری تصاویر موجود در انبار==\n",
-    'ga':u"\n== Iarmhír neamhaithnid! ==\n",
+    'ar': u"\n== امتداد غير معروف! ==\n",
+    'en': u"\n== Unknown extension! ==\n",
+    'fa': u"\n==بارگذاری تصاویر موجود در انبار==\n",
+    'ga': u"\n== Iarmhír neamhaithnid! ==\n",
     'fr': u'\n== Extension inconnue ==\n',
     'hu': u'\n== Ismeretlen kiterjesztésű fájl ==\n',
     'it': u'\n\n== File non specificato ==\n',
@@ -478,12 +480,12 @@ category_with_licenses = {
 
 # Page where is stored the message to send as email to the users
 emailPageWithText = {
-    'de': 'Benutzer:ABF/D3',
+    #'de': 'Benutzer:ABF/D3',
 }
 
 # Title of the email
 emailSubject = {
-    'de': 'Problemen mit Deinem Bild auf der Deutschen Wikipedia',
+    #'de': 'Problemen mit Deinem Bild auf der Deutschen Wikipedia',
 }
 
 # Seems that uploaderBots aren't interested to get messages regarding the
@@ -701,6 +703,9 @@ class checkImagesBot(object):
         # You can use this function also to find only the user that
         # has upload the image (FixME: Rewrite a bit this part)
         if put:
+            pywikibot.showDiff(reportPageText,
+                               self.newtext + "\n" + reportPageText)
+            pywikibot.output(self.commImage)
             reportPageObject.put(self.newtext + "\n" + reportPageText,
                                  comment=self.commImage)
         # paginetta it's the image page object.
@@ -812,7 +817,7 @@ class checkImagesBot(object):
         """
         lang = untaggedProject.split('.', 1)[0]
         project = '.%s' % untaggedProject.split('.', 1)[1]
-        
+
         URL = u'http://toolserver.org/~daniel/WikiSense/UntaggedImages.php?'
         if lang == 'commons':
             link = URL + 'wikifam=commons.wikimedia.org&since=-100d&until=&img_user_text=&order=img_timestamp&max=100&order=img_timestamp&format=html'
@@ -969,7 +974,8 @@ class checkImagesBot(object):
                     return True # Problems? No, it's only not on commons but the image needs a check
 
                 else:
-                    # the second usually is a url or something like that. Compare the two in equal way, both url.
+                    # the second usually is a url or something like that.
+                    # Compare the two in equal way, both url.
                     if self.convert_to_url(self.imageName) \
                        == self.convert_to_url(commons_image_with_this_hash[0]):
                         repme = u"\n*[[:File:%s]] is also on '''Commons''': [[commons:File:%s]] (same name)" \
@@ -1318,7 +1324,7 @@ class checkImagesBot(object):
         pretty slow. While searching in a list of objects is really fast, so
         first of all let's see if we can find something in the info that we
         already have, then make a deeper check.
-        
+
         """
         for template in self.licenses_found:
             result = self.miniTemplateCheck(template)
@@ -1351,7 +1357,7 @@ class checkImagesBot(object):
         regex_are_licenses = re.compile(
             r'(?<!\{)\{\{(?:[Tt]emplate:|)([^{]+?)\}\}', re.DOTALL)
         #dummy_edit = False
-        while 1:
+        while True:
             self.hiddentemplates = self.loadHiddenTemplates()
             self.licenses_found = self.image.getTemplates()
             templatesInTheImageRaw = regex_find_licenses.findall(
@@ -1365,7 +1371,7 @@ class checkImagesBot(object):
                         "APIs seems down. No templates found with them but "
                         "actually there are templates used in the image's "
                         "page!")
-            self.allLicenses = list()
+            self.allLicenses = []
 
             if not self.list_licenses:
                 raise pywikibot.Error(
@@ -1458,8 +1464,8 @@ class checkImagesBot(object):
                                   rep_text=rep_text_license_fake,
                                   addings=False, regex=regexFakeLicense)
             elif self.license_found:
-                printWithTimeZone(u"[[%s]] seems ok, license found: {{%s}}..."
-                                  % (self.imageName, self.license_found))
+                pywikibot.output(u"[[%s]] seems ok, license found: {{%s}}..."
+                                 % (self.imageName, self.license_found))
         return (self.license_found, self.whiteTemplatesFound)
 
     def load(self, raw):
@@ -1579,7 +1585,9 @@ class checkImagesBot(object):
             # If there are {{ use regex, otherwise no (if there's not the {{ may not be a template
             # and the regex will be wrong)
             if '{{' in i:
-                regexP = re.compile(r'\{\{(?:template|)%s ?(?:\||\n|\}|<) ?' % i.split('{{')[1].replace(u' ', u'[ _]'), re.I)
+                regexP = re.compile(r'\{\{(?:template|)%s ?(?:\||\n|\}|<) ?'
+                                    % i.split('{{')[1].replace(u' ', u'[ _]'),
+                                    re.I)
                 result = regexP.findall(self.imageCheckText)
                 if result:
                     return True
