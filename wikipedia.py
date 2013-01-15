@@ -8724,13 +8724,13 @@ def setLogfileStatus(enabled, logname = None):
         else:
             ver = int( '%02i%02i' % (sys.version_info.major,
                                      sys.version_info.minor) )
-            kwargs = { when='midnight',
-                       #encoding='bz2-codec')
-                       encoding='utf-8' }
+            kwargs = {     'when': 'midnight',
+                       #'encoding': 'bz2-codec')
+                       'encoding': 'utf-8' }
             if ver > int('0205'):
                 # For Python > 2.5 (added in version 2.6)
                 kwargs['utc'] = True
-            fh = logging.handlers.TimedRotatingFileHandler(logfn, kwargs)
+            fh = logging.handlers.TimedRotatingFileHandler(logfn, **kwargs)
             # patch for "Issue 8117: TimedRotatingFileHandler doesn't rotate log
             # file at startup."
             # applies to python2.6 only, solution filched from python2.7 source:
