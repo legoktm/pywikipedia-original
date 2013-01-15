@@ -1543,8 +1543,11 @@ class Family(family.Family):
     def shared_image_repository(self, code):
         return ('commons', 'commons')
 
-    def shared_data_repository(self, code):
-        return ('wikidata', 'wikidata')
+    def shared_data_repository(self, code, transcluded=False):
+        if not transcluded or code in ['hu']):
+            return ('wikidata', 'wikidata')            
+        else:
+            return (None, None)
 
     if family.config.SSL_connection:
 
