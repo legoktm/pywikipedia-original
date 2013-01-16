@@ -469,7 +469,7 @@ category_with_licenses = {
     'ar': 'تصنيف:قوالب حقوق الصور',
     'de': 'Kategorie:Vorlage:Lizenz für Bilder',
     'en': 'Category:Wikipedia image copyright templates',
-    'fa': u'رده:برچسب‌های حق تکثیر نگاره',
+    'fa': u'رده:الگوهای حق تکثیر پرونده',
     'ga': 'Catagóir:Clibeanna cóipchirt d\'íomhánna',
     'it': 'Categoria:Template Licenze copyright',
     'ja': 'Category:画像の著作権表示テンプレート',
