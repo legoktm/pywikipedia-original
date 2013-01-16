@@ -4058,7 +4058,8 @@ class wikidataPage(Page):
             site = getSite(site)
         self._originSite = site
         Page.__init__(self, site, *args, **kwargs)
-
+        if self.site()!=getSite("wikidata",fam="wikidata"):
+            raise Error("Site of Wikidata objects must be set as getSite('wikidata',fam='wikidata')")
     def setitem(self, summary=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
                 captcha=None, botflag=True, maxTries=-1, items={}):
