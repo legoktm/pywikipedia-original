@@ -213,7 +213,7 @@ class TemplateRobot:
             self.addedCat = catlib.Category(
                 site, u'%s:%s' % (site.namespace(14), self.addedCat))
 
-	comma = self.summary = site.mediawiki_message('comma-separator')
+        comma = self.summary = site.mediawiki_message('comma-separator')
 
         # get edit summary message if it's empty
         if (self.editSummary==''):
