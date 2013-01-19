@@ -6864,6 +6864,10 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         nbresults = 0
         while True:
             result = query.GetData(params, self)
+            if 'error' in result and result.get('error').get('code')==u'leparam_title':
+                output('%(info)s' % result.get('error'))
+                raise BadTitle
+            # FIXME: Throw proper exceptions instead of "Error"
             if 'error' in result or 'warnings' in result:
                 output('%s' % result)
                 raise Error
