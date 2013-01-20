@@ -4035,7 +4035,7 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         return (u'purged' in r)
 
 
-class wikidataPage(Page):
+class DataPage(Page):
     """A subclass of Page representing a page on wikidata.
 
     Supports the same interface as Page, with the following added methods:
@@ -4228,20 +4228,21 @@ class wikidataPage(Page):
         return
 
     def getentity(self,force=False, get_redirect=False, throttle=True,
-            sysop=False, change_edit_time=True):
+                  sysop=False, change_edit_time=True):
         """Returns items of a entity in a dictionary
         """
         params = {
             'action': 'query',
             'titles': self.title(),
             'prop': ['revisions', 'info'],
-            'rvprop': ['content', 'ids', 'flags', 'timestamp', 'user', 'comment', 'size'],
+            'rvprop': ['content', 'ids', 'flags', 'timestamp', 'user',
+                       'comment', 'size'],
             'rvlimit': 1,
             'inprop': ['protection', 'subjectid'],
         }
         params1=params.copy()
-        params['action']='wbgetentities'
-        params['sites']='enwiki'
+        params['action'] = 'wbgetentities'
+        params['sites'] = self._originSite.dbName().split('_')[0]
         del params['prop']
         del params['rvprop']
         del params['rvlimit']
@@ -4249,11 +4250,11 @@ class wikidataPage(Page):
         textareaFound = False
         # retrying loop is done by query.GetData
         data = query.GetData(params, self.site(), sysop=sysop)
-        data['query']={'pages':data['entities']}
+        data['query'] = {'pages': data['entities']}
         for pageid in data['entities'].keys():
-            if pageid=="-1":
+            if pageid == "-1":
                 continue #Means the page does not exist
-            params1['titles']=pageid
+            params1['titles'] = pageid
             ndata=query.GetData(params1, self.site(), sysop=sysop)
             data['entities'].update(ndata['query']['pages'])
             data['query']['pages'].update(data['entities'])
@@ -4265,7 +4266,8 @@ class wikidataPage(Page):
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo:
                 raise NoPage(self.site(), unicode(self),
-"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
+"Page does not exist. In rare cases, if you are certain the page does exist, "
+                             "look into overriding family.RversionTab")
             elif 'invalid' in pageInfo:
                 raise BadTitle('BadTitle: %s' % self)
         elif 'revisions' in pageInfo: #valid Title
@@ -4349,10 +4351,10 @@ class wikidataPage(Page):
         pageInfo = entities
         if 'missing' in pageInfo:
             raise NoPage(self.site(), unicode(self),
-"Page does not exist. In rare cases, if you are certain the page does exist, look into overriding family.RversionTab")
+"Page does not exist. In rare cases, if you are certain the page does exist, "
+                         "look into overriding family.RversionTab")
         elif 'invalid' in pageInfo:
             raise BadTitle('BadTitle: %s' % self)
-
         return entities
 
     def searchentities(self, search, sysop=False):
@@ -4381,6 +4383,8 @@ class wikidataPage(Page):
             raise BadTitle('BadTitle: %s' % self)
 
         return search
+
+wikidataPage = DataPage #keep compatible
 
 
 class ImagePage(Page):
