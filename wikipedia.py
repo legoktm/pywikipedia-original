@@ -138,6 +138,15 @@ import xmlreader
 from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup, SoupStrainer
 import weakref
 import logging, logging.handlers
+try:
+    #For Python 2.6 newer
+    import json
+    if not hasattr(json, 'loads'):
+        # 'json' can also be the name in for
+        # http://pypi.python.org/pypi/python-json
+        raise ImportError
+except ImportError:
+    import simplejson as json
 # Splitting the bot into library parts
 from pywikibot.support import *
 import config, login, query
@@ -360,7 +369,7 @@ class Page(object):
                             otherlang = 'en'
                         else:
                             otherlang = self._site.lang
-                        familyName = self._site.family.get_known_families(site = self._site)[lowerNs]
+                        familyName = self._site.family.get_known_families(site=self._site)[lowerNs]
                         if familyName in ['commons', 'meta']:
                             otherlang = familyName
                         try:
@@ -4049,15 +4058,17 @@ class DataPage(Page):
     searchentities   : Search for entities
 
     """
-    def __init__(self, site, *args, **kwargs):
-        if isinstance(site, basestring):
-            site = getSite(site)
-        self._originSite = site
-        Page.__init__(self, site, *args, **kwargs)
-
-    @property
-    def site(self):
-        return super(wikidataPage, self).site.data_repository()
+    def __init__(self, source, title=None, *args, **kwargs):
+        if isinstance(source, basestring):
+            source = getSite(source)
+        elif isinstance(source, Page):
+            title = source.title()
+            source = source.site
+        self._originSite = source
+        self._originTitle = title
+        source = self._originSite.data_repository()
+        Page.__init__(self, source, title, *args, **kwargs)
+        self._title = None
 
     def setitem(self, summary=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
@@ -4080,7 +4091,7 @@ class DataPage(Page):
         retry_delay = 1
         dblagged = False
         params = {
-            'title': self.title(),
+            'title': self._originTitle,
             'summary': self._encodeArg(summary, 'summary'),
         }
         params['site'] = self._originSite.dbName().split('_')[0]
@@ -4233,7 +4244,7 @@ class DataPage(Page):
         """
         params = {
             'action': 'query',
-            'titles': self.title(),
+            'titles': self._originTitle,
             'prop': ['revisions', 'info'],
             'rvprop': ['content', 'ids', 'flags', 'timestamp', 'user',
                        'comment', 'size'],
@@ -4332,7 +4343,9 @@ class DataPage(Page):
                 self._getexception
             except AttributeError:
                 raise SectionError # Page has no section by this name
-        return pagetext
+        self._contents = json.loads(pagetext)
+        self._title = self._contents['entity']
+        return self._contents
 
     def getentities(self, sysop=False):
         """API module to get the data for multiple Wikibase entities.
@@ -4383,6 +4396,27 @@ class DataPage(Page):
             raise BadTitle('BadTitle: %s' % self)
 
         return search
+
+    def get(self, *args, **kwargs):
+        if not hasattr(self, '_contents'):
+            if self._title is None:
+                self.getentity(*args, **kwargs)
+            else:
+                pagetext = super(DataPage, self).get(*args, **kwargs)
+                self._contents = json.loads(pagetext)
+        return self._contents
+
+    def interwiki(self):
+        """Return a list of interwiki links from data repository.
+
+        The return value is a list of Page objects for each of the
+        interwiki links.
+
+        """
+        links = self.get()['links']
+        self._interwiki = [(code.replace('wiki', ''), links[code])
+                           for code in links]
+        return self._interwiki
 
 wikidataPage = DataPage #keep compatible
 
@@ -6855,7 +6889,7 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
         # offset in hours from now
         elif offset and offset > 0:
             start = Timestamp.utcnow() - datetime.timedelta(0, offset*3600)
-            params['lestart'] = str(start) 
+            params['lestart'] = str(start)
         if end:
             params['leend'] = end
         if tag and self.versionnumber() >= 16: # tag support from mw:r58399
