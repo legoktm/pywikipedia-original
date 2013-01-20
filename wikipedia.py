@@ -1979,10 +1979,6 @@ not supported by PyWikipediaBot!"""
                 raise LockedPage(
                     u'Not allowed to edit %s because of a restricting template'
                     % self.title(asLink=True))
-            elif self.comment() and username in self.comment():
-                raise LockedPage(
-                    u'Not allowed to edit %s because last edit maybe reverted'
-                    % self.title(asLink=True))
             elif self.site().has_api() and self.namespace() == 2 \
                  and (self.title().endswith('.css') or \
                       self.title().endswith('.js')):
