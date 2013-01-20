@@ -12,6 +12,7 @@ __version__ = '$Id$'
 from pywikibot.version import *
 import config
 
+
 if __name__ == '__main__':
     print 'Pywikipedia %s' % getversion()
     print 'Python %s' % sys.version

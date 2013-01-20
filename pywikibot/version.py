@@ -11,7 +11,6 @@ __version__ = '$Id$'
 
 import os
 import time
-import sys
 import urllib
 
 cache = None
@@ -19,20 +18,22 @@ cache = None
 class ParseError(Exception):
     """ Parsing went wrong """
 
+def _get_program_dir():
+    _program_dir = os.path.normpath(os.path.split(os.path.dirname(__file__))[0])
+#    _program_dir = _program_dir.rstrip(os.path.basename(_program_dir))
+##   if not os.path.isabs(_program_dir):
+##      _program_dir = os.path.normpath(os.path.join(os.getcwd(), _program_dir))
+    return _program_dir
+
 def getversion():
     data = getversiondict()
     try:
         rev2 = int(getversion_onlinerepo())
         rev1 = int(str(data['rev']).split()[0])
         data['cmp_ver'] = 'OUTDATED' if rev1 < rev2 else 'ok'
-    except ParseError:
+    except Exception:
         data['cmp_ver'] = 'n/a'
     return '%(tag)s (r%(rev)s, %(date)s, %(cmp_ver)s)' % data
-
-def unknown_version():
-    """Version cannot be determined"""
-    cache = dict(tag='', rev='-1 (unknown)', date='0 (unknown)')
-    return cache
 
 def getversiondict():
     global cache
@@ -40,38 +41,38 @@ def getversiondict():
       return cache
     try:
         (tag, rev, date) = getversion_svn()
-    except Exception, e:
+    except Exception:
         try:
             (tag, rev, date) = getversion_nightly()
-        except Exception, e:
-            version = getfileversion('wikipedia.py')
-            if version:
-                   try:
-                       id, file, rev, date, ts, author, dollar = version.split(' ')
-                       tag = ''
-                       date = time.strptime('%sT%s' % (date, ts), '%Y-%m-%dT%H:%M:%SZ')
-                       rev += ' (wikipedia.py)'
-                   except ValueError:
-                       # the value is most likely '$Id' + '$', it means that
-                       # wikipedia.py got imported without using svn at all
-                       return unknown_version()
-            else:
-                return unknown_version()
+        except Exception:
+            try:
+                version = getfileversion('wikipedia.py')
+                if not version:
+                    # fall-back in case everything breaks (should not be used)
+                    import wikipedia
+                    version = wikipedia.__version__
+
+                id, file, rev, date, ts, author, dollar = version.split(' ')
+                tag = ''
+                date = time.strptime('%sT%s' % (date, ts), '%Y-%m-%dT%H:%M:%SZ')
+                rev += ' (wikipedia.py)'
+            except: # nothing worked; version unknown (but suppress exceptions)
+                # the value is most likely '$Id' + '$', it means that
+                # wikipedia.py got imported without using svn at all
+                return dict(tag='', rev='-1 (unknown)', date='0 (unknown)')
+
     datestring = time.strftime('%Y/%m/%d, %H:%M:%S', date)
     cache = dict(tag=tag, rev=rev, date=datestring)
     return cache
 
 def getversion_svn(path=None):
-    _program_dir = path or os.path.normpath(os.path.dirname(sys.argv[0]))
-#   if not os.path.isabs(_program_dir):
-#      _program_dir = os.path.normpath(os.path.join(os.getcwd(), _program_dir))
+    _program_dir = path or _get_program_dir()
     entries = open(os.path.join(_program_dir, '.svn/entries'))
     version = entries.readline().strip()
     #use sqlite table for new entries format
     if version == "12":
         entries.close()
         from sqlite3 import dbapi2 as sqlite
-        from datetime import datetime
         con = sqlite.connect(os.path.join(_program_dir, ".svn/wc.db"))
         cur = con.cursor()
         cur.execute( '''select local_relpath, repos_path, revision, changed_date from nodes order by revision desc, changed_date desc''')
@@ -124,7 +125,7 @@ cmp_ver = lambda a, b, tol=1: {-1: '<', 0: '~', 1: '>'}[cmp((a-b)//tol, 0)]
 #  without importing it (thus can be done for any file)
 #
 def getfileversion(filename):
-    _program_dir = os.path.normpath(os.path.dirname(sys.argv[0]))
+    _program_dir = _get_program_dir()
     __version__ = None
     fn = os.path.join(_program_dir, filename)
     if os.path.exists(fn):
