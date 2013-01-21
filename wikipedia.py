@@ -4406,6 +4406,9 @@ class DataPage(Page):
                 self._contents = json.loads(pagetext)
         return self._contents
 
+    def isEmpty(self):
+        return not self.exists()
+
     def interwiki(self):
         """Return a list of interwiki links from data repository.
 
@@ -4414,7 +4417,7 @@ class DataPage(Page):
 
         """
         links = self.get()['links']
-        self._interwiki = [(code.replace('wiki', ''), links[code])
+        self._interwiki = [Page(code.replace('wiki', ''), links[code])
                            for code in links]
         return self._interwiki
 
