@@ -4068,7 +4068,8 @@ class DataPage(Page):
         self._originTitle = title
         source = self._originSite.data_repository()
         Page.__init__(self, source, title, *args, **kwargs)
-        self._title = None
+        if not self._originSite is source:
+            self._title = None
 
     def setitem(self, summary=None, watchArticle=False, minorEdit=True,
                 newPage=False, token=None, newToken=False, sysop=False,
