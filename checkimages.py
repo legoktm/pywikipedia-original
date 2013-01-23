@@ -929,7 +929,7 @@ class checkImagesBot(object):
             return False # Image deleted, no hash found. Skip the image.
         else:
             commons_image_with_this_hash = commons_site.getFilesFromAnHash(hash_found)
-            if commons_image_with_this_hash != [] and \
+            if commons_image_with_this_hash and \
                commons_image_with_this_hash != 'None':
                 servTMP = pywikibot.translate(self.site, serviceTemplates,
                                               fallback=False)
@@ -953,7 +953,7 @@ class checkImagesBot(object):
                     return False
 
                 elif re.findall(r'\bstemma\b',
-                                self.imageName.lower()) != [] and \
+                                self.imageName.lower()) and \
                                 self.site.lang == 'it':
                     pywikibot.output(
                         u'%s has "stemma" inside, means that it\'s ok.'
@@ -1456,7 +1456,7 @@ class checkImagesBot(object):
         return (self.license_found, self.whiteTemplatesFound)
 
     def load(self, raw):
-        """ Load a list of object from a string using regex. """
+        """ Load a list of objects from a string using regex. """
         list_loaded = []
         pos = 0
         # I search with a regex how many user have not the talk page
@@ -1629,7 +1629,8 @@ class checkImagesBot(object):
 
     def checkStep(self):
         # nothing = Defining an empty image description
-        nothing = ['', ' ', '  ', '   ', '\n', '\n ', '\n  ', '\n\n', '\n \n', ' \n', ' \n ', ' \n \n']
+        nothing = ['', ' ', '  ', '   ', '\n', '\n ', '\n  ', '\n\n', '\n \n',
+                   ' \n', ' \n ', ' \n \n']
         # something = Minimal requirements for an image description.
         # If this fits, no tagging will take place (if there aren't other issues)
         # MIT license is ok on italian wikipedia, let also this here
@@ -1978,13 +1979,11 @@ def checkbot():
                     continue
             # Check on commons if there's already an image with the same name
             if commonsActive and site.family.name != "commons":
-                response = Bot.checkImageOnCommons()
-                if not response:
+                if not Bot.checkImageOnCommons():
                     continue
             # Check if there are duplicates of the image on the project selected
             if duplicatesActive:
-                response2 = Bot.checkImageDuplicated(duplicates_rollback)
-                if not response2:
+                if not Bot.checkImageDuplicated(duplicates_rollback)
                     continue
             resultCheck = Bot.checkStep()
             if resultCheck:
