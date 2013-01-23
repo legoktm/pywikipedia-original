@@ -637,7 +637,7 @@ class checkImagesBot(object):
 
         while True:
             try:
-                resPutMex = self.tag_image(univer)
+                resPutMex = self.tag_image(unver)
             except pywikibot.NoPage:
                 pywikibot.output(u"The page has been deleted! Skip!")
                 break
