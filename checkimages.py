@@ -636,30 +636,17 @@ class checkImagesBot(object):
         self.commImage = commImage or self.comment
 
         while True:
-            if unver:
-                try:
-                    resPutMex = self.tag_image()
-                except pywikibot.NoPage:
-                    pywikibot.output(u"The page has been deleted! Skip!")
-                    break
-                except pywikibot.EditConflict:
-                    pywikibot.output(u"Edit conflict! Skip!")
-                    break
-                else:
-                    if not resPutMex:
-                        break
+            try:
+                resPutMex = self.tag_image(univer)
+            except pywikibot.NoPage:
+                pywikibot.output(u"The page has been deleted! Skip!")
+                break
+            except pywikibot.EditConflict:
+                pywikibot.output(u"Edit conflict! Skip!")
+                break
             else:
-                try:
-                    resPutMex = self.tag_image(False)
-                except pywikibot.NoPage:
-                    pywikibot.output(u"The page has been deleted!")
+                if not resPutMex:
                     break
-                except pywikibot.EditConflict:
-                    pywikibot.output(u"Edit conflict! Skip!")
-                    break
-                else:
-                    if not resPutMex:
-                        break
             if self.notification:
                 try:
                     self.put_mex_in_talk()
@@ -687,7 +674,7 @@ class checkImagesBot(object):
         else:
             return upBotArray[0] # we can't find the user, report the problem to the bot
 
-    def tag_image(self, put = True):
+    def tag_image(self, put=True):
         """ Function to add the template in the image and to find out
         who's the user that has uploaded the file.
 
