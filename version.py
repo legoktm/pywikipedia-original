@@ -2,13 +2,14 @@
 """ Script to determine the pywikipedia version (tag, revision and date) """
 #
 # (C) Merlijn 'valhallasw' van Deen, 2007-2008
-# (C) xqt, 2010-2011
+# (C) xqt, 2010-2013
 # (C) Pywikipedia bot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 
+import sys
 from pywikibot.version import *
 import config
 
