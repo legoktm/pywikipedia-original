@@ -1983,7 +1983,7 @@ def checkbot():
                     continue
             # Check if there are duplicates of the image on the project selected
             if duplicatesActive:
-                if not Bot.checkImageDuplicated(duplicates_rollback)
+                if not Bot.checkImageDuplicated(duplicates_rollback):
                     continue
             resultCheck = Bot.checkStep()
             if resultCheck:
