@@ -1584,7 +1584,7 @@ class checkImagesBot(object):
         return False # Nothing Found
 
     def findAdditionalProblems(self):
-        # In every tupla there's a setting configuration
+        # In every tuple there's a setting configuration
         for tupla in self.settingsData:
             name = tupla[1]
             find_tipe = tupla[2]
@@ -1605,7 +1605,8 @@ class checkImagesBot(object):
             mexCatched = tupla[8]
             for k in find_list:
                 if find_tipe.lower() == 'findonly':
-                    searchResults = re.findall(r'%s' % k.lower(), self.imageCheckText.lower())
+                    searchResults = re.findall(r'%s' % k.lower(),
+                                               self.imageCheckText.lower())
                     if searchResults != []:
                         if searchResults[0] == self.imageCheckText.lower():
                             self.some_problem = True
@@ -1664,24 +1665,25 @@ class checkImagesBot(object):
         # Page => ImagePage
         # Get the text in the image (called imageCheckText)
         try:
-            # the checkText will be modified in order to make the check phase easier
-            # the imageFullText will be used when the full text is needed without changes
+            # the checkText will be modified in order to make the check phase
+            # easier
             self.imageCheckText = self.image.get()
-            self.imageFullText = self.imageCheckText
         except pywikibot.NoPage:
-            pywikibot.output(u"Skipping %s because it has been deleted." % self.imageName)
+            pywikibot.output(u"Skipping %s because it has been deleted."
+                             % self.imageName)
             return True
         except pywikibot.IsRedirectPage:
-            pywikibot.output(u"Skipping %s because it's a redirect." % self.imageName)
+            pywikibot.output(u"Skipping %s because it's a redirect."
+                             % self.imageName)
             return True
         # Delete the fields where the templates cannot be loaded
         regex_nowiki = re.compile(r'<nowiki>(.*?)</nowiki>', re.DOTALL)
         regex_pre = re.compile(r'<pre>(.*?)</pre>', re.DOTALL)
-        self.imageCheckText = regex_nowiki.sub('', self.imageCheckText); self.imageCheckText = regex_pre.sub('', self.imageCheckText)
+        self.imageCheckText = regex_nowiki.sub('', self.imageCheckText)
+        self.imageCheckText = regex_pre.sub('', self.imageCheckText)
         # Deleting the useless template from the description (before adding something
         # in the image the original text will be reloaded, don't worry).
         if self.isTagged():
-            # Tagged? Yes, skip.
             printWithTimeZone(u'%s is already tagged...' % self.imageName)
             return True
         for a_word in something: # something is the array with {{, MIT License and so on.
