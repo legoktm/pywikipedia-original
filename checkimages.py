@@ -541,24 +541,6 @@ def printWithTimeZone(message):
     pywikibot.output(u"%s%s" % (message, time_zone))
 
 
-class Global(object):
-    # default environment settings
-    # Command line configurable parameters
-    repeat = True            # Restart after having check all the images?
-    limit = 80               # How many images check?
-    time_sleep = 30          # How many time sleep after the check?
-    skip_number = 0          # How many images to skip before checking?
-    waitTime = 0             # How many time sleep before the check?
-    commonsActive = False    # Check if on commons there's an image with the same name?
-    normal = False           # Check the new images or use another generator?
-    urlUsed = False          # Use the url-related function instead of the new-pages generator
-    regexGen = False         # Use the regex generator
-    untagged = False         # Use the untagged generator
-    duplicatesActive = False # Use the duplicate option
-    duplicatesReport = False # Use the duplicate-report option
-    sendemailActive = False  # Use the send-email
-    logFullError = True      # Raise an error when the log is full
-
 
 class checkImagesBot(object):
     def __init__(self, site, logFulNumber=25000, sendemailActive=False,
@@ -706,7 +688,6 @@ class checkImagesBot(object):
                 u"Seems that %s has only the description and not the file..."
                 % self.image_to_report)
             repme = u"\n*[[:File:%s]] problems '''with the APIs'''"
-            # We have a problem! Report and exit!
             self.report_image(self.image_to_report, self.rep_page, self.com,
                               repme)
             return False
@@ -786,7 +767,7 @@ class checkImagesBot(object):
             try:
                 emailText = emailPage.get()
             except (pywikibot.NoPage, pywikibot.IsRedirectPage):
-                return # Exit
+                return
             if self.sendemailActive:
                 text_to_send = re.sub(r'__user-nickname__', r'%s'
                                       % self.luser, emailText)
@@ -795,7 +776,7 @@ class checkImagesBot(object):
                     emailClass.sendMail(emailSubj, text_to_send)
                 except userlib.UserActionRefuse:
                     pywikibot.output("User is not mailable, aborted")
-                    return # exit
+                    return
 
     def untaggedGenerator(self, untaggedProject, limit):
         """ Generator that yield the files without license. It's based on a
@@ -841,9 +822,6 @@ class checkImagesBot(object):
         for langK in pywikibot.Family(u'wikipedia').langs.keys():
             self.hiddentemplates.add(pywikibot.Page(self.site,
                                                     u'Template:%s' % langK))
-
-        # The template #if: and #switch: aren't something to care about
-        #self.hiddentemplates.extend([u'#if:', u'#switch:']) FIXME
 
         # Hidden template loading
         if self.pageHidden:
@@ -921,7 +899,8 @@ class checkImagesBot(object):
 
     def checkImageOnCommons(self):
         """ Checking if the file is on commons """
-        pywikibot.output(u'Checking if [[%s]] is on commons...' % self.imageName)
+        pywikibot.output(u'Checking if [[%s]] is on commons...'
+                         % self.imageName)
         commons_site = pywikibot.getSite('commons', 'commons')
         regexOnCommons = r"\[\[:File:%s\]\] is also on '''Commons''': \[\[commons:File:.*?\]\](?: \(same name\)|)$" \
                          % re.escape(self.imageName)
@@ -1079,7 +1058,8 @@ class checkImagesBot(object):
                 # Two iteration: report the "problem" to the user only once (the last)
                 if len(images_to_tag_list) > 1:
                     for image_to_tag in images_to_tag_list[:-1]:
-                        already_reported_in_past = self.countEdits(u'File:%s' % image_to_tag, self.botolist)
+                        already_reported_in_past = self.countEdits(
+                            u'File:%s' % image_to_tag, self.botolist)
                         # if you want only one edit, the edit found should be more than 0 -> num - 1
                         if already_reported_in_past > duplicates_rollback - 1:
                             only_report = True
@@ -1100,7 +1080,8 @@ class checkImagesBot(object):
                     from_regex = r'\n\*\[\[:File:%s\]\]' \
                                  % re.escape(self.convert_to_url(self.imageName))
                     # Delete the image in the list where we're write on
-                    text_for_the_report = re.sub(from_regex, '', text_for_the_report)
+                    text_for_the_report = re.sub(from_regex, '',
+                                                 text_for_the_report)
                     # if you want only one edit, the edit found should be more than 0 -> num - 1
                     if already_reported_in_past > duplicates_rollback - 1:
                         only_report = True
@@ -1227,7 +1208,6 @@ class checkImagesBot(object):
                     pywikibot.output(u"The settings' page doesn't exist!")
                     self.settingsData = None
         except pywikibot.Error:
-            # Error? Settings = None
             pywikibot.output(
                 u'Problems with loading the settigs, run without them.')
             self.settingsData = None
@@ -1297,7 +1277,8 @@ class checkImagesBot(object):
             return True
 
         if template in self.hiddentemplates:
-            # if the whitetemplate is not in the images description, we don't care
+            # if the whitetemplate is not in the images description, we don't
+            # care
             try:
                 self.allLicenses.remove(template)
             except ValueError:
@@ -1341,10 +1322,8 @@ class checkImagesBot(object):
         self.whiteTemplatesFound = False
         regex_find_licenses = re.compile(
             r'(?<!\{)\{\{(?:[Tt]emplate:|)([^{]+?)[|\n<}]', re.DOTALL)
-        # see below to understand the use of this regex
         regex_are_licenses = re.compile(
             r'(?<!\{)\{\{(?:[Tt]emplate:|)([^{]+?)\}\}', re.DOTALL)
-        #dummy_edit = False
         while True:
             self.hiddentemplates = self.loadHiddenTemplates()
             self.licenses_found = self.image.getTemplates()
@@ -1374,20 +1353,8 @@ class checkImagesBot(object):
                         == self.convert_to_url(
                             templateReal.title()).lower().replace('template%3a',
                                                                   ''):
-                        if templateReal not in self.allLicenses: # don't put the same template, twice.
+                        if templateReal not in self.allLicenses:
                             self.allLicenses.append(templateReal)
-            # perform a dummy edit, sometimes there are problems with the Job queue
-            # it happends that there is listed only the template used and not all the template that are in the templates used in the page
-            # for example: there's only self, and not GFDL and the other licenses.
-            #if self.allLicenses == self.licenses_found and not dummy_edit and self.licenses_found != []:
-            #    pywikibot.output(u"Seems that there's a problem regarding the Job queue, trying with a dummy edit to solve the problem.")
-            #    try:
-            #        self.imageCheckText = self.image.get()
-            #        self.image.put(self.imageCheckText, 'Bot: Dummy edit,if you see this comment write [[User talk:%s|here]].' % self.botnick)
-            #    except (pywikibot.NoPage, pywikibot.IsRedirectPage):
-            #        return (None, list())
-            #    dummy_edit = True
-            #else:
             break
 
         if self.licenses_found:
@@ -1482,7 +1449,8 @@ class checkImagesBot(object):
             if skip_number == 1:
                 pywikibot.output(u'Skipping the first file:\n')
             else:
-                pywikibot.output(u'Skipping the first %s files:\n' % skip_number)
+                pywikibot.output(u'Skipping the first %s files:\n'
+                                 % skip_number)
         # If we still have pages to skip:
         if len(self.skip_list) < skip_number:
             pywikibot.output(u'Skipping %s...' % self.imageName)
@@ -1572,7 +1540,6 @@ class checkImagesBot(object):
                     return True
             elif i.lower() in self.imageCheckText:
                 return True
-
         return False # Nothing Found
 
     def findAdditionalProblems(self):
@@ -1654,11 +1621,7 @@ class checkImagesBot(object):
         di = u'\n%s' % di
         dels = dels % di
 
-        # Page => ImagePage
-        # Get the text in the image (called imageCheckText)
         try:
-            # the checkText will be modified in order to make the check phase
-            # easier
             self.imageCheckText = self.image.get()
         except pywikibot.NoPage:
             pywikibot.output(u"Skipping %s because it has been deleted."
@@ -1673,7 +1636,7 @@ class checkImagesBot(object):
         regex_pre = re.compile(r'<pre>(.*?)</pre>', re.DOTALL)
         self.imageCheckText = regex_nowiki.sub('', self.imageCheckText)
         self.imageCheckText = regex_pre.sub('', self.imageCheckText)
-        # Deleting the useless template from the description (before adding something
+        # Deleting the useless template from the description (before adding sth
         # in the image the original text will be reloaded, don't worry).
         if self.isTagged():
             printWithTimeZone(u'%s is already tagged...' % self.imageName)
@@ -1731,9 +1694,7 @@ class checkImagesBot(object):
             return True
 
 
-gbv = Global()
-
-def checkbot():
+def main():
     """ Main function """
     # Command line configurable parameters
     repeat = True # Restart after having check all the images?
@@ -1866,13 +1827,15 @@ def checkbot():
     # Define the site.
     site = pywikibot.getSite()
 
-    # If the images to skip are 0, set the skip variable to False (the same for the wait time)
+    # If the images to skip are 0, set the skip variable to False (the same for
+    # the wait time)
     if skip_number == 0:
         skip = False
     if waitTime == 0:
         wait = False
 
-    # A little block-statement to ensure that the bot will not start with en-parameters
+    # A little block-statement to ensure that the bot will not start with
+    # en-parameters
     if site.lang not in project_inserted:
         pywikibot.output(u"Your project is not supported by this script.\n"
                          u"You have to edit the script and add it!")
@@ -1885,7 +1848,6 @@ def checkbot():
         else:
             pywikibot.output(u"Retrieving the latest %d files for checking..."
                              % limit)
-    # Main Loop
     while True:
         # Defing the Main Class.
         Bot = checkImagesBot(site, sendemailActive=sendemailActive,
@@ -1909,16 +1871,13 @@ def checkbot():
             except pywikibot.NoPage:
                 pywikibot.output(u"%s doesn't exist!" % pageRegex.title())
                 textRegex = '' # No source, so the bot will quit later.
-        # If generator is the regex' one, use your own Generator using an url or page and a regex.
+        # If generator is the regex' one, use your own Generator using an url
+        # or page and a regex.
         if generator == 'regex' and regexGen:
             generator = Bot.regexGenerator(regexpToUse, textRegex)
-        # Ok, We (should) have a generator, so let's go on.
-        # Take the additional settings for the Project
+
         Bot.takesettings()
-        # Not the main, but the most important loop.
-        #parsed = False
         if wait:
-            # Let's sleep...
             generator = Bot.wait(waitTime, generator, normal, limit)
         generator = pg.NamespaceFilterPageGenerator(generator, 6, site)
         for image in generator:
@@ -1939,26 +1898,23 @@ def checkbot():
                     continue
             if Bot.checkStep():
                 continue
-    # A little block to perform the repeat or to break.
+
         if repeat:
-            printWithTimeZone(u"Waiting for %s seconds," % time_sleep)
+            pywikibot.output(u"Waiting for %s seconds," % time_sleep)
             time.sleep(time_sleep)
         else:
-            pywikibot.output(u"\t\t\t>> STOP! <<")
-            break # Exit
+            break
 
 
-# Main loop will take all the (name of the) images and then i'll check them.
 if __name__ == "__main__":
-    #timezones are UTC
     old = datetime.datetime.strptime(
         str(datetime.datetime.utcnow()).split('.')[0], "%Y-%m-%d %H:%M:%S")
     try:
-        checkbot()
+        main()
     finally:
         final = datetime.datetime.strptime(
             str(datetime.datetime.utcnow()).split('.')[0], "%Y-%m-%d %H:%M:%S")
         delta = final - old
         secs_of_diff = delta.seconds
-        pywikibot.output("Execution time: %s" % secs_of_diff)
+        pywikibot.output("Execution time: %s seconds\n" % secs_of_diff)
         pywikibot.stopme()
