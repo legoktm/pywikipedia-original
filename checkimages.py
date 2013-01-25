@@ -574,8 +574,8 @@ class checkImagesBot(object):
         self.com = pywikibot.translate(self.site, msg_comm10)
         hiddentemplatesRaw = pywikibot.translate(self.site, HiddenTemplate,
                                                  fallback=False)
-        self.hiddentemplates = [pywikibot.Page(self.site, tmp)
-                                for tmp in hiddentemplatesRaw]
+        self.hiddentemplates = set([pywikibot.Page(self.site, tmp)
+                                    for tmp in hiddentemplatesRaw])
         self.pageHidden = pywikibot.translate(self.site,
                                               PageWithHiddenTemplates,
                                               fallback=False)
@@ -836,10 +836,11 @@ class checkImagesBot(object):
 
     def loadHiddenTemplates(self):
         """ Function to load the white templates """
-        # A template as {{en is not a license! Adding also them in the whitelist template...
+        # A template as {{en is not a license! Adding also them in the
+        # whitelist template...
         for langK in pywikibot.Family(u'wikipedia').langs.keys():
-            self.hiddentemplates.append(pywikibot.Page(self.site,
-                                                       u'Template:%s' % langK))
+            self.hiddentemplates.add(pywikibot.Page(self.site,
+                                                    u'Template:%s' % langK))
 
         # The template #if: and #switch: aren't something to care about
         #self.hiddentemplates.extend([u'#if:', u'#switch:']) FIXME
@@ -853,7 +854,7 @@ class checkImagesBot(object):
                 pageHiddenText = ''
 
             for element in self.load(pageHiddenText):
-                self.hiddentemplates.append(pywikibot.Page(self.site, element))
+                self.hiddentemplates.add(pywikibot.Page(self.site, element))
         return self.hiddentemplates
 
     def returnOlderTime(self, listGiven, timeListGiven):
