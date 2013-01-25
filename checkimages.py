@@ -1500,34 +1500,32 @@ class checkImagesBot(object):
             first x seconds.
         """
         imagesToSkip = 0
-        # if normal, we can take as many images as "limit" has told us, otherwise, sorry, nope.
+        # if normal, we can take as many images as "limit" has told us,
+        # otherwise, sorry, nope.
         if normal:
-            printWithTimeZone(u'Skipping the files uploaded less than %s seconds ago..' % waitTime)
+            printWithTimeZone(
+                u'Skipping the files uploaded less than %s seconds ago..'
+                % waitTime)
             imagesToSkip = 0
             while True:
                 loadOtherImages = True # ensure that all the images loaded aren't to skip!
                 for image in generator:
-                    if normal:
-                        imageData = image
-                        image = imageData[0]
-                        #20100511133318L --- 15:33, 11 mag 2010 e 18 sec
-                        b = str(imageData[1]) # use b as variable to make smaller the timestamp-formula used below..
-                        # fixing the timestamp to the format that we normally use..
-                        timestamp = "%s-%s-%sT%s:%s:%sZ" % (b[0:4], b[4:6], b[6:8], b[8:10], b[10:12], b[12:14])
-                    else:
-                        #http://pytz.sourceforge.net/ <- maybe useful?
-                        # '2008-06-18T08:04:29Z'
-                        timestamp = image.getLatestUploader()[1]
-                    img_time = datetime.datetime.strptime(timestamp, u"%Y-%m-%dT%H:%M:%SZ") #not relative to localtime
+                    timestamp = image.getLatestUploader()[1]
+                    img_time = datetime.datetime.strptime(timestamp,
+                                                          u"%Y-%m-%dT%H:%M:%SZ") #not relative to localtime
 
-                    now = datetime.datetime.strptime(str(datetime.datetime.utcnow()).split('.')[0], "%Y-%m-%d %H:%M:%S") #timezones are UTC
+                    now = datetime.datetime.strptime(
+                        str(datetime.datetime.utcnow()).split('.')[0],
+                        "%Y-%m-%d %H:%M:%S") #timezones are UTC
                     # + seconds to be sure that now > img_time
                     while now < img_time:
                         now = (now + datetime.timedelta(seconds=1))
                     delta = now - img_time
                     secs_of_diff = delta.seconds
                     if waitTime > secs_of_diff:
-                        pywikibot.output(u'Skipping %s, uploaded %s seconds ago..' % (image.title(), int(secs_of_diff)))
+                        pywikibot.output(
+                            u'Skipping %s, uploaded %s seconds ago..'
+                            % (image.title(), int(secs_of_diff)))
                         imagesToSkip += 1
                         continue # Still wait
                     else:
@@ -1535,7 +1533,9 @@ class checkImagesBot(object):
                         break # No ok, continue
                 # if yes, we have skipped all the images given!
                 if loadOtherImages:
-                    generator = self.site.newimages(number = limit, lestart = timestamp)
+                    generator = (x[0] for x in
+                                 self.site.newimages(number=limit,
+                                                     lestart=timestamp))
                     imagesToSkip = 0
                     # continue to load images! continue
                     continue
@@ -1544,26 +1544,17 @@ class checkImagesBot(object):
             newGen = list()
             imagesToSkip += 1 # some calcs, better add 1
             # Add new images, instead of the images skipped
-            newImages = self.site.newimages(number = imagesToSkip, lestart = timestamp)
-            for imageData in generator:
-                if normal:
-                    image = imageData[0]
-                    #20100511133318L --- 15:33, 11 mag 2010 e 18 sec
-                    b = str(imageData[1]) # use b as variable to make smaller the timestamp-formula used below..
-                    # fixing the timestamp to the format that we normally use..
-                    timestamp = "%s-%s-%sT%s:%s:%sZ" % (b[0:4], b[4:6], b[6:8], b[8:10], b[10:12], b[12:14])
-                    uploader = imageData[2]
-                    comment = imageData[3]
-                    newGen.append([image, timestamp, uploader, comment])
-                else:
-                    image = imageData
-                    newGen.append(image)
-            num = 0
+            newImages = self.site.newimages(number=imagesToSkip,
+                                            lestart=timestamp)
+            for image in generator:
+                newGen.append(image)
             for imageData in newImages:
-                newGen.append(imageData)
+                newGen.append(imageData[0])
             return newGen
         else:
-            pywikibot.output(u"The wait option is available only with the standard generator.")
+            pywikibot.output(
+                u"The wait option is available only with the standard "
+                u"generator.")
             return generator
 
     def isTagged(self):
