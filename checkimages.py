@@ -1874,10 +1874,6 @@ def checkbot():
     # Define the site.
     site = pywikibot.getSite()
 
-    # Block of text to translate the parameters set above.
-    image_old_namespace = u"%s:" % site.image_namespace()
-    image_namespace = u"File:"
-
     # If the images to skip are 0, set the skip variable to False (the same for the wait time)
     if skip_number == 0:
         skip = False
@@ -1932,6 +1928,7 @@ def checkbot():
         if wait:
             # Let's sleep...
             generator = Bot.wait(waitTime, generator, normal, limit)
+        generator = pg.NamespaceFilterPageGenerator(generator, 6, site)
         for image in generator:
             # When you've a lot of image to skip before working use this workaround, otherwise
             # let this commented, thanks. [ decoment also parsed = False if you want to use it
@@ -1941,14 +1938,6 @@ def checkbot():
             #    continue
             #else:
             #    parsed = True
-            # If the generator returns something that is not an image, simply skip it.
-            if not (normal or regexGen):
-                if image_namespace.lower() not in image.title().lower() and \
-                   image_old_namespace.lower() not in image.title().lower() \
-                   and 'file:' not in image.title().lower():
-                    pywikibot.output(u'%s seems not an file, skip it...'
-                                     % image.title())
-                    continue
             if normal:
                 imageData = image
                 image = imageData[0]
@@ -1962,16 +1951,9 @@ def checkbot():
                 timestamp = None
                 uploader = None
                 comment = None # useless, also this, let it here for further developments
-            try:
-                imageName = image.title().split(image_namespace)[1] # Deleting the namespace (useless here)
-            except IndexError:# Namespace image not found, that's not an image! Let's skip...
-                try:
-                    imageName = image.title().split(image_old_namespace)[1]
-                except IndexError:
-                    pywikibot.output(u"%s is not a file, skipping..."
-                                     % image.title())
-                    continue
-            Bot.setParameters(imageName, timestamp, uploader) # Setting the image for the main class
+            # Setting the image for the main class
+            Bot.setParameters(image.title(withNamespace=False),
+                              timestamp, uploader)
             # Skip block
             if skip:
                 skip = Bot.skipImages(skip_number, limit)
@@ -1985,8 +1967,7 @@ def checkbot():
             if duplicatesActive:
                 if not Bot.checkImageDuplicated(duplicates_rollback):
                     continue
-            resultCheck = Bot.checkStep()
-            if resultCheck:
+            if Bot.checkStep():
                 continue
     # A little block to perform the repeat or to break.
         if repeat:
