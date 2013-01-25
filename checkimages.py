@@ -607,15 +607,15 @@ class checkImagesBot(object):
         # Load the licenses only once, so do it once
         self.list_licenses = self.load_licenses()
 
-    def setParameters(self, imageName, timestamp, uploader):
+    def setParameters(self, imageName):
         """ Function to set parameters, now only image but maybe it can be used
         for others in "future"
 
         """
         self.imageName = imageName
         self.image = pywikibot.ImagePage(self.site, self.imageName)
-        self.timestamp = timestamp
-        self.uploader = uploader
+        self.timestamp = None
+        self.uploader = None
 
     def report(self, newtext, image_to_report, notification=None, head=None,
                notification2=None, unver=True, commTalk=None, commImage=None):
@@ -1756,6 +1756,7 @@ def checkbot():
     duplicatesReport = False # Use the duplicate-report option
     sendemailActive = False # Use the send-email
     logFullError = True # Raise an error when the log is full
+    generator = None
 
     # Here below there are the parameters.
     for arg in pywikibot.handleArgs():
@@ -1865,10 +1866,7 @@ def checkbot():
             elif len(arg) > 9:
                 projectUntagged = str(arg[10:])
 
-    # Understand if the generator it's the default or not.
-    try:
-        generator
-    except NameError:
+    if not generator:
         normal = True
 
     # Define the site.
@@ -1905,7 +1903,7 @@ def checkbot():
             normal = False # Ensure that normal is False
         # Normal True? Take the default generator
         if normal:
-            generator = site.newimages(number = limit)
+            generator = pg.NewimagesPageGenerator(number=limit, site=site)
         # if urlUsed and regexGen, get the source for the generator
         if urlUsed and regexGen:
             textRegex = site.getUrl(regexPageUrl, no_hostname=True)
@@ -1930,30 +1928,8 @@ def checkbot():
             generator = Bot.wait(waitTime, generator, normal, limit)
         generator = pg.NamespaceFilterPageGenerator(generator, 6, site)
         for image in generator:
-            # When you've a lot of image to skip before working use this workaround, otherwise
-            # let this commented, thanks. [ decoment also parsed = False if you want to use it
-            #
-            #if image.title() != u'File:Nytlogo379x64.gif' and not parsed:
-            #    pywikibot.output(u"%s already parsed." % image.title())
-            #    continue
-            #else:
-            #    parsed = True
-            if normal:
-                imageData = image
-                image = imageData[0]
-                #20100511133318L --- 15:33, 11 mag 2010 e 18 sec
-                #b = str(imageData[1]) # use b as variable to make smaller the timestamp-formula used below..
-                # fixing the timestamp to the format that we normally use..
-                timestamp = imageData[1]#"%s-%s-%sT%s:%s:%sZ" % (b[0:4], b[4:6], b[6:8], b[8:10], b[10:12], b[12:14])
-                uploader = imageData[2]
-                comment = imageData[3] # useless, in reality..
-            else:
-                timestamp = None
-                uploader = None
-                comment = None # useless, also this, let it here for further developments
             # Setting the image for the main class
-            Bot.setParameters(image.title(withNamespace=False),
-                              timestamp, uploader)
+            Bot.setParameters(image.title(withNamespace=False))
             # Skip block
             if skip:
                 skip = Bot.skipImages(skip_number, limit)
