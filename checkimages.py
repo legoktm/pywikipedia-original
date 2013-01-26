@@ -1478,7 +1478,10 @@ class checkImagesBot(object):
             while True:
                 loadOtherImages = True # ensure that all the images loaded aren't to skip!
                 for image in generator:
-                    timestamp = image.getLatestUploader()[1]
+                    try:
+                        timestamp = image.getLatestUploader()[1]
+                    except pywikibot.NoPage:
+                        continue
                     img_time = datetime.datetime.strptime(timestamp,
                                                           u"%Y-%m-%dT%H:%M:%SZ") #not relative to localtime
 
