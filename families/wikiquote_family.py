@@ -88,14 +88,14 @@ class Family(family.WikimediaFamily):
             'ka': [u'ვიკიციტატა', u'Wikiquote'],
             'kk': u'Уикидәйек',
             'kn': u'Wikiquote',
-            'ko': [u'위키인용집', u'인'],
+            'ko': [u'위키인용집', u'인', u'Wikiquote'],
             'ku': u'Wikiquote',
             'ky': u'Wikiquote',
             'la': [u'Vicicitatio', u'Wikiquote'],
             'lb': u'Wikiquote',
             'li': u'Wikiquote',
             'lt': u'Wikiquote',
-            'ml': [u'വിക്കിചൊല്ലുകൾ', u'വിക്കി ചൊല്ലുകൾ'],
+            'ml': [u'വിക്കിചൊല്ലുകൾ', u'വിക്കി ചൊല്ലുകൾ', u'Wikiquote'],
             'mr': u'Wikiquote',
             'nl': u'Wikiquote',
             'nn': u'Wikiquote',
@@ -114,7 +114,7 @@ class Family(family.WikimediaFamily):
             'te': u'Wikiquote',
             'th': [u'วิกิคำคม', u'Wikiquote'],
             'tr': [u'Vikisöz', u'Wikiquote'],
-            'uk': [u'Вікіцитати', u'ВЦ'],
+            'uk': [u'Вікіцитати', u'ВЦ', u'Wikiquote'],
             'ur': [u'وکی اقتباسات', u'Wikiquote'],
             'uz': [u'Vikiiqtibos', u'Wikiquote'],
             'vi': u'Wikiquote',
@@ -211,6 +211,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Portail',
             'he': u'פורטל',
             'li': u'Portaol',
+            'sk': u'Deň',
             'zh': u'Transwiki',
         }
 
@@ -219,6 +220,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Discussion Portail',
             'he': u'שיחת פורטל',
             'li': u'Euverlèk portaol',
+            'sk': u'Diskusia ku dňu',
             'zh': u'Transwiki talk',
         }
 

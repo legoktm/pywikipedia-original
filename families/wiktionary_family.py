@@ -30,13 +30,13 @@ class Family(family.WikimediaFamily):
         self.langs = dict([(lang, '%s.wiktionary.org' % lang) for lang in self.languages_by_size])
 
         # Override defaults
-        self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Vikipediista diskuto', u'Uzula diskuto']
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
         self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
+        self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Vikipediista diskuto', u'Uzula diskuto']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
@@ -82,21 +82,21 @@ class Family(family.WikimediaFamily):
             'dz': u'Wiktionary',
             'el': [u'Βικιλεξικό', u'Wiktionary'],
             'en': [u'Wiktionary', u'WT'],
-            'eo': u'Vikivortaro',
+            'eo': [u'Vikivortaro', u'Wiktionary'],
             'es': [u'Wikcionario', u'Wiktionary'],
             'et': [u'Vikisõnastik', u'Wiktionary'],
             'eu': u'Wiktionary',
-            'fa': [u'ویکی‌واژه', u'وو'],
+            'fa': [u'ویکی‌واژه', u'وو', u'Wiktionary'],
             'fi': [u'Wikisanakirja', u'Wiktionary'],
             'fj': u'Wiktionary',
             'fo': u'Wiktionary',
-            'fr': [u'Wiktionnaire', u'WT'],
+            'fr': [u'Wiktionnaire', u'WT', u'Wiktionary'],
             'fy': u'Wiktionary',
             'ga': [u'Vicífhoclóir', u'Wiktionary'],
             'gd': u'Wiktionary',
             'gl': u'Wiktionary',
             'gn': u'Wiktionary',
-            'gu': u'વિક્શનરી',
+            'gu': [u'વિક્શનરી', u'Wiktionary'],
             'gv': u'Wiktionary',
             'ha': u'Wiktionary',
             'he': [u'ויקימילון', u'Wiktionary'],
@@ -111,7 +111,7 @@ class Family(family.WikimediaFamily):
             'ik': u'Wiktionary',
             'io': [u'Wikivortaro', u'Wiktionary'],
             'is': [u'Wikiorðabók', u'Wiktionary'],
-            'it': [u'Wikizionario', u'WZ'],
+            'it': [u'Wikizionario', u'WZ', u'Wiktionary'],
             'iu': u'Wiktionary',
             'ja': u'Wiktionary',
             'jbo': u'Wiktionary',
@@ -121,9 +121,9 @@ class Family(family.WikimediaFamily):
             'kl': u'Wiktionary',
             'km': u'Wiktionary',
             'kn': u'Wiktionary',
-            'ko': u'위키낱말사전',
+            'ko': [u'위키낱말사전', u'Wiktionary'],
             'ks': u'Wiktionary',
-            'ku': u'Wîkîferheng',
+            'ku': [u'Wîkîferheng', u'Wiktionary'],
             'kw': u'Wiktionary',
             'ky': u'Wiktionary',
             'la': [u'Victionarium', u'Wiktionary'],
@@ -153,14 +153,14 @@ class Family(family.WikimediaFamily):
             'om': u'Wiktionary',
             'or': u'Wiktionary',
             'pa': u'Wiktionary',
-            'pl': [u'Wikisłownik', u'WS'],
+            'pl': [u'Wikisłownik', u'WS', u'Wiktionary'],
             'pnb': [u'وکشنری', u'Wiktionary'],
             'ps': [u'ويکيسيند', u'Wiktionary'],
             'pt': [u'Wikcionário', u'Wiktionary'],
             'qu': u'Wiktionary',
             'ro': [u'Wikționar', u'Wiktionary'],
             'roa-rup': u'Wiktionary',
-            'ru': u'Викисловарь',
+            'ru': [u'Викисловарь', u'Wiktionary'],
             'rw': u'Wiktionary',
             'sa': u'Wiktionary',
             'scn': [u'Wikizziunariu', u'Wiktionary'],
@@ -200,7 +200,7 @@ class Family(family.WikimediaFamily):
             'vo': [u'Vükivödabuk', u'Wiktionary'],
             'wa': u'Wiktionary',
             'wo': u'Wiktionary',
-            'yi': [u'װיקיװערטערבוך', u'וויקיווערטערבוך'],
+            'yi': [u'װיקיװערטערבוך', u'וויקיווערטערבוך', u'Wiktionary'],
             'za': u'Wiktionary',
             'zh': u'Wiktionary',
             'zh-min-nan': u'Wiktionary',
@@ -518,6 +518,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[106] = {
+            'de': u'Reim',
             'en': u'Rhymes',
             'fr': u'Thésaurus',
             'is': u'Viðauki',
@@ -527,6 +528,7 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[107] = {
+            'de': u'Reim Diskussion',
             'en': u'Rhymes talk',
             'fr': u'Discussion Thésaurus',
             'is': u'Viðaukaspjall',

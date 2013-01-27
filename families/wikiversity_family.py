@@ -25,7 +25,7 @@ class Family(family.WikimediaFamily):
         # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': self.namespaces[4]['_default'],
-            'ar': [u'ويكي الجامعة', u'وج'],
+            'ar': [u'ويكي الجامعة', u'وج', u'Wikiversity'],
             'beta': u'Wikiversity',
             'cs': [u'Wikiverzita', u'WV', u'Wikiversity'],
             'de': u'Wikiversity',
