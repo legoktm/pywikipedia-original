@@ -7,9 +7,8 @@ import family
 # The Wikitech family
 
 class Family(family.Family):
-
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'wikitech'
         self.langs = {
             'en': 'wikitech.wikimedia.org',
@@ -23,7 +22,7 @@ class Family(family.Family):
         }
 
     def version(self, code):
-        return '1.16wmf4'
+        return '1.19wmf2'
 
     def scriptpath(self, code):
         return ''
