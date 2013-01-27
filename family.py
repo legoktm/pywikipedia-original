@@ -18,7 +18,9 @@ import wikipedia as pywikibot
 # Parent class for all wiki families
 class Family(object):
     def __init__(self):
-        self.name = None
+        if not hasattr(self, 'name'):
+            self.name = None
+
         # For interwiki sorting order see
         # http://meta.wikimedia.org/wiki/Interwiki_sorting_order
 
