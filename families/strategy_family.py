@@ -32,9 +32,6 @@ class Family(family.WikimediaFamily):
     def dbName(self, code):
         return 'strategywiki_p'
 
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
-
     if config.SSL_connection:
 
         def protocol(self, code):

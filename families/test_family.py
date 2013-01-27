@@ -161,5 +161,3 @@ class Family(family.WikimediaFamily):
     if family.config.SSL_connection:
         def protocol(self, code):
             return 'https'
-
-

@@ -583,13 +583,6 @@ class Family(family.WikimediaFamily):
             'en': u'Sign gloss talk',
         }
 
-        # CentralAuth cross avaliable projects.
-        self.cross_projects = [
-            'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
-            'wikiversity', 'meta', 'mediawiki', 'test', 'incubator', 'commons',
-            'species',
-        ]
-
         # Global bot allowed languages on
         # http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
@@ -686,9 +679,6 @@ class Family(family.WikimediaFamily):
         self.interwiki_on_one_line = ['pl']
 
         self.interwiki_attop = ['pl']
-
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
 
     if family.config.SSL_connection:
 

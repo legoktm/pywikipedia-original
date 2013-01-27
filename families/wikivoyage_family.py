@@ -90,9 +90,6 @@ class Family(family.WikimediaFamily):
     def scriptpath(self, code):
         return u'/w'
 
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
-
     if family.config.SSL_connection:
 
         def protocol(self, code):
