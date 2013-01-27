@@ -27,7 +27,8 @@ class Family(family.WikimediaFamily):
             'dv', 'tn', 'ne', 'ha', 'ks', 'ay', 'ts',
         ]
 
-        self.langs = dict([(lang, '%s.wiktionary.org' % lang) for lang in self.languages_by_size])
+        self.langs = dict([(lang, '%s.wiktionary.org' % lang)
+                           for lang in self.languages_by_size])
 
         # Override defaults
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
@@ -559,14 +560,6 @@ class Family(family.WikimediaFamily):
             'en': u'Wikisaurus talk',
             'is': u'Samheitasafnsspjall',
             'ko': u'미주알고주알 토론',
-        }
-
-        self.namespaces[112] = {
-         #   'en': u'WT',
-        }
-
-        self.namespaces[113] = {
-         #   'en': u'WT talk',
         }
 
         self.namespaces[114] = {

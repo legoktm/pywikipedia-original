@@ -16,7 +16,8 @@ class Family(family.WikimediaFamily):
             'bg', 'sq', 'uk', 'no', 'ko', 'bs', 'eo',
         ]
 
-        self.langs = dict([(lang, '%s.wikinews.org' % lang) for lang in self.languages_by_size])
+        self.langs = dict([(lang, '%s.wikinews.org' % lang)
+                           for lang in self.languages_by_size])
 
         # Override defaults
         self.namespaces[14]['en'] = [u'Category', u'CAT']
@@ -256,9 +257,6 @@ class Family(family.WikimediaFamily):
             'zh-tw': 'zh',
             'zh-cn': 'zh'
         }
-
-    def code2encoding(self, code):
-        return 'utf-8'
 
     if family.config.SSL_connection:
 

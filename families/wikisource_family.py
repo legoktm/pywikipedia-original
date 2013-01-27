@@ -19,8 +19,8 @@ class Family(family.WikimediaFamily):
             'lt', 'kn', 'cy', 'sk', 'zh-min-nan', 'fo',
         ]
 
-        for lang in self.languages_by_size:
-            self.langs[lang] = '%s.wikisource.org' % lang
+        self.langs = dict([(lang, '%s.wikisource.org' % lang)
+                           for lang in self.languages_by_size])
         self.langs['-'] = 'wikisource.org'
 
         # Override defaults

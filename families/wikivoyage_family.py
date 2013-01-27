@@ -87,9 +87,6 @@ class Family(family.WikimediaFamily):
             'commons', 'species',
         ]
 
-    def scriptpath(self, code):
-        return u'/w'
-
     if family.config.SSL_connection:
 
         def protocol(self, code):

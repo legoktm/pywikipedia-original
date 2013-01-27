@@ -15,7 +15,8 @@ class Family(family.WikimediaFamily):
             'el', 'sv', 'sl', 'ja',
         ]
 
-        self.langs = dict([(lang, '%s.wikiversity.org' % lang) for lang in self.languages_by_size])
+        self.langs = dict([(lang, '%s.wikiversity.org' % lang)
+                           for lang in self.languages_by_size])
 
         # Override defaults
 

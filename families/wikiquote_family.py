@@ -20,7 +20,8 @@ class Family(family.WikimediaFamily):
             'ky', 'am',
         ]
 
-        self.langs = dict([(lang, '%s.wikiquote.org' % lang) for lang in self.languages_by_size])
+        self.langs = dict([(lang, '%s.wikiquote.org' % lang)
+                           for lang in self.languages_by_size])
 
         # Override defaults
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']

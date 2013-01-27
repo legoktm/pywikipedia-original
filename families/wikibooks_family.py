@@ -21,7 +21,8 @@ class Family(family.WikimediaFamily):
             'ku', 'uz',
         ]
 
-        self.langs = dict([(lang, '%s.wikibooks.org' % lang) for lang in self.languages_by_size])
+        self.langs = dict([(lang, '%s.wikibooks.org' % lang)
+                           for lang in self.languages_by_size])
 
         # Override defaults
         self.namespaces[14]['en'] = [u'Category', u'CAT']
