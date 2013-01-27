@@ -81,12 +81,6 @@ class Family(family.WikimediaFamily):
             'it': u'Discussioni notizie',
         }
 
-        self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',
-            'wikinews', 'wikiversity', 'meta', 'mediawiki', 'test', 'incubator',
-            'commons', 'species',
-        ]
-
     if family.config.SSL_connection:
 
         def protocol(self, code):
