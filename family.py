@@ -4028,7 +4028,7 @@ class Family(object):
         Can be overridden to return 'https'.
         Other protocols are not supported.
         """
-        return 'http'
+        return 'http%s' % ('', 's')[config.SSL_connection]
 
     def hostname(self, code):
         """The hostname to use for standard http connections."""
