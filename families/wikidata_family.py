@@ -51,10 +51,6 @@ class Family(family.WikimediaFamily):
             '_default': u'Translations talk',
         }        
 
-    if family.config.SSL_connection:
-        def protocol(self, code):
-            return 'https'
-
     def shared_data_repository(self, code, transcluded=False):
         """Always return a repository tupe. This enables testing whether
         the site opject is the repository itself, see Site.is_data_repository()

@@ -32,8 +32,3 @@ class Family(family.WikimediaFamily):
             '_default': u'Translations talk',
         }
         self.interwiki_forward = 'wikipedia'
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

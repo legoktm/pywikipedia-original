@@ -674,8 +674,3 @@ class Family(family.WikimediaFamily):
         self.interwiki_on_one_line = ['pl']
 
         self.interwiki_attop = ['pl']
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

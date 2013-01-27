@@ -257,8 +257,3 @@ class Family(family.WikimediaFamily):
             'zh-tw': 'zh',
             'zh-cn': 'zh'
         }
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

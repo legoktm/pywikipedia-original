@@ -635,8 +635,3 @@ class Family(family.WikimediaFamily):
         self.crossnamespace[106] = {
             'sv': self.authornamespaces,
         }
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

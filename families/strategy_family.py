@@ -31,8 +31,3 @@ class Family(family.WikimediaFamily):
 
     def dbName(self, code):
         return 'strategywiki_p'
-
-    if config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

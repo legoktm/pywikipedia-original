@@ -157,7 +157,3 @@ class Family(family.WikimediaFamily):
             '_default': u'VisualEditor talk',
         }
         self.interwiki_forward = 'wikipedia'
-
-    if family.config.SSL_connection:
-        def protocol(self, code):
-            return 'https'

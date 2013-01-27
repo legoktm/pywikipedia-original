@@ -142,8 +142,3 @@ class Family(family.WikimediaFamily):
 
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = ['ja',]
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

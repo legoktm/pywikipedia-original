@@ -80,8 +80,3 @@ class Family(family.WikimediaFamily):
             'de': u'Nachrichten Diskussion',
             'it': u'Discussioni notizie',
         }
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

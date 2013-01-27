@@ -72,8 +72,3 @@ class Family(family.WikimediaFamily):
 
     def dbName(self, code):
         return 'commonswiki_p'
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

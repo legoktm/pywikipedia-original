@@ -76,8 +76,3 @@ class Family(family.WikimediaFamily):
         self.namespaces[2501] = {
             '_default': u'VisualEditor talk',
         }
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

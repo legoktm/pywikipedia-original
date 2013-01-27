@@ -150,8 +150,3 @@ class Family(family.WikimediaFamily):
 
         self.interwiki_forward = 'wikipedia'
         self.cross_allowed = ['meta',]
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

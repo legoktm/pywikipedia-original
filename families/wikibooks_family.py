@@ -481,8 +481,3 @@ class Family(family.WikimediaFamily):
             'zh-cn': 'zh',
             'zu': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=25425
         }
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

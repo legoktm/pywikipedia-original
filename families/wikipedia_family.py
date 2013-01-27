@@ -1537,8 +1537,3 @@ class Family(family.WikimediaFamily):
             return ('wikidata', 'wikidata')            
         else:
             return (None, None)
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'

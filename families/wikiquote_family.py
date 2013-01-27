@@ -330,8 +330,3 @@ class Family(family.WikimediaFamily):
         if code == 'ru':
             return 'utf-8', 'iso8859-5'
         return self.code2encoding(code),
-
-    if family.config.SSL_connection:
-
-        def protocol(self, code):
-            return 'https'
