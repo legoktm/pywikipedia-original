@@ -5,9 +5,9 @@ __version__ = '$Id$'
 
 # The Wikimedia family that is known as Wiktionary
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'wiktionary'
 
         self.languages_by_size = [

@@ -6,9 +6,9 @@ __version__ = '$Id$'
 
 import family
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'wikivoyage'
         self.languages_by_size = [
             'de', 'en', 'fr', 'it', 'nl', 'ru', 'sv', 'pt', 'es',

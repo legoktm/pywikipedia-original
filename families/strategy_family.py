@@ -6,9 +6,9 @@ import family, config
 
 # The Wikimedia Strategy family
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'strategy'
         self.langs = {
             'strategy': 'strategy.wikimedia.org',

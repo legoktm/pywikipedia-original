@@ -7,9 +7,9 @@ import family
 # The MediaWiki family
 # user-config.py: usernames['mediawiki']['mediawiki'] = 'User name'
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'mediawiki'
 
         self.langs = {
@@ -76,14 +76,6 @@ class Family(family.Family):
         self.namespaces[2501] = {
             '_default': u'VisualEditor talk',
         }
-        self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',
-            'wikinews', 'wikiversity', 'meta', 'test', 'incubator', 'commons',
-            'species',
-        ]
-
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
 
     if family.config.SSL_connection:
 

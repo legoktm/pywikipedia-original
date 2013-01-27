@@ -5,9 +5,9 @@ __version__ = '$Id$'
 
 # The Wikimedia family that is known as Wikibooks
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'wikibooks'
 
         self.languages_by_size = [
@@ -407,13 +407,6 @@ class Family(family.Family):
             'si': u'කණිෂ්ඨ විකි සාකච්ඡාව',
         }
 
-        # CentralAuth cross avaliable projects.
-        self.cross_projects = [
-            'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
-            'wikiversity', 'meta', 'mediawiki', 'test', 'incubator', 'commons',
-            'species',
-        ]
-
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
             'af', 'ang', 'ca', 'fa', 'fy', 'it', 'nl', 'ru', 'th', 'zh',
@@ -487,9 +480,6 @@ class Family(family.Family):
             'zh-cn': 'zh',
             'zu': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=25425
         }
-
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
 
     if family.config.SSL_connection:
 

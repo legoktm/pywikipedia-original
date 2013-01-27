@@ -6,9 +6,9 @@ import family
 
 # The wikidata family
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'wikidata'
         self.langs = {
             'wikidata': 'wikidata.org',
@@ -50,11 +50,6 @@ class Family(family.Family):
         self.namespaces[1199] = {
             '_default': u'Translations talk',
         }        
-        self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',
-            'wikinews', 'wikiversity', 'meta', 'test', 'incubator', 'commons',
-            'species', 'mediawiki'
-        ]
 
     if family.config.SSL_connection:
         def protocol(self, code):

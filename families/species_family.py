@@ -6,9 +6,9 @@ import family
 
 # The wikispecies family
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'species'
         self.langs = {
             'species': 'species.wikimedia.org',
@@ -22,14 +22,6 @@ class Family(family.Family):
         }
 
         self.interwiki_forward = 'wikipedia'
-        self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource',
-            'wikinews', 'wikiversity', 'meta', 'mediawiki', 'test', 'incubator',
-            'commons',
-        ]
-
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
 
     if family.config.SSL_connection:
 

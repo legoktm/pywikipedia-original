@@ -5,9 +5,9 @@ __version__ = '$Id$'
 
 # The Wikimedia family that is known as Wikiversity
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'wikiversity'
 
         self.languages_by_size = [
@@ -139,18 +139,8 @@ class Family(family.Family):
             'ja': u'Transwiki‐ノート',
         }
 
-        # CentralAuth cross avaliable projects.
-        self.cross_projects = [
-            'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
-            'wikiversity', 'meta', 'mediawiki', 'test', 'incubator', 'commons',
-            'species',
-        ]
-
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = ['ja',]
-
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
 
     if family.config.SSL_connection:
 

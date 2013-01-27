@@ -5,9 +5,9 @@ __version__ = '$Id$'
 import family
 
 # The test wikipedia family
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'test'
         self.langs = {
             'test': 'test.wikipedia.org',
@@ -157,13 +157,6 @@ class Family(family.Family):
             '_default': u'VisualEditor talk',
         }
         self.interwiki_forward = 'wikipedia'
-        self.cross_projects = [
-            'wikipedia', 'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews', 'wikiversity',
-            'meta', 'mediawiki', 'incubator', 'commons', 'species',
-        ]
-
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
 
     if family.config.SSL_connection:
         def protocol(self, code):

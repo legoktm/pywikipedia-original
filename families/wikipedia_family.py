@@ -5,9 +5,9 @@ __version__ = '$Id$'
 
 # The Wikimedia family that is known as Wikipedia, the Free Encyclopedia
 
-class Family(family.Family):
+class Family(family.WikimediaFamily):
     def __init__(self):
-        family.Family.__init__(self)
+        super(Family, self).__init__()
         self.name = 'wikipedia'
 
         self.languages_by_size = [
@@ -1219,13 +1219,6 @@ class Family(family.Family):
             'test',
         ]
 
-        # CentralAuth cross avaliable projects.
-        self.cross_projects = [
-            'wiktionary', 'wikibooks', 'wikiquote', 'wikisource', 'wikinews',
-            'wikiversity', 'meta', 'mediawiki', 'test', 'incubator', 'commons',
-            'species', 'wikivoyage',
-        ]
-
         # Global bot allowed languages on
         # http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
@@ -1540,9 +1533,6 @@ class Family(family.Family):
         if code in self.latin1old:
             return 'utf-8', 'iso-8859-1'
         return self.code2encoding(code),
-
-    def shared_image_repository(self, code):
-        return ('commons', 'commons')
 
     def shared_data_repository(self, code, transcluded=False):
         if not transcluded or code in ['hu']:
