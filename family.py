@@ -3206,34 +3206,6 @@ class Family(object):
                 'zh': [u'Category talk', u'分类讨论', u'分類討論', u'分类对话', u'分類對話'],
                 'zh-yue': [u'Category talk', u'分類傾偈', u'類 討論', u'分類 討論', u'类 讨论', u'分类 讨论'],
             },
-            #90: {
-                #'_default': u'Thread',
-                #'fi': u'Viestiketju',
-                #'gl': u'Tópico',
-                #'mwl': u'Tópico',
-                #'pt': u'Tópico',
-            #},
-            #91: {
-                #'_default': u'Thread talk',
-                #'fi': u'Keskustelu viestiketjusta',
-                #'gl': u'Tópico discussão',
-                #'mwl': u'Tópico discussão',
-                #'pt': u'Tópico discussão',
-            #},
-            #92: {
-                #'_default': u'Summary',
-                #'fi': u'Yhteenveto',
-                #'gl': u'Resumo',
-                #'mwl': u'Resumo',
-                #'pt': u'Resumo',
-            #},
-            #93: {
-                #'_default': u'Summary talk',
-                #'fi': u'Keskustelu yhteenvedosta',
-                #'gl': u'Resumo discussão',
-                #'mwl': u'Resumo discussão',
-                #'pt': u'Resumo discussão',
-            #},
         }
 
         self.namespacesWithSubpage = [2] + range(1, 16, 2)
