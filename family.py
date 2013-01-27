@@ -1,7 +1,7 @@
 # -*- coding: utf-8  -*-
 
 #
-# (C) Pywikipedia bot team, 2004-2012
+# (C) Pywikipedia bot team, 2004-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -14,9 +14,9 @@ from datetime import timedelta, datetime
 import config
 import wikipedia as pywikibot
 
-# Parent class for all wiki families
 
-class Family:
+# Parent class for all wiki families
+class Family(object):
     def __init__(self):
         self.name = None
         # For interwiki sorting order see
@@ -3234,7 +3234,7 @@ class Family:
             #},
         }
 
-        self.namespacesWithSubpage = [2] + range(1, 16, 2) 
+        self.namespacesWithSubpage = [2] + range(1, 16, 2)
 
         # letters that can follow a wikilink and are regarded as part of
         # this link
@@ -4374,3 +4374,11 @@ class Family:
         """Does a conversion on the text to insert on the wiki
         i.e. Esperanto X-conversion """
         return putText
+
+
+# Parent class for all wikimedia families
+class WikimediaFamily(Family):
+    def __init__(self):
+        super(WikimediaFamily, self).__init__()
+
+        self.namespacesWithSubpage.extend([4, 12])
