@@ -4095,7 +4095,8 @@ class Family(object):
         """Return MediaWiki version number as a string."""
         # Don't use this, use versionnumber() instead. This only exists
         # to not break family files.
-        return '1.21wmf7'
+        # Here we return the latest mw release for downloading
+        return '1.20wmf2'
 
     def versionnumber(self, code, version=None):
         """Return an int identifying MediaWiki version.
@@ -4382,3 +4383,20 @@ class WikimediaFamily(Family):
         super(WikimediaFamily, self).__init__()
 
         self.namespacesWithSubpage.extend([4, 12])
+
+        # CentralAuth cross avaliable projects.
+        self.cross_projects = [
+            'commons', 'incubator', 'mediawiki', 'meta', 'species', 'test',
+            'wikibooks', 'wikidata', 'wikinews', 'wikipedia', 'wikiquote',
+            'wikisource', 'wikiversity', 'wiktionary',
+        ]
+
+    def version(self, code):
+        """Return Wikimedia projects version number as a string."""
+        # Don't use this, use versionnumber() instead. This only exists
+        # to not break family files.
+        return '1.21wmf7'
+
+    def shared_image_repository(self, code):
+        return ('commons', 'commons')
+
