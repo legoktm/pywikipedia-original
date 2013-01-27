@@ -2717,6 +2717,14 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
         for match in Rlink.finditer(thistxt):
             title = match.group('title')
             title = title.replace("_", " ").strip(" ")
+            if self.namespace() in self.site.namespacesWithSubpage:
+                # convert relative link to absolute link
+                if title.startswith(".."):
+                    parts = self.title().split('/')
+                    parts.pop()
+                    title = u'/'.join(parts) + title[2:]
+                elif title.startswith("/"):
+                    title = u'%s/%s' % (self.title(), title[1:])
             if title.startswith("#"):
                 # this is an internal section link
                 continue

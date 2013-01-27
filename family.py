@@ -3234,6 +3234,8 @@ class Family:
             #},
         }
 
+        self.namespacesWithSubpage = [2] + range(1, 16, 2) 
+
         # letters that can follow a wikilink and are regarded as part of
         # this link
         # This depends on the linktrail setting in LanguageXx.php and on
