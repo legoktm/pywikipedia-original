@@ -66,9 +66,10 @@ class Category(wikipedia.Page):
     """Subclass of Page that has some special tricks that only work for
        category: pages"""
 
-    def __init__(self, site, title = None, insite = None, sortKey = None):
+    def __init__(self, site, title = None, insite = None, sortKey = None, sortKeyPrefix = None):
         wikipedia.Page.__init__(self, site = site, title = title, insite = insite, defaultNamespace = 14)
         self.sortKey = sortKey
+        self.sortKeyPrefix = sortKeyPrefix
         if self.namespace() != 14:
             raise ValueError(u'BUG: %s is not in the category namespace!' % title)
         self.completelyCached = False
@@ -206,7 +207,7 @@ class Category(wikipedia.Page):
             'action': 'query',
             'list': 'categorymembers',
             'cmtitle': self.title(),
-            'cmprop': ['title', 'ids', 'sortkey', 'timestamp'],
+            'cmprop': ['title', 'ids', 'sortkey', 'sortkeyprefix', 'timestamp'],
             #'': '',
         }
         if sortby:
@@ -245,7 +246,7 @@ class Category(wikipedia.Page):
                 count += 1
                 # For MediaWiki versions where subcats look like articles
                 if memb['ns'] == 14:
-                    yield SUBCATEGORY, Category(self.site(), memb['title'], sortKey=memb['sortkey'])
+                    yield SUBCATEGORY, Category(self.site(), memb['title'], sortKey=memb['sortkey'], sortKeyPrefix=memb['sortkeyprefix'])
                 elif memb['ns'] == 6:
                     yield ARTICLE, wikipedia.ImagePage(self.site(), memb['title'])
                 else:
