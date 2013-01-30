@@ -1322,7 +1322,7 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                 iw = page.interwiki()
             except pywikibot.NoSuchSite:
                 if not globalvar.quiet or pywikibot.verbose:
-                    pywikibot.output(u"NOTE: site %s does not exist" % page.site())
+                    pywikibot.output(u"NOTE: site %s does not exist" % page.site)
                 continue
 
             (skip, alternativePage) = self.disambigMismatch(page, counter)
@@ -1542,7 +1542,7 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                         break
         return result
 
-    def finish(self, bot = None):
+    def finish(self, bot=None):
         """Round up the subject, making any necessary changes. This method
            should be called exactly once after the todo list has gone empty.
 
@@ -2181,9 +2181,9 @@ class InterwikiBot(object):
             return None
         oc = dict(self.firstSubject().openSites())
         if not oc:
-            # The first subject is done. This might be a recursive call made because we
-            # have to wait before submitting another modification to go live. Select
-            # any language from counts.
+            # The first subject is done. This might be a recursive call made
+            # because we have to wait before submitting another modification to
+            # go live. Select any language from counts.
             oc = self.counts
         if pywikibot.getSite() in oc:
             return pywikibot.getSite()
