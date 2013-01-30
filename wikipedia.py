@@ -4105,11 +4105,11 @@ class DataPage(Page):
             'summary': self._encodeArg(summary, 'summary'),
         }
         params['site'] = self._originSite.dbName().split('_')[0]
-        params['action'] = u'wbset' + items['type']
         params['format'] = 'jsonfm'
         if items['type'] == u'item':
-            params['data'] = u'{"labels":{"%(label)s":{"language":"%(label)s","value":"%(value)s"}}}' \
-                             % {'label': items['label'], 'value': items['value']}
+            params['value'] = items['value']
+            params['language'] = items['label']
+            items['type'] = u'label'
         elif items['type'] == u'description':
             params['value'] = items['value']
             params['language'] = items['language']
@@ -4119,6 +4119,7 @@ class DataPage(Page):
         else:
             raise NotImplementedError(
                 u'Wikidata action type "%s" is unknown' % items['type'])
+        params['action'] = u'wbset' + items['type']
         if token:
             params['token'] = token
         else:
