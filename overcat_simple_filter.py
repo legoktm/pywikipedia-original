@@ -6,6 +6,14 @@ Now it uses the strategy to loop over all images in all the subcategories.
 That might be a very good strategy when the parent category is very full, but later on it will become very inefficient.
 
 '''
+#
+# (C) Pywikipedia bot team, 2013
+#
+# Distributed under the terms of the MIT license.
+#
+__version__ = '$Id$'
+#
+
 import sys, pywikibot, catlib, pagegenerators
 
 def filterCategory(page):
