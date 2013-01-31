@@ -58,20 +58,25 @@ class buffered_addinfourl(object):
         return self._buffer[name]
 
 
-def request(site, uri, retry = None, sysop = False, data = None, compress = True,
-            no_hostname = False, cookie_only=False, refer=None, back_response=False):
+def request(site, uri, retry=None, sysop=False, data=None, compress=True,
+            no_hostname=False, cookie_only=False, refer=None,
+            back_response=False):
     """
     Low-level routine to get a URL from any source (may be the wiki).
 
     Parameters:
-      @param site        - The Site to connect to.
-      @param uri         - The absolute uri, without the hostname.
-      @param retry       - If True, retries loading the page when a network error
-                         occurs.
-      @param sysop       - If True, the sysop account's cookie will be used.
-      @param data        - An optional dict providing extra post request
-                         parameters.
-      @param cookie_only - Only return the cookie the server sent us back
+      @param site          - The Site to connect to.
+      @param uri           - The absolute uri, without the hostname.
+      @param retry         - If True, retries loading the page when a network
+                             error occurs.
+      @param sysop         - If True, the sysop account's cookie will be used.
+      @param data          - An optional dict providing extra post request
+                             parameters.
+      @param compress      - Accept compressed page content transfer also.
+      @param no_hostname   - Do query to foreign host (any kind of web-server).
+      @param cookie_only   - Only return the cookie the server sent us back
+      @param refer         - ...
+      @param back_response - Return the addinfourl object from request too.
 
       @return: Returns the HTML text of the page converted to unicode.
     """
@@ -114,20 +119,24 @@ def request(site, uri, retry = None, sysop = False, data = None, compress = True
             f = buffered_addinfourl(MyURLopener.open(req))
 
             # read & info can raise socket.error
-            text = f.read()
             headers = f.info()
+            if (int(headers.get('content-length', '-1')) > 1E7):
+                pywikibot.output(u'WARNING: Target is of huge size (>10MB) is '
+                                 u'that correct? Downloading will take some '
+                                 u'time, please be patient.')
+            text = f.read()
             break
         except KeyboardInterrupt:
             raise
         except urllib2.HTTPError, e:
             if e.code in [401, 404]:
                 raise PageNotFound(
-u'Page %s could not be retrieved. Check your family file.'
-                                   % url)
+                    u'Page %s could not be retrieved. Check your family file.'
+                    % url)
             elif e.code in [403]:
                 raise PageNotFound(
-u'Page %s could not be retrieved. Check your virus wall.'
-                                   % url)
+                    u'Page %s could not be retrieved. Check your virus wall.'
+                    % url)
             elif e.code == 504:
                 pywikibot.output(u'HTTPError: %s %s' % (e.code, e.msg))
                 if retry:
@@ -135,8 +144,9 @@ u'Page %s could not be retrieved. Check your virus wall.'
                     if retry_attempt > config.maxretries:
                         raise MaxTriesExceededError()
                     pywikibot.output(
-u"WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Retrying in %i minutes..."
-                           % (url, retry_idle_time))
+                        u"WARNING: Could not open '%s'.Maybe the server or\n "
+                        u"your connection is down. Retrying in %i minutes..."
+                        % (url, retry_idle_time))
                     time.sleep(retry_idle_time * 60)
                     # Next time wait longer,
                     # but not longer than half an hour
@@ -155,8 +165,9 @@ u"WARNING: Could not open '%s'.Maybe the server or\n your connection is down. Re
                 if retry_attempt > config.maxretries:
                     raise MaxTriesExceededError()
                 pywikibot.output(
-u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. Retrying in %i minutes..."
-                       % (url, retry_idle_time))
+                    u"WARNING: Could not open '%s'. Maybe the server or\n your "
+                    u"connection is down. Retrying in %i minutes..."
+                    % (url, retry_idle_time))
                 time.sleep(retry_idle_time * 60)
                 retry_idle_time *= 2
                 if retry_idle_time > 30:
@@ -206,17 +217,29 @@ u"WARNING: Could not open '%s'. Maybe the server or\n your connection is down. R
         # UTF-8 as default
         charset = 'utf-8'
     # Check if this is the charset we expected
-    site.checkCharset(charset)
+    try:
+        site.checkCharset(charset)
+    except AssertionError, e:
+        if (not back_response) or verbose:
+            pywikibot.output(u'%s' %e)
+            if no_hostname:
+                pywikibot.output(u'ERROR: Invalid charset found on %s.' % uri)
+            else:
+                pywikibot.output(u'ERROR: Invalid charset found on %s://%s%s.'
+                    % (site.protocol(), site.hostname(), uri))
     # Convert HTML to Unicode
     try:
         text = unicode(text, charset, errors = 'strict')
     except UnicodeDecodeError, e:
-        if verbose:
+        if (not back_response) or verbose:
             pywikibot.output(u'%s' %e)
-        if no_hostname:
-            pywikibot.output(u'ERROR: Invalid characters found on %s, replaced by \\ufffd.' % uri)
-        else:
-            pywikibot.output(u'ERROR: Invalid characters found on %s://%s%s, replaced by \\ufffd.' % (site.protocol(), site.hostname(), uri))
+            if no_hostname:
+                pywikibot.output(u'ERROR: Invalid characters found on %s, '
+                                 u'replaced by \\ufffd.' % uri)
+            else:
+                pywikibot.output(u'ERROR: Invalid characters found on %s://%s%s, '
+                    u'replaced by \\ufffd.' 
+                    % (site.protocol(), site.hostname(), uri))
         # We use error='replace' in case of bad encoding.
         text = unicode(text, charset, errors = 'replace')
 
