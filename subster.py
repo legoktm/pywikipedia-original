@@ -68,7 +68,7 @@ __version__ = '$Id$'
 import re, sys, os, string, time, copy
 import difflib, traceback
 import BeautifulSoup
-import StringIO, zipfile, csv, urllib
+import StringIO, zipfile, csv
 import mailbox, mimetypes, datetime, email.utils
 import openpyxl.reader.excel
 import crontab
@@ -83,9 +83,12 @@ from pywikibot import i18n
 from pywikibot.comms import http
 
 
-bot_config = {    # unicode values
+bot_config = {
+        # unicode values
         'TemplateName':     u'User:DrTrigonBot/Subster',    # or 'template' for 'Flagged Revisions'
-        'ErrorTemplate':    u'----\n<b>SubsterBot Exception in "%s" (%s)</b>\n%s',
+
+        'ErrorTemplate':    u'<b>SubsterBot Exception in "%s" (%s)</b>\n<pre>%s</pre>',
+        'VerboseMessage':   u'<noinclude>\n----\n%s\n</noinclude>', # DRTRIGON-116, DRTRIGON-132
 
         # important to use a '.css' page here, since it HAS TO BE protected to
         # prevent malicious code injection !
@@ -109,16 +112,15 @@ bot_config = {    # unicode values
             'count':           '0',
             #'postproc':        '("","")',
             'postproc':        '(\'\', \'\')',
-            'wiki':            'False',         # may be change to url='wiki://'
             'beautifulsoup':   'False',         # DRTRIGON-88
-            'expandtemplates': 'False',         # DRTRIGON-93 (only with 'wiki')
+            'expandtemplates': 'False',         # DRTRIGON-93 (with 'wiki://')
             'simple':          '',              # DRTRIGON-85
             'zip':             'False',
             'xlsx':            '',              #
             'ods':             '',              #
             # may be 'hours' have to be added too (e.g. for 'ar')
             'cron':            '',              # DRTRIGON-102
-            'error':           repr('<noinclude>\n%(error)s\n</noinclude>'), # DRTRIGON-116
+            'verbose':         'True',          # DRTRIGON-132 (else see logs)
             #'djvu': ... u"djvused -e 'n' \"%s\"" ... djvutext.py
             #'pdf': ... u"pdftotext" or python module
             #'imageocr', 'swfocr', ...
@@ -178,13 +180,13 @@ class SubsterBot(basic.AutoBasicBot):
         if not ((self.site.family.name == 'wikidata') and (self.site.lang == 'repo')):
             # DRTRIGON-130; skip this for test-repo
             self._code       = self._ConfCSSpostprocPage.get()
-            pywikibot.output(u'Imported postproc %s rev %s from %s' % \
+            pywikibot.output(u'Imported postproc %s rev %s from %s' %\
               ((self._ConfCSSpostprocPage.title(asLink=True),) + self._ConfCSSpostprocPage.getVersionHistory(revCount=1)[0][:2]) )
         self._flagenable = {}
         if self._ConfCSSconfigPage.exists():
             exec(self._ConfCSSconfigPage.get())    # with variable: bot_config_wiki
             self._flagenable = bot_config_wiki['flagenable']
-            pywikibot.output(u'Imported config %s rev %s from %s' % \
+            pywikibot.output(u'Imported config %s rev %s from %s' %\
               ((self._ConfCSSconfigPage.title(asLink=True),) + self._ConfCSSconfigPage.getVersionHistory(revCount=1)[0][:2]) )
 
     def run(self, sim=False, msg=None, EditFlags=bot_config['EditFlags']):
@@ -219,7 +221,7 @@ class SubsterBot(basic.AutoBasicBot):
                 # convert talk page result to wikidata(base)
                 data = self.WD_convertContent(substed_content)
                 #outpage = page.toggleTalkPage()
-                outpage = pywikibot.wikidataPage(self.site, page.toggleTalkPage().title())
+                outpage = pywikibot.DataPage(self.site, page.toggleTalkPage().title())
                 #dic = json.loads(outpage.get())
                 dic = outpage.getentities()
 
@@ -260,23 +262,53 @@ class SubsterBot(basic.AutoBasicBot):
            substituted and a list of those tags.
         """
 
+        #md_val_tag = u'%s-META-%s'
+        md_val_tag = u'META-%s-%s'
+
         substed_content = content
         substed_tags = []  # DRTRIGON-73
 
         for item in params:
+            # 1st stage: main/general content substitution
             # 1.) - 5.) subst templates
+            metadata = { 'bot-error':           unicode(False), 
+                         'bot-error-traceback': u'', }  # DRTRIGON-132
             try:
-                (substed_content, tags) = self.subTemplate(substed_content, item)
+                (substed_content, tags, md) = self.subTemplate(substed_content, item)
                 substed_tags += tags
+                metadata.update(md)
+
+                # DRTRIGON-132; metadata append IFF other data/content changed
+                # (can change all the time, but MUST NOT trigger a page save/change!)
+                if not tags:
+                    metadata = {}
             except:
                 exc_info = sys.exc_info()
                 result = u''.join(traceback.format_exception(exc_info[0], exc_info[1], exc_info[2]))
-                substed_content += ast.literal_eval(item['error']) %\
-                                   {'error': bot_config['ErrorTemplate'] %\
+
+                # DRTRIGON-132; metadata append IFF exception raised
+                # (this metadata HAVE TO trigger a change because of error!)
+                metadata['bot-error'] = unicode(True)
+                metadata['bot-error-traceback'] = bot_config['ErrorTemplate'] %\
                                      ( item['value'],
                                        pywikibot.Timestamp.now().isoformat(' '),
-                                       u' ' + result.replace(u'\n', u'\n ').rstrip() ) }
-                substed_tags.append( u'>error:%s<' % item['value'] )
+                                       result.strip() )
+
+                # VerboseMode: IFF no 'bot-error-traceback' metadata tag present on
+                # page, append it in order not to loose error info (single exception)
+                value = md_val_tag % (item['value'], 'bot-error-traceback')
+                tags = self.subTag(substed_content, value)[1]
+                if ast.literal_eval(item['verbose']) and (value not in tags):
+                    substed_content += bot_config['VerboseMessage'] %\
+                      (self._var_regex_str % {'var': value, 'cont': u''})
+
+            # 2nd stage: conditional metadata substitution (DRTRIGON-132)
+            # (IFF content changed, exception raised, ...)
+            for data in metadata:
+                value = md_val_tag % (item['value'], data)
+                (substed_content, tags) = self.subTag(substed_content, value, metadata[data], 0)
+                substed_tags += tags
+                #substed_tags.append( u'>error:%s<' % item['value'] )
 
         return (substed_content, substed_tags)
 
@@ -293,6 +325,8 @@ class SubsterBot(basic.AutoBasicBot):
         """
 
         substed_tags = []  # DRTRIGON-73
+        metadata     = { 'mw-signature': u'~~~~', 
+                         'mw-timestamp': u'~~~~~', }  # DRTRIGON-132
 
         # 0.2.) check for 'simple' mode and get additional params
         if param['simple']:
@@ -312,20 +346,20 @@ class SubsterBot(basic.AutoBasicBot):
             pywikibot.output(u'CRON delay for execution: %.3f (<= %i)' % (delay, bot_config['CRONMaxDelay']))
 
             if not (delay <= bot_config['CRONMaxDelay']):
-                return (content, substed_tags)
+                return (content, substed_tags, metadata)
 
         # 1.) getUrl or wiki text
         # (security: check url not to point to a local file on the server,
         #  e.g. 'file://' - same as used in xsalt.py)
         secure = False
-        for item in [u'http://', u'https://', u'mail://', u'local://']:
+        for item in [u'http://', u'https://', u'mail://', u'local://', u'wiki://']:
             secure = secure or (param['url'][:len(item)] == item)
-        param['wiki'] = ast.literal_eval(param['wiki'])
         param['zip']  = ast.literal_eval(param['zip'])
-        if (not secure) and (not param['wiki']):
-            return (content, substed_tags)
-        if   param['wiki']:
-            if ast.literal_eval(param['expandtemplates']):  # DRTRIGON-93 (only with 'wiki')
+        if not secure:
+            return (content, substed_tags, metadata)
+        if   (param['url'][:7] == u'wiki://'):
+            param['url'] = param['url'][7:].strip('[]')     # enable wiki-links
+            if ast.literal_eval(param['expandtemplates']):  # DRTRIGON-93 (only with 'wiki://')
                 external_buffer = pywikibot.Page(self.site, param['url']).get(expandtemplates=True)
             else:
                 external_buffer = self.load( pywikibot.Page(self.site, param['url']) )
@@ -342,22 +376,28 @@ class SubsterBot(basic.AutoBasicBot):
                 d.close()
             else:
                 external_buffer = u'n/a'
-        elif param['zip']:
-            external_buffer = urllib.urlopen(param['url']).read()
-            # issue with r355: http://de.wikipedia.org/w/index.php?title=Vorlage:Infobox_Kreditinstitut/DatenDE&oldid=105472739
-            #f_url, external_buffer = http.request(self.site, param['url'], no_hostname=True, back_response=True)
-            #external_buffer = f_url.read()
-            #del f_url   # free some memory (no need to keep a copy...)
         else:
-            external_buffer = http.request(self.site, param['url'], no_hostname = True)
+            f_url, external_buffer = http.request(self.site, param['url'],
+                                                  no_hostname = True, 
+                                                  back_response = True)
+            headers = f_url.headers # same like 'f_url.info()'
+            #if param['zip']:
+            if ('text/' not in headers['content-type']):
+                pywikibot.output(u'Source is of non-text content-type, using raw data instead.')
+                external_buffer = f_url.read()
+            del f_url               # free some memory (no need to keep copy)
+
+            for h in ['content-length', 'date', 'last-modified', 'expires']:
+                if h in headers:
+                    metadata['url-%s' % h] = headers[h]
 
         # some intermediate processing (unzip, xlsx2csv, ...)
-        if param['zip']:
+        if param['zip']:    # 'application/zip', ...
             fileno          = 0 if (param['zip'] == True) else (param['zip']-1)
             external_buffer = self.unzip(external_buffer, fileno)
-        if param['xlsx']:
+        if param['xlsx']:   # 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             external_buffer = self.xlsx2csv(external_buffer, param['xlsx'])
-        if param['ods']:
+        if param['ods']:    # 'application/vnd.oasis.opendocument.spreadsheet'
             external_buffer = self.ods2csv(external_buffer, param['ods'])
 
         if not ast.literal_eval(param['beautifulsoup']):    # DRTRIGON-88
@@ -404,11 +444,8 @@ class SubsterBot(basic.AutoBasicBot):
                 logging.getLogger('subster').debug( external_data )
 
                 # 5.) subst content
-                prev_content = content
-                var_regex = self.get_var_regex(value)
-                content = var_regex.sub((self._var_regex_str%{'var':value,'cont':external_data}), content, int(param['count']))
-                if (content != prev_content):
-                    substed_tags.append(value)
+                (content, tags) = self.subTag(content, value, external_data, int(param['count']))
+                substed_tags += tags
         else:
             # DRTRIGON-105: Support for multiple BS template configurations
             value = param['value']
@@ -430,6 +467,24 @@ class SubsterBot(basic.AutoBasicBot):
 
             if (content != prev_content):
                 substed_tags.append(value+'BS')
+
+        metadata['bot-timestamp'] = pywikibot.Timestamp.now().isoformat(' ')
+
+        return (content, substed_tags, metadata)
+
+    def subTag(self, content, value, external_data=u'~~~~', count=1):
+        """Substitute one single tag (of a template) in content.
+        
+           Can also be (ab)used to check for presence of a tag.
+        """
+        substed_tags = []
+
+        # 5.) subst content
+        prev_content = content
+        var_regex = self.get_var_regex(value)
+        content = var_regex.sub((self._var_regex_str%{'var':value,'cont':external_data}), content, count)
+        if (content != prev_content):
+            substed_tags.append(value)
 
         return (content, substed_tags)
 
@@ -513,7 +568,7 @@ class SubsterBot(basic.AutoBasicBot):
                 # a redirect)
                 (key, value) = map(string.strip, item.split('='))
                 for linked in outpage.searchentities(key):
-                    outpage = pywikibot.wikidataPage(self.site, linked[u'id'])
+                    outpage = pywikibot.DataPage(self.site, linked[u'id'])
                     #attr = outpage.getentities()
                     attr = linked
                     if (u'aliases' in attr) and (key in attr[u'aliases']):
@@ -664,8 +719,8 @@ class SubsterMailbox(mailbox.mbox):
         content = []
 
         for i, message in enumerate(self):
-            sender   = message['from']          # Could possibly be None.
-            subject  = message['subject']       # Could possibly be None.
+            sender   = message['from']       # Could possibly be None.
+            subject  = message['subject']    # Could possibly be None.
             timestmp = message['date']       # Could possibly be None.
 
             if sender and url[1] in sender:
