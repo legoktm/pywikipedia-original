@@ -1208,12 +1208,17 @@ not supported by PyWikipediaBot!"""
             #pywikibot.output(...)
             # (or create a own error, e.g. look into interwiki.py)
 
-    def permalink(self):
-        """Return the permalink URL for current revision of this page."""
-        return "%s://%s%s&oldid=%i" % (self.site().protocol(),
-                                       self.site().hostname(),
-                                       self.site().get_address(self.title()),
-                                       self.latestRevision())
+    def permalink(self, oldid=None):
+        """Return the permalink URL of an old revision of this page.
+
+        @param oldid: The revid of the revision desired.
+
+        """
+        return "%s://%s%s&oldid=%i" \
+                % (self.site().protocol(),
+                   self.site().hostname(),
+                   self.site().get_address(self.title()),
+                   (oldid if oldid is not None else self.latestRevision()))
 
     def latestRevision(self):
         """Return the current revision id for this page."""

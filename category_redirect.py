@@ -296,12 +296,8 @@ class CategoryRedirectBot(object):
             rotate_revid = history[-1][0]
             # append permalink
             log_text = log_text + (
-                "\n\n'''[%s://%s%s/index.php?title=%s&oldid=%s Older logs]'''"
-                    % (self.site.protocol(),
-                       self.site.hostname(),
-                       self.site.scriptpath(),
-                       self.log_page.urlname(),
-                       rotate_revid))
+                "\n\n'''[%s Older logs]'''"
+                    % self.log_page.permalink(oldid=rotate_revid))
         except IndexError:
             # don't die if getVersionHistory fails (again)
             return all_log_text
