@@ -8195,7 +8195,10 @@ sysopnames['%s']['%s']='name' to your user-config.py"""
             # 2nd try is for mw >=1.17wmf1
             versionlist.append(lambda: htmldata.body.table.findAll(
                                        'td')[1].contents[0] )
-            # 3rd uses family file which is not live
+            # 3rd try is for mw >=1.21
+            versionlist.append(lambda: htmldata.body.table.findAll(
+                                       'td')[1].contents[0].contents[0] )
+            # 4th uses family file which is not live
             versionlist.append(lambda: self.family.version(self.lang) )
             for versionfunc in versionlist:
                 try:
