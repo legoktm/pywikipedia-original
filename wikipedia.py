@@ -45,7 +45,10 @@ Other functions:
     setAction(text): Use 'text' instead of "Wikipedia python library" in
         edit summaries
     setUserAgent(text): Sets the string being passed to the HTTP server as
-        the User-agent: header. Defaults to 'Pywikipediabot/1.0'.
+        the User-agent: header. The default is 
+        '<script>/<revision> Pywikipediabot/1.0', where '<script>' is the tail
+        path component and file name of the currently executing script and
+        revision is the SVN revision of Pywikipediabot.
 
     output(text): Prints the text 'text' in the encoding of the user's
         console. **Use this instead of "print" statements**
@@ -160,6 +163,9 @@ try:
 except ValueError:
     WIDEBUILD = False
 
+
+# Format string for the default user agent.
+USER_AGENT_FORMAT = '{script}/r{version[rev]} Pywikipediabot/1.0'
 
 SaxError = xml.sax._exceptions.SAXParseException
 
@@ -5208,7 +5214,10 @@ def setUserAgent(s):
     useragent = s
 
 # Default User-agent
-setUserAgent('PythonWikipediaBot/1.0')
+setUserAgent(USER_AGENT_FORMAT.format(
+    script=('-'.join(version.get_executing_script())),
+    version=version.getversiondict()
+))
 
 def url2link(percentname, insite, site):
     """Convert urlname of a wiki page into interwiki link format.
