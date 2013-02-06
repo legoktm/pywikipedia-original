@@ -49,7 +49,7 @@ import wikipedia
 import config
 
 # FIXME: They should be defined *somewhere* in the Python library, not?
-WHITESPACE = u' \t\u200e\u200f\u202a\u202a\u202b\u202c\u202d\u202e'
+WHITESPACE = u' \r\n\t\u200e\u200f\u202a\u202a\u202b\u202c\u202d\u202e'
 
 def wait_callback(object):
     output(u'%s Connection has been lost in %s. Attempting reconnection.' % (threading.currentThread(), repr(object)), False)
