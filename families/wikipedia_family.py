@@ -38,7 +38,7 @@ class Family(family.WikimediaFamily):
             'tn', 'chr', 'bi', 'got', 'cdo', 'sm', 'bm', 'iu', 'pih', 'pnt',
             'ss', 'sd', 'ki', 'ee', 'ha', 'om', 'fj', 'ti', 'ts', 'ks', 'sg',
             've', 'rn', 'dz', 'cr', 'ak', 'tum', 'lg', 'ny', 'ik', 'ch', 'ff',
-            'tw', 'st', 'xh',
+            'tw', 'st', 'xh', 'min',
         ]
 
         self.langs = dict([(lang, '%s.wikipedia.org' % lang)
@@ -224,6 +224,7 @@ class Family(family.WikimediaFamily):
             'mg': u'Wikipedia',
             'mhr': u'Википедий',
             'mi': u'Wikipedia',
+            'min': u'Wikipedia',
             'mk': u'Википедија',
             'ml': [u'വിക്കിപീഡിയ', u'വിക്കി', u'Wikipedia', u'WP'],
             'mn': u'Wikipedia',
@@ -502,6 +503,7 @@ class Family(family.WikimediaFamily):
             'mg': [u'Dinika amin\'ny Wikipedia', u'Discussion Wikipedia'],
             'mhr': [u'Википедийын каҥашымаш', u'Обсуждение Википедий'],
             'mi': u'Wikipedia talk',
+            'min': u'Pembicaraan Wikipedia',
             'mk': u'Разговор за Википедија',
             'ml': [u'വിക്കിപീഡിയ സംവാദം', u'വിക്കിസം'],
             'mn': u'Wikipedia-н хэлэлцүүлэг',
@@ -700,6 +702,7 @@ class Family(family.WikimediaFamily):
             'lmo': u'Portal',
             'lt': u'Vikisritis',
             'lv': u'Portāls',
+            'min': u'Portal',
             'mk': u'Портал',
             'ml': u'കവാടം',
             'mr': u'दालन',
@@ -805,6 +808,7 @@ class Family(family.WikimediaFamily):
             'lmo': u'Descüssiú Portal',
             'lt': u'Vikisrities aptarimas',
             'lv': u'Portāla diskusija',
+            'min': u'Diskusi Portal',
             'mk': u'Разговор за Портал',
             'ml': [u'കവാടത്തിന്റെ സംവാദം', u'Portal talk'],
             'mr': u'दालन चर्चा',
