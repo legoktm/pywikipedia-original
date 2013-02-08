@@ -1,6 +1,6 @@
 How to create a new family file to add a new wiki to the bot framework.
 
-(c) 2008-2011, the Pywikipediabot team
+(c) 2008-2013, the Pywikipediabot team
 
 First of all, run generate_family_file.py, and see if this works. If it doesn't,
 please read the text below and check the example.
@@ -26,17 +26,17 @@ settings.
 
 == COPY HERE ==
 
-# -*- coding: utf-8  -*-              # REQUIRED
-import config, family, urllib         # REQUIRED
+# -*- coding: utf-8  -*-               # REQUIRED
+import config, family, urllib          # REQUIRED
 
-class Family(family.Family):          # REQUIRED
-    def __init__(self):               # REQUIRED
-        family.Family.__init__(self)  # REQUIRED
-        self.name = 'WIKINAME'        # REQUIRED; replace with actual name
+class Family(family.Family):           # REQUIRED
+    def __init__(self):                # REQUIRED
+        super(Family, self).__init__() # REQUIRED
+        self.name = 'WIKINAME'         # REQUIRED; replace with actual name
 
-        self.langs = {                # REQUIRED
-            'en': 'www.example.com',  # Include one line for each wiki in family
-            'fr': 'www.example.fr',   # in the format 'code': 'hostname',
+        self.langs = {                 # REQUIRED
+            'en': 'www.example.com',   # Include one line for each wiki in family
+            'fr': 'www.example.fr',    # in the format 'code': 'hostname',
         }
 
         # Translation used on all wikis for the different namespaces.
