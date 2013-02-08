@@ -3529,7 +3529,6 @@ class Family(object):
             'seattlewiki':      'seattlewiki',
             'seattlewireless':  'seattlewireless',
             'senseislibrary':   'senseislibrary',
-            'shakti':           'shakti',
             'silcode':          'silcode',
             'slashdot':         'slashdot',
             'slwiki':           'slwiki',
