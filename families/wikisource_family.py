@@ -129,7 +129,7 @@ class Family(family.WikimediaFamily):
             'cy': u'Sgwrs Wicitestun',
             'da': [u'Wikisource diskussion', u'Wikisource-diskussion'],
             'de': u'Wikisource Diskussion',
-            'el': u'Βικιθήκη συζήτηση',
+            'el': [u'Συζήτηση Βικιθήκη', u'Βικιθήκη συζήτηση'],
             'en': [u'Wikisource talk', u'WT'],
             'eo': u'Vikifontaro diskuto',
             'es': u'Wikisource discusión',

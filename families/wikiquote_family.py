@@ -144,7 +144,7 @@ class Family(family.WikimediaFamily):
             'cy': u'Sgwrs Wikiquote',
             'da': [u'Wikiquote diskussion', u'Wikiquote-diskussion'],
             'de': u'Wikiquote Diskussion',
-            'el': u'Βικιφθέγματα συζήτηση',
+            'el': [u'Συζήτηση Βικιφθέγματα', u'Βικιφθέγματα συζήτηση'],
             'en': u'Wikiquote talk',
             'eo': [u'Vikicitaro-Diskuto', u'Vikicitaro diskuto'],
             'es': u'Wikiquote discusión',

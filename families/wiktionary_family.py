@@ -40,6 +40,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Vikipediista diskuto', u'Uzula diskuto']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
+        self.namespaces[11]['ks'] = [u'فرما بَحَژ']
+        self.namespaces[10]['ks'] = [u'فرما']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
@@ -48,6 +50,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
+        self.namespaces[3]['dv'] = [u'މެމްބަރުގެ ވާހަކަ']
+        self.namespaces[-2]['dv'] = [u'މީޑިއާ']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
@@ -238,7 +242,7 @@ class Family(family.WikimediaFamily):
             'de': u'Wiktionary Diskussion',
             'dv': u'Wiktionary talk',
             'dz': u'Wiktionary talk',
-            'el': u'Συζήτηση βικιλεξικού',
+            'el': [u'Συζήτηση βικιλεξικού', u'Βικιλεξικό συζήτηση'],
             'en': u'Wiktionary talk',
             'eo': [u'Vikivortaro-Diskuto', u'Vikivortaro diskuto'],
             'es': u'Wikcionario discusión',
@@ -399,6 +403,7 @@ class Family(family.WikimediaFamily):
             'ga': u'Aguisín',
             'gl': u'Apéndice',
             'he': u'נספח',
+            'id': u'Indeks',
             'it': u'Appendice',
             'ja': u'付録',
             'ko': u'부록',
@@ -434,6 +439,7 @@ class Family(family.WikimediaFamily):
             'ga': u'Plé aguisín',
             'gl': u'Conversa apéndice',
             'he': u'שיחת נספח',
+            'id': u'Pembicaraan Indeks',
             'it': u'Discussioni appendice',
             'ja': u'付録・トーク',
             'ko': u'부록 토론',

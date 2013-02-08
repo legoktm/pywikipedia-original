@@ -48,7 +48,7 @@ class Family(family.WikimediaFamily):
             'beta': u'Wikiversity talk',
             'cs': [u'Diskuse k Wikiverzitě', u'Wikiversity diskuse', u'Wikiversity talk', u'Wikiverzita diskuse'],
             'de': u'Wikiversity Diskussion',
-            'el': u'Συζήτηση Βικιεπιστημίου',
+            'el': [u'Συζήτηση Βικιεπιστημίου', u'Βικιεπιστήμιο συζήτηση'],
             'en': u'Wikiversity talk',
             'es': u'Wikiversidad discusión',
             'fi': u'Keskustelu Wikiopistosta',
