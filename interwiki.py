@@ -163,6 +163,8 @@ These arguments are useful to provide hints to the bot:
                    for the format, one can for example give "en:something" or
                    "20:" as hint.
 
+    -repository    Include data repository
+
     -same          looks over all 'serious' languages for the same title.
                    -same is equivalent to -hint:all:
                    (note: without ending colon)
@@ -333,7 +335,7 @@ that you have to break it off, use "-continue" next time.
 # (C) Rob W.W. Hooft, 2003
 # (C) Daniel Herding, 2004
 # (C) Yuri Astrakhan, 2005-2006
-# (C) xqt, 2009-2012
+# (C) xqt, 2009-2013
 # (C) Pywikipedia bot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
@@ -498,6 +500,7 @@ class Global(object):
     restoreAll = False
     async  = False
     summary = u''
+    repository = False
 
     def readOptions(self, arg):
         """ Read all commandline parameters for the global container """
@@ -522,6 +525,8 @@ class Global(object):
             self.same = True
         elif arg == '-wiktionary':
             self.same = 'wiktionary'
+        elif arg == '-repository':
+            self.repository = True
         elif arg == '-untranslated':
             self.untranslated = True
         elif arg == '-untranslatedonly':
@@ -831,6 +836,8 @@ class Subject(object):
         self.todo = PageTree()
         if originPage:
             self.todo.add(originPage)
+        if globalvar.repository:
+            self.todo.add(pywikibot.DataPage(originPage))
 
         # done is a list of all pages that have been analyzed and that
         # are known to belong to this subject.
@@ -1202,6 +1209,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
         """
         # Loop over all the pages that should have been taken care of
         for page in self.pending:
+            if page.title == None: ### seems a DataPage
+                page.get() ### get it's title (and content)
             # Mark the page as done
             self.done.add(page)
 
@@ -1322,7 +1331,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                 iw = page.interwiki()
             except pywikibot.NoSuchSite:
                 if not globalvar.quiet or pywikibot.verbose:
-                    pywikibot.output(u"NOTE: site %s does not exist" % page.site)
+                    pywikibot.output(u"NOTE: site %s does not exist."
+                                     % page.site)
                 continue
 
             (skip, alternativePage) = self.disambigMismatch(page, counter)
@@ -2022,10 +2032,12 @@ u'\03{lightred}WARNING: This may be false positive due to unicode bug #3081100\0
                     try:
                         linkedPages = set(page.interwiki())
                     except pywikibot.NoPage:
-                        pywikibot.output(u"WARNING: Page %s does no longer exist?!" % page)
+                        pywikibot.output(
+                            u"WARNING: Page %s does no longer exist?!" % page)
                         break
-                    # To speed things up, create a dictionary which maps sites to pages.
-                    # This assumes that there is only one interwiki link per language.
+                    # To speed things up, create a dictionary which maps sites
+                    # to pages. This assumes that there is only one interwiki
+                    # link per language.
                     linkedPagesDict = {}
                     for linkedPage in linkedPages:
                         linkedPagesDict[linkedPage.site] = linkedPage
@@ -2038,10 +2050,11 @@ u'\03{lightred}WARNING: This may be false positive due to unicode bug #3081100\0
                                     % (page.site.family.name,
                                        page, expectedPage, linkedPage))
                             except KeyError:
-                                pywikibot.output(
-                                    u"WARNING: %s: %s does not link to %s"
-                                    % (page.site.family.name,
-                                       page, expectedPage))
+                                if not expectedPage.site.is_data_repository():
+                                    pywikibot.output(
+                                        u"WARNING: %s: %s does not link to %s"
+                                        % (page.site.family.name,
+                                           page, expectedPage))
                     # Check for superfluous links
                     for linkedPage in linkedPages:
                         if linkedPage not in expectedPages:
