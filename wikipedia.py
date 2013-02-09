@@ -4084,6 +4084,9 @@ class DataPage(Page):
         elif isinstance(source, Page):
             title = source.title()
             source = source.site
+        elif isinstance(source, int):
+            title = "Q%d" % source
+            source = getSite().data_repository()
         self._originSite = source
         self._originTitle = title
         source = self._originSite.data_repository()
@@ -4366,7 +4369,7 @@ class DataPage(Page):
             except AttributeError:
                 raise SectionError # Page has no section by this name
         self._contents = json.loads(pagetext)
-        self._title = self._contents['entity']
+        self._title = self._contents['entity'].title()
         return self._contents
 
     def getentities(self, sysop=False):
@@ -4439,7 +4442,8 @@ class DataPage(Page):
 
         """
         links = self.get()['links']
-        self._interwiki = [Page(code.replace('wiki', ''), links[code])
+        self._interwiki = [Page(code.replace('wiki', '').replace('_', '-'),
+                                links[code])
                            for code in links]
         return self._interwiki
 
