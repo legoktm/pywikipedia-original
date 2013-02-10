@@ -4091,7 +4091,7 @@ class DataPage(Page):
         self._originTitle = title
         source = self._originSite.data_repository()
         Page.__init__(self, source, title, *args, **kwargs)
-        if not self._originSite is source:
+        if not (self._originSite == source):
             self._title = None
 
     def setitem(self, summary=None, watchArticle=False, minorEdit=True,
@@ -4409,7 +4409,6 @@ class DataPage(Page):
         # retrying is done by query.GetData
         data = query.GetData(params, self.site(), sysop=sysop)
         search  = data['search']
-        debuginfo = data['debuginfo']
 
         if 'error' in data:
             raise RuntimeError("API query error: %s" % data)
