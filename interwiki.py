@@ -730,6 +730,7 @@ class PageTree(object):
         site = page.site
         if not site in self.tree:
             self.tree[site] = []
+        assert page not in self.tree[site]
         self.tree[site].append(page)
         self.size += 1
 
@@ -1672,10 +1673,10 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                             break
         else:
             for (site, page) in new.iteritems():
-                # edit restriction for some templates on zh-wiki where interlanguage keys are included
-                # by /doc subpage
-                smallWikiAllowed = not (page.site.sitename() == 'wikipedia:zh' and
-                                        page.namespace() == 10 and
+                # edit restriction for some templates on zh-wiki where
+                # interlanguage keys are included by /doc subpage
+                smallWikiAllowed = not (page.site.sitename() == 'wikipedia:zh'
+                                        and page.namespace() == 10 and
                                         u'Country data' in page.title(withNamespace=False))
                 # edit restriction on is-wiki
                 # http://is.wikipedia.org/wiki/Wikipediaspjall:V%C3%A9lmenni
@@ -1769,6 +1770,8 @@ u'NOTE: number of edits are restricted at %s'
         """
         Returns True if saving was successful.
         """
+        dp = isinstance(page, pywikibot.DataPage)
+        pagetext = ''
         if globalvar.localonly:
             # In this case only continue on the Page we started with
             if page != self.originPage:
@@ -1778,18 +1781,22 @@ u'NOTE: number of edits are restricted at %s'
             pywikibot.output(u"Not editing %s: not doing interwiki on subpages"
                              % page)
             raise SaveError(u'Link has a #section')
-        try:
-            pagetext = page.get()
-        except pywikibot.NoPage:
-            pywikibot.output(u"Not editing %s: page does not exist" % page)
-            raise SaveError(u'Page doesn\'t exist')
+        if not dp:
+            try:
+                pagetext = page.get()
+            except pywikibot.NoPage:
+                pywikibot.output(u"Not editing %s: page does not exist" % page)
+                raise SaveError(u'Page doesn\'t exist')
         if page.isEmpty() and not page.isCategory():
             pywikibot.output(u"Not editing %s: page is empty" % page)
             raise SaveError
 
         # clone original newPages dictionary, so that we can modify it to the
         # local page's needs
-        new = dict(newPages)
+        new = newPages.copy()
+        if page.site.has_transcluded_data:
+            new = dict()
+            new[page.site] = page
         interwikis = page.interwiki()
 
         # remove interwiki links to ignore
@@ -1830,9 +1837,10 @@ u'NOTE: number of edits are restricted at %s'
         del new[page.site]
         # Do not add interwiki links to foreign families that page.site() does not forward to
         for stmp in new.keys():
-            if stmp.family != page.site.family:
-                if stmp.family.name != page.site.family.interwiki_forward:
-                    del new[stmp]
+            if stmp.family != page.site.family and \
+               stmp.family.name != page.site.family.interwiki_forward and \
+               not page.site.is_data_repository():
+                del new[stmp]
 
         # Put interwiki links into a map
         old={}
@@ -1878,26 +1886,29 @@ u'NOTE: number of edits are restricted at %s'
         pywikibot.output(
             u"\03{lightpurple}Updating links on page %s.\03{default}" % page)
         pywikibot.output(u"Changes to be made: %s" % mods)
-        oldtext = page.get()
-        template = (page.namespace() == 10)
-        newtext = pywikibot.replaceLanguageLinks(oldtext, new,
-                                                 site=page.site,
-                                                 template=template)
-        # This is for now. Later there should be different funktions for each
-        # kind
-        if not botMayEdit(page):
-            if template:
-                pywikibot.output(
-                    u'SKIPPING: %s should have interwiki links on subpage.'
-                    % page)
-            else:
-                pywikibot.output(
-                    u'SKIPPING: %s is under construction or to be deleted.'
-                    % page)
-            return False
-        if newtext == oldtext:
-            return False
-        pywikibot.showDiff(oldtext, newtext)
+        if dp:
+            pass
+        else:
+            oldtext = page.get()
+            template = (page.namespace() == 10)
+            newtext = pywikibot.replaceLanguageLinks(oldtext, new,
+                                                     site=page.site,
+                                                     template=template)
+            # This is for now. Later there should be different funktions for
+            # each kind
+            if not botMayEdit(page):
+                if template:
+                    pywikibot.output(
+                        u'SKIPPING: %s should have interwiki links on subpage.'
+                        % page)
+                else:
+                    pywikibot.output(
+                        u'SKIPPING: %s is under construction or to be deleted.'
+                        % page)
+                return False
+            if newtext == oldtext:
+                return False
+            pywikibot.showDiff(oldtext, newtext)
 
         # pywikibot.output(u"NOTE: Replace %s" % page)
         # Determine whether we need permission to submit
@@ -1950,11 +1961,15 @@ u'\03{lightred}WARNING: This may be false positive due to unicode bug #3081100\0
             timeout=60
             while True:
                 try:
-                    if globalvar.async:
-                        page.put_async(newtext, comment=mcomment)
-                        status = 302
+                    if dp:
+                        pass
                     else:
-                        status, reason, data = page.put(newtext, comment=mcomment)
+                        if globalvar.async:
+                            page.put_async(newtext, comment=mcomment)
+                            status = 302
+                        else:
+                            status, reason, data = page.put(newtext,
+                                                            comment=mcomment)
                 except pywikibot.LockedPage:
                     pywikibot.output(u'Page %s is locked. Skipping.' % page)
                     raise SaveError(u'Locked')
