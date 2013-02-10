@@ -84,3 +84,6 @@ class Family(family.WikimediaFamily):
             'de': u'Nachrichten Diskussion',
             'it': u'Discussioni notizie',
         }
+
+        # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
+        self.cross_allowed = ['es', 'ru', ]
