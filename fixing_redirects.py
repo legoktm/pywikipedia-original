@@ -170,8 +170,8 @@ def workon(page):
         try:
             target = page2.getRedirectTarget()
         except pywikibot.NoPage:
-            gen = s.logpages(number=1, mode='move', title=page2.title(),
-                             dump=True)
+            gen = mysite.logpages(number=1, mode='move', title=page2.title(),
+                                  dump=True)
             try:
                 lastmove = gen.next()['move']
             except StopIteration:
