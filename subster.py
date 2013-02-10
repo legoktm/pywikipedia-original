@@ -34,6 +34,7 @@ Syntax example:
 
     python subster.py -family:meta -lang:
     python subster.py -family:wikidata -lang:repo
+    python subster.py -family:wikidata -lang:en
         Run bot on another site family and language than configured as default.
         E.g. 'meta' or 'wikidata'.
 
@@ -177,7 +178,7 @@ class SubsterBot(basic.AutoBasicBot):
         self._ConfCSSpostprocPage = pywikibot.Page(self.site, bot_config['ConfCSSpostproc'])
         self._ConfCSSconfigPage   = pywikibot.Page(self.site, bot_config['ConfCSSconfig'])
         self.pagegen     = pagegenerators.ReferringPageGenerator(self._userListPage, onlyTemplateInclusion=True)
-        if not ((self.site.family.name == 'wikidata') and (self.site.lang == 'repo')):
+        if not (self.site.family.name == 'wikidata'):
             # DRTRIGON-130; skip this for test-repo
             self._code       = self._ConfCSSpostprocPage.get()
             pywikibot.output(u'Imported postproc %s rev %s from %s' %\
@@ -220,15 +221,23 @@ class SubsterBot(basic.AutoBasicBot):
             elif (self.site.family.name == 'wikidata'):     # DRTRIGON-130
                 # convert talk page result to wikidata(base)
                 data = self.WD_convertContent(substed_content)
-                #outpage = page.toggleTalkPage()
-                outpage = pywikibot.DataPage(self.site, page.toggleTalkPage().title())
-                #dic = json.loads(outpage.get())
-                dic = outpage.getentities()
+                datapage = pywikibot.DataPage(self.site, page.title())
+                for item in data:
+                    for element in datapage.searchentities(u'DrTrigonBot:%s' % item):
+                        dataoutpage = pywikibot.DataPage(self.site, element['id'])
+                        dataoutpage = page.toggleTalkPage()
 
-                # check for changes and then write/change/set values
-                summary = u'Bot: update data because of configuration on %s.' % page.title(asLink=True)
-                if not self.WD_save(outpage, dic[u'claims'], {u'p32': data}, summary):
-                    pywikibot.output(u'NOTHING TO DO!')
+                        ##dic = json.loads(dataoutpage.get())
+                        #dic = dataoutpage.getentities()
+                        out = u'* ~~~~~ / [[%s]] / %s / %s' % (element['id'], item, data[item])
+
+                        pywikibot.output(u'%s <--- %s' % (dataoutpage.title(asLink=True), out))
+
+                        ## check for changes and then write/change/set values
+                        #summary = u'Bot: update data because of configuration on %s.' % page.title(asLink=True)
+                        #if not self.WD_save(dataoutpage, dic[u'claims'], {u'p32': data}, summary):
+                        #    pywikibot.output(u'NOTHING TO DO!')
+                        dataoutpage.put( dataoutpage.get() + u'\n' + out )
             else:
                 # if changed, write!
                 if (substed_content != content):
@@ -514,22 +523,16 @@ class SubsterBot(basic.AutoBasicBot):
         """
         # DRTRIGON-130: convert talk page result to wikidata(base)
         #res, i = {}, 0
-        res = []
+        res = {}
         for line in substed_content.splitlines():
             #data = self.get_var_regex('(.*?)', '(.*?)').findall(line)
             data = self.get_var_regex('.*?', '(.*?)').sub('\g<1>', line)
             #if not data:
             if data == line:
                 continue
-            #buf = []
-            #for item in data:
-            #    #print item[0], item[1]
-            #    params = { u'property':  u'p%i' % i,
-            #               u'value': item[1] }
-            #    buf.append(params)
-            #res[u'p%i' % i] = buf
-            #i += 1
-            res.append(data)
+            data = data.lstrip(u'|')
+            key, value = data.split(u'=')
+            res[key.strip()] = value.strip()
 
         return res
 
