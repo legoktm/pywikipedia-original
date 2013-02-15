@@ -1,7 +1,7 @@
 # -*- coding: utf-8  -*-
 #
-# (C) xqt, 2011
-# (C) Pywikipedia bot team, 2003-2007
+# (C) xqt, 2011, 2013
+# (C) Pywikipedia bot team, 2003-2009
 #
 # Distributed under the terms of the MIT license.
 #
@@ -30,8 +30,8 @@ def check_namespaces(site):
         try:
             default_namespace = site.family.namespaces[ns]['_default']
         except KeyError:
-            wikipedia.output(u'Warning! %s has no _default for namespace %s' %
-                (site, ns))
+            wikipedia.output(u'Warning! %s has no _default for namespace %s'
+                             % (site, ns))
 
         if default_namespace:
             if isinstance(default_namespace, basestring):
@@ -40,8 +40,8 @@ def check_namespaces(site):
             try:
                 defined_namespace = site.family.namespaces[ns][site.lang]
             except KeyError:
-                wikipedia.output(u'Warning! %s has only _default for namespace %s' %
-                    (site, ns))
+                wikipedia.output(u'Warning! %s has only _default for namespace '
+                                 u'%s' % (site, ns))
                 defined_namespace = default_namespace[:]
             else:
                 if isinstance(defined_namespace, basestring):
@@ -70,7 +70,7 @@ def check_namespaces(site):
                 except KeyError:
                     pass
                 else:
-                    if not namespace['*'] in default:# and \
+                    if not namespace['*'] in default:
                         if namespace['*'] in alias[1]:
                             raise
                         else:
