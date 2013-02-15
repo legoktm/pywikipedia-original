@@ -31,17 +31,15 @@ class Family(family.WikimediaFamily):
                            for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Vikipediista diskuto', u'Uzula diskuto']
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
         self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
-        self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Vikipediista diskuto', u'Uzula diskuto']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[11]['ks'] = [u'فرما بَحَژ']
-        self.namespaces[10]['ks'] = [u'فرما']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
@@ -50,8 +48,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
-        self.namespaces[3]['dv'] = [u'މެމްބަރުގެ ވާހަކަ']
-        self.namespaces[-2]['dv'] = [u'މީޑިއާ']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
