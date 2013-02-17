@@ -1614,7 +1614,7 @@ class Family(object):
             8: {
                 '_default': u'MediaWiki',
                 'ab': u'Амедиавики',
-                'ace': u'AlatWiki',
+                'ace': [u'MediaWiki', u'AlatWiki'],
                 'am': u'መልዕክት',
                 'ar': u'ميدياويكي',
                 'arc': u'ܡܝܕܝܐܘܝܩܝ',
