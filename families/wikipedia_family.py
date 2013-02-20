@@ -46,7 +46,7 @@ class Family(family.WikimediaFamily):
 
         # Override defaults
         self.namespaces[3]['cs'] =  [u'Diskuse s wikipedistou', u'Diskuse s uživatelem', u'Diskuse s wikipedistkou', u'Wikipedista diskuse', u'Wikipedistka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse']
-        self.namespaces[12]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion'],
+        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
         self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク', u'Image talk', u'画像‐ノート']
@@ -1003,10 +1003,14 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[828] = {
             'en': u'Module',
+            'fr': u'Module',
+            'hu': u'Module',
         }
 
         self.namespaces[829] = {
             'en': u'Module talk',
+            'fr': u'Module talk',
+            'hu': u'Module talk',
         }
 
         self.category_redirect_templates = {
