@@ -4289,7 +4289,7 @@ class DataPage(Page):
         data['query'] = {'pages': data['entities']}
         for pageid in data['entities'].keys():
             if pageid == "-1":
-                raise RuntimeError("API query error, no pages found: %s" % data)
+                raise NoPage(self.site(), unicode(self),"API query error, no pages found: %s" % data)
             params1['titles'] = pageid
             ndata=query.GetData(params1, self.site(), sysop=sysop)
             data['entities'].update(ndata['query']['pages'])
@@ -4297,7 +4297,7 @@ class DataPage(Page):
         if 'error' in data:
             raise RuntimeError("API query error: %s" % data)
         if not 'pages' in data['query']:
-            raise RuntimeError("API query error, no pages found: %s" % data)
+            raise NoPage(self.site(), unicode(self),"API query error, no pages found: %s" % data)
         pageInfo = ndata['query']['pages'].values()[0]
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo:
