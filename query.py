@@ -106,7 +106,7 @@ def GetData(params, site=None, useAPI=True, retryCount=config.maxretries,
     postAC = [
         'edit', 'login', 'purge', 'rollback', 'delete', 'undelete', 'protect',
         'parse', 'block', 'unblock', 'move', 'emailuser','import', 'userrights',
-        'upload', 'patrol', 'wbcreateclaim'
+        'upload', 'patrol', 'wbcreateclaim', 'wbeditentity'
     ]
     if site.versionnumber() >= 18:
         postAC.append('watch')
