@@ -141,6 +141,18 @@ class Family(family.WikimediaFamily):
         self.namespaces[205] = {
             '_default': u'Participation talk',
         }
+        self.namespaces[206] = {
+            '_default': u'Iberocoop',
+        }
+        self.namespaces[207] = {
+            '_default': u'Iberocoop talk',
+        }
+        self.namespaces[470] = {
+            '_default': u'Schema',
+        }
+        self.namespaces[471] = {
+            '_default': u'Schema talk',
+        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }

@@ -144,6 +144,12 @@ class Family(family.WikimediaFamily):
         self.namespaces[711] = {
             '_default': u'TimedText talk',
         }
+        self.namespaces[866] = {
+            '_default': u'CNBanner',
+        }
+        self.namespaces[867] = {
+            '_default': u'CNBanner talk',
+        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }

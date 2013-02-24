@@ -26,8 +26,6 @@ class Family(family.WikimediaFamily):
 
         # Override defaults
         self.namespaces[2]['ru'] = [u'Участник', u'Участница']
-        self.namespaces[10]['ru'] = [u'Шаблон']
-        self.namespaces[14]['ru'] = [u'Категория']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[14]['en'] = [u'Category', u'CAT']
@@ -36,10 +34,10 @@ class Family(family.WikimediaFamily):
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
+        self.namespaces[6]['be'] = [u'Файл', u'Выява']
+        self.namespaces[7]['be'] = [u'Размовы пра файл', u'Размовы пра выяву']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
-        self.namespaces[13]['de'] = [u'Hilfe Diskussion']
-        self.namespaces[12]['de'] = [u'Hilfe']
         self.namespaces[14]['tr'] = [u'Kategori', u'KAT']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
@@ -106,6 +104,7 @@ class Family(family.WikimediaFamily):
             'ja': u'Wikibooks',
             'ka': [u'ვიკიწიგნები', u'Wikibooks'],
             'kk': [u'Уикикітап', u'Wikibooks'],
+            'km': u'Wikibooks',
             'ko': [u'위키책', u'Wikibooks'],
             'ku': u'Wikibooks',
             'ky': u'Wikibooks',
@@ -201,7 +200,7 @@ class Family(family.WikimediaFamily):
             'ja': [u'Wikibooks・トーク', u'Wikibooks‐ノート'],
             'ka': u'ვიკიწიგნები განხილვა',
             'kk': [u'Уикикітап талқылауы', u'Уикикітап talqılawı', u'Уикикітап تالقىلاۋى'],
-            'km': u'ការពិភាក្សាអំពីWikibooks',
+            'km': [u'ការពិភាក្សាអំពីWikibooks', u'Wikibooks ពិភាក្ស'],
             'kn': u'Wikibooks ಚರ್ಚೆ',
             'ko': u'위키책토론',
             'ku': [u'Gotûbêja Wîkîpirtûkê', u'Wikibooks nîqaş'],

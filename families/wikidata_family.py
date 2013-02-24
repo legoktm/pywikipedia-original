@@ -16,6 +16,14 @@ class Family(family.WikimediaFamily):
             'client': 'wikidata-test-client.wikimedia.de',
         }
 
+        # Override defaults
+        self.namespaces[1]['repo'] = [u'Talk', u'Item talk']
+        self.namespaces[0]['repo'] = [u'', u'Item']
+
+        # Most namespaces are inherited from family.Family.
+        # Translation used on all wikis for the different namespaces.
+        # (Please sort languages alphabetically)
+        # You only need to enter translations that differ from _default.
         self.namespaces[4] = {
             '_default': [u'Wikidata', u'WD', 'Project'],
             'client': u'Testwiki',

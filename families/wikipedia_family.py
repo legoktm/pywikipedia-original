@@ -47,6 +47,8 @@ class Family(family.WikimediaFamily):
         # Override defaults
         self.namespaces[3]['cs'] =  [u'Diskuse s wikipedistou', u'Diskuse s uživatelem', u'Diskuse s wikipedistkou', u'Wikipedista diskuse', u'Wikipedistka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
+        self.namespaces[12]['de'] = [u'Hilfe', u'H']
+        self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD']
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
         self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク', u'Image talk', u'画像‐ノート']
@@ -57,6 +59,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[13]['ja'] = [u'Help‐ノート', u'ヘルプ・トーク']
         self.namespaces[14]['ja'] = [u'Category', u'カテゴリ']
         self.namespaces[15]['ja'] = [u'Category‐ノート', u'カテゴリ・トーク']
+        self.namespaces[10]['ru'] = [u'Шаблон', u'Ш', u'T']
+        self.namespaces[14]['ru'] = [u'Категория', u'К']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -427,7 +431,7 @@ class Family(family.WikimediaFamily):
             'gl': u'Conversa Wikipedia',
             'glk': u'بحث Wikipedia',
             'gn': u'Vikipetã myangekõi',
-            'got': u'𐌸𐌹𐍃 Wikipedia 𐌲𐌰𐍅𐌰𐌿𐍂𐌳𐌾𐌰',
+            'got': u'??? Wikipedia ?????????',
             'gu': u'વિકિપીડિયા ચર્ચા',
             'gv': u'Resooney Wikipedia',
             'ha': u'Wikipedia talk',

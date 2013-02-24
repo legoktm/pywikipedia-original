@@ -20,10 +20,15 @@ class Family(family.WikimediaFamily):
                            for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[2]['ru'] = [u'Участник', u'Участница']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[14]['en'] = [u'Category', u'CAT']
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
         self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
+        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['cs'] = [u'Diskuse s redaktorem', u'Diskuse s redaktorkou', u'Diskuse s uživatelem', u'Redaktor diskuse', u'Redaktorka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
