@@ -427,7 +427,7 @@ class Family(family.WikimediaFamily):
             'gl': u'Conversa Wikipedia',
             'glk': u'بحث Wikipedia',
             'gn': u'Vikipetã myangekõi',
-            'got': u'??? Wikipedia ?????????',
+            'got': u'𐌸𐌹𐍃 Wikipedia 𐌲𐌰𐍅𐌰𐌿𐍂𐌳𐌾𐌰',
             'gu': u'વિકિપીડિયા ચર્ચા',
             'gv': u'Resooney Wikipedia',
             'ha': u'Wikipedia talk',
