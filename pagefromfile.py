@@ -25,7 +25,7 @@ Specific arguments:
                 end of page title
 -notitle        do not include the title, including titlestart, and
                 titleend, in the page
--nocontent     If page has this statment it dosen't append 
+-nocontent      If page has this statment it dosen't append
                 (example: -nocontents:"{{infobox")
 -summary:xxx    Use xxx as the edit summary for the upload - if
                 a page exists, standard messages are appended
@@ -152,7 +152,7 @@ class PageFromFileRobot:
         self.minor = minor
         self.autosummary = autosummary
         self.dry = dry
-	self.nocontents=nocontents
+        self.nocontents=nocontents
 
     def run(self):
         for title, contents in self.reader.run():
@@ -189,8 +189,8 @@ class PageFromFileRobot:
                     pywikibot.output(u"Page %s already exists, appending on top!"
                                  % title)
                 else:
-                    pywikibot.output(u'Page had %s so it is skipped' % (self.nocontents))    
-                    return 
+                    pywikibot.output(u'Page had %s so it is skipped' % (self.nocontents))
+                    return
                 contents = contents + page.get()
                 comment = comment_top
             elif self.append == "Bottom":
@@ -199,8 +199,8 @@ class PageFromFileRobot:
                     pywikibot.output(u"Page %s already exists, appending on bottom!"
                                  % title)
                 else:
-                    pywikibot.output(u'Page had %s so it is skipped' % (self.nocontents))    
-                    return 
+                    pywikibot.output(u'Page had %s so it is skipped' % (self.nocontents))
+                    return
                 contents = page.get() + contents
                 comment = comment_bottom
             elif self.force:
