@@ -4119,7 +4119,7 @@ class DataPage(Page):
             'summary': self._encodeArg(summary, 'summary'),
         }
         params['site'] = self._originSite.dbName().split('_')[0]
-        if params['site']==u"wikidatawikidata":
+        if self._title:
             del params['site']
             params['id']=params['title']
             del params['title']
