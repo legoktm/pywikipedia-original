@@ -290,7 +290,7 @@ class Family(family.WikimediaFamily):
             'ko': u'위키낱말사전토론',
             'ks': u'Wiktionary بَحَژ',
             'ku': [u'Gotûbêja Wîkîferhengê', u'Wîkîferheng gotûbêj', u'Wîkîferheng nîqaş'],
-            'kw': [u'Kescows Wiktionary', u'Cows Wiktionary', u'Keskows Wiktionary'],
+            'kw': [u'Keskows Wiktionary', u'Cows Wiktionary', u'Kescows Wiktionary'],
             'ky': u'Wiktionary баарлашуу',
             'la': u'Disputatio Victionarii',
             'lb': [u'Wiktionnaire Diskussioun', u'Wiktionary Diskussioun'],

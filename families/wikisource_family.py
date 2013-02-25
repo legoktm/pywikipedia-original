@@ -509,7 +509,6 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[108] = {
             '-': u'Author',
-            'be': u'Аўтар',
             'gu': u'સર્જક',
             'he': u'מחבר',
             'it': u'Pagina',
@@ -520,7 +519,6 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[109] = {
             '-': u'Author talk',
-            'be': u'Размовы_пра_аўтара',
             'gu': u'સર્જક ચર્ચા',
             'he': u'שיחת מחבר',
             'it': u'Discussioni pagina',

@@ -259,6 +259,14 @@ class Family(family.WikimediaFamily):
             'fr': u'Discussion Transwiki',
             }
 
+        self.namespaces[828] = {
+            'cs': u'Module',
+            }
+
+        self.namespaces[829] = {
+            'cs': u'Module talk',
+            }
+
         # attop is a list of languages that prefer to have the interwiki
         # links at the top of the page.
         self.interwiki_attop = []

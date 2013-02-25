@@ -19,6 +19,7 @@ class Family(family.WikimediaFamily):
                            for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
         self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
         self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']

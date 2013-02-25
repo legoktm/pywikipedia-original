@@ -233,6 +233,14 @@ class Family(family.WikimediaFamily):
             'ja': u'短信‐ノート',
         }
 
+        self.namespaces[828] = {
+            'cs': u'Module',
+        }
+
+        self.namespaces[829] = {
+            'cs': u'Module talk',
+        }
+
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = ['ca', 'cs', 'en', 'fa', 'ko', ]
 
