@@ -46,12 +46,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[123] = {
             '_default': u'Query talk',
         }
-        self.namespaces[710] = {
-            '_default': u'TimedText',
-        }
-        self.namespaces[711] = {
-            '_default': u'TimedText talk',
-        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }
