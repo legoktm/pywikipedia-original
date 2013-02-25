@@ -19,12 +19,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[5] = {
             '_default': [u'Incubator talk', self.namespaces[5]['_default']],
         }
-        self.namespaces[100] = {
-            '_default': u'Lost',
-        }
-        self.namespaces[101] = {
-            '_default': u'Lost talk',
-        }
         self.namespaces[1198] = {
             '_default': u'Translations',
         }
