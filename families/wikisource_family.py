@@ -31,8 +31,6 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[14]['as'] = [u'শ্ৰেণী', u'श्रेणी', u'শ্রেণী']
         self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
-        self.namespaces[2]['cs'] = [u'Uživatel', u'Uživatelka']
-        self.namespaces[2]['ru'] = [u'Участник', u'Участница']
         self.namespaces[12]['nl'] = [u'Help']
         self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
         self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
@@ -554,28 +552,112 @@ class Family(family.WikimediaFamily):
         }
 
         self.namespaces[250] = {
+            'az': u'Page',
+            'bg': u'Page',
+            'bs': u'Page',
+            'cs': u'Stránka',
+            'fo': u'Page',
+            'gl': u'Page',
+            'is': u'Blaðsíða',
+            'ja': u'Page',
+            'ko': u'Page',
+            'li': u'Page',
+            'lt': u'Page',
+            'mk': u'Page',
+            'sah': u'Page',
+            'sk': u'Page',
+            'sr': u'Page',
+            'ta': u'Page',
+            'th': u'Page',
+            'tr': u'Page',
+            'uk': u'Page',
+            'yi': u'Page',
             'zh-min-nan': u'Page',
         }
 
         self.namespaces[251] = {
+            'az': u'Page talk',
+            'bg': u'Page talk',
+            'bs': u'Page talk',
+            'cs': u'Diskuse ke stránce',
+            'fo': u'Page talk',
+            'gl': u'Page talk',
+            'is': u'Blaðsíðuspjall',
+            'ja': u'Page talk',
+            'ko': u'Page talk',
+            'li': u'Page talk',
+            'lt': u'Page talk',
+            'mk': u'Page talk',
+            'sah': u'Page talk',
+            'sk': u'Page talk',
+            'sr': u'Page talk',
+            'ta': u'Page talk',
+            'th': u'Page talk',
+            'tr': u'Page talk',
+            'uk': u'Page talk',
+            'yi': u'Page talk',
             'zh-min-nan': u'Page talk',
         }
 
         self.namespaces[252] = {
+            'az': u'Index',
+            'bg': u'Index',
+            'bs': u'Index',
+            'cs': u'Index',
+            'fo': u'Index',
+            'gl': u'Index',
+            'is': u'Frumrit',
+            'ja': u'Index',
+            'ko': u'Index',
+            'li': u'Index',
+            'lt': u'Index',
+            'mk': u'Index',
+            'sah': u'Index',
+            'sk': u'Index',
+            'sr': u'Index',
+            'ta': u'Index',
+            'th': u'Index',
+            'tr': u'Index',
+            'uk': u'Index',
+            'yi': u'Index',
             'zh-min-nan': u'Index',
         }
 
         self.namespaces[253] = {
+            'az': u'Index talk',
+            'bg': u'Index talk',
+            'bs': u'Index talk',
+            'cs': u'Diskuse k indexu',
+            'fo': u'Index talk',
+            'gl': u'Index talk',
+            'is': u'Frumritsspjall',
+            'ja': u'Index talk',
+            'ko': u'Index talk',
+            'li': u'Index talk',
+            'lt': u'Index talk',
+            'mk': u'Index talk',
+            'sah': u'Index talk',
+            'sk': u'Index talk',
+            'sr': u'Index talk',
+            'ta': u'Index talk',
+            'th': u'Index talk',
+            'tr': u'Index talk',
+            'uk': u'Index talk',
+            'yi': u'Index talk',
             'zh-min-nan': u'Index talk',
         }
 
         self.namespaces[828] = {
+            'cs': u'Module',
             'en': u'Module',
+            'fr': u'Module',
             'it': u'Module',
         }
 
         self.namespaces[829] = {
+            'cs': u'Module talk',
             'en': u'Module talk',
+            'fr': u'Module talk',
             'it': u'Module talk',
         }
 
