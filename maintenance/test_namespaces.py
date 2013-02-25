@@ -4,11 +4,18 @@
 This utility's primary use is to find all mismatches between the namespace
 naming in the family files and the language files on the wiki servers.
 
-If the -all parameter is used, it runs through all known languages in a family.
+You may use the following options:
 
--langs and -families parameters may be used to check comma-seperated languages/families.
+-all       Run through all known languages in a family
 
-If the -wikimedia parameter is used, all Wikimedia families are checked.
+-langs     Check comma-seperated languages. If neighter this option nor -all
+           option is given, it checks the default language given by maylang in
+           your user-config.py
+
+-families  Check comma-seperated families
+
+-wikimedia All Wikimedia families are checked
+
 
 Examples:
 
