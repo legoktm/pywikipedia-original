@@ -128,7 +128,6 @@ class Family(object):
                 'ay': u'Medio',
                 'az': [u'Media', u'Mediya'],
                 'ba': u'Медиа',
-                'bar': u'Medium',
                 'bat-smg': u'Medėjė',
                 'bcl': u'Medio',
                 'be': u'Мультымедыя',
