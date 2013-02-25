@@ -553,6 +553,32 @@ class Family(family.WikimediaFamily):
             'he': u'שיחת מפתח',
         }
 
+        self.namespaces[250] = {
+            'zh-min-nan': u'Page',
+        }
+
+        self.namespaces[251] = {
+            'zh-min-nan': u'Page talk',
+        }
+
+        self.namespaces[252] = {
+            'zh-min-nan': u'Index',
+        }
+
+        self.namespaces[253] = {
+            'zh-min-nan': u'Index talk',
+        }
+
+        self.namespaces[828] = {
+            'en': u'Module',
+            'it': u'Module',
+        }
+
+        self.namespaces[829] = {
+            'en': u'Module talk',
+            'it': u'Module talk',
+        }
+
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
             'ca', 'el', 'fa', 'it', 'ko', 'no', 'pl', 'vi', 'zh',
