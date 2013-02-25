@@ -23,7 +23,7 @@ Examples:
 """
 #
 # (C) Yuri Astrakhan, 2005
-# (C) Pywikipedia bot team, 2006-2010
+# (C) Pywikipedia bot team, 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -31,6 +31,8 @@ __version__ = '$Id$'
 #
 
 import sys
+sys.path.insert(1, '..')
+
 import wikipedia as pywikibot
 import traceback
 
@@ -64,9 +66,9 @@ def main():
     if language is None:
         language = mySite.lang
     if wikimedia:
-        families = ['wikipedia', 'wiktionary', 'wikiquote', 'wikisource',
-                    'wikibooks', 'wikinews', 'wikiversity', 'meta', 'commons',
-                    'mediawiki', 'species', 'incubator', 'test']
+        families = ['commons', 'incubator', 'mediawiki', 'meta', 'species',
+                    'test', 'wikibooks', 'wikidata', 'wikinews', 'wikiquote',
+                    'wikisource', 'wikiversity', 'wikivoyage', 'wiktionary']
     elif fam is not None:
         families = fam.split(',')
     else:
