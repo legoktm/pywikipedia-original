@@ -590,6 +590,14 @@ class Family(family.WikimediaFamily):
             'en': u'Sign gloss talk',
         }
 
+        self.namespaces[828] = {
+            'en': u'Module',
+        }
+
+        self.namespaces[829] = {
+            'en': u'Module talk',
+        }
+
         # Global bot allowed languages on
         # http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
