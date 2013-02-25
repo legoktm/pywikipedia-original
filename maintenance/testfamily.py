@@ -63,8 +63,6 @@ def main():
             wikimedia = True
 
     mySite = pywikibot.getSite()
-    if language is None:
-        language = mySite.lang
     if wikimedia:
         families = ['commons', 'incubator', 'mediawiki', 'meta', 'species',
                     'test', 'wikibooks', 'wikidata', 'wikinews', 'wikiquote',
@@ -83,6 +81,11 @@ def main():
         if all:
             for lang in fam.langs.iterkeys():
                 testSite(pywikibot.getSite(lang, family))
+        elif language is None:
+            lang = mySite.lang
+            if not lang in fam.langs.keys():
+                lang = fam.langs.keys()[-1]
+            testSite(pywikibot.getSite(lang, family))
         else:
             languages = language.split(',')
             for lang in languages:
