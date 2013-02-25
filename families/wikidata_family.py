@@ -34,23 +34,35 @@ class Family(family.WikimediaFamily):
             'client': u'Testwiki talk',
             'repo': u'Testwiki talk',
         }
+        self.namespaces[102] = {
+            'repo': u'Property',
+        }
+        self.namespaces[103] = {
+            'repo': u'Property talk',
+        }
+        self.namespaces[104] = {
+            'repo': u'Query',
+        }
+        self.namespaces[105] = {
+            'repo': u'Query talk',
+        }
         self.namespaces[120] = {
-            '_default': u'Property',
+            'wikidata': u'Property',
         }
         self.namespaces[121] = {
-            '_default': u'Property talk',
+            'wikidata': u'Property talk',
         }
         self.namespaces[122] = {
-            '_default': u'Query',
+            'wikidata': u'Query',
         }
         self.namespaces[123] = {
-            '_default': u'Query talk',
+            'wikidata': u'Query talk',
         }
         self.namespaces[1198] = {
-            '_default': u'Translations',
+            'wikidata': u'Translations',
         }
         self.namespaces[1199] = {
-            '_default': u'Translations talk',
+            'wikidata': u'Translations talk',
         }        
 
     def shared_data_repository(self, code, transcluded=False):
