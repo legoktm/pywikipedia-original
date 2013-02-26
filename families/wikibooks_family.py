@@ -11,24 +11,30 @@ class Family(family.WikimediaFamily):
         self.name = 'wikibooks'
 
         self.languages_by_size = [
-            'en', 'de', 'fr', 'hu', 'ja', 'pt', 'it', 'nl', 'vi', 'pl', 'es',
+            'en', 'de', 'fr', 'hu', 'ja', 'pt', 'it', 'vi', 'nl', 'pl', 'es',
             'he', 'sq', 'ca', 'id', 'fi', 'ru', 'cs', 'zh', 'hr', 'sv', 'tr',
             'da', 'th', 'no', 'gl', 'fa', 'ko', 'sr', 'ta', 'ar', 'tl', 'mk',
-            'ro', 'is', 'tt', 'lt', 'ka', 'az', 'uk', 'eo', 'bg', 'el', 'hy',
-            'sl', 'sk', 'si', 'li', 'la', 'ang', 'ia', 'cv', 'et', 'ur', 'ms',
-            'mr', 'bn', 'hi', 'ml', 'oc', 'kk', 'eu', 'fy', 'ie', 'ne', 'te',
-            'sa', 'af', 'tg', 'ky', 'bs', 'pa', 'mg', 'be', 'zh-min-nan', 'cy',
-            'ku', 'uz',
+            'ro', 'is', 'tt', 'lt', 'ka', 'az', 'eo', 'uk', 'bg', 'el', 'hy',
+            'sl', 'sk', 'si', 'li', 'la', 'ang', 'ia', 'cv', 'et', 'ms', 'ur',
+            'mr', 'bn', 'hi', 'ml', 'oc', 'km', 'kk', 'eu', 'fy', 'ie', 'ne',
+            'te', 'sa', 'af', 'tg', 'ky', 'bs', 'pa', 'mg', 'be', 'zh-min-nan',
+            'cy', 'ku', 'uz',
         ]
 
         self.langs = dict([(lang, '%s.wikibooks.org' % lang)
                            for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[6]['be'] = [u'Файл', u'Выява']
+        self.namespaces[7]['be'] = [u'Размовы пра файл', u'Размовы пра выяву']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[14]['en'] = [u'Category', u'CAT']
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
         self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
+        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[14]['tr'] = [u'Kategori', u'KAT']
@@ -42,6 +48,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[12]['nl'] = [u'Help']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
@@ -94,6 +102,7 @@ class Family(family.WikimediaFamily):
             'ja': u'Wikibooks',
             'ka': [u'ვიკიწიგნები', u'Wikibooks'],
             'kk': [u'Уикикітап', u'Wikibooks'],
+            'km': u'Wikibooks',
             'ko': [u'위키책', u'Wikibooks'],
             'ku': u'Wikibooks',
             'ky': u'Wikibooks',
@@ -189,7 +198,7 @@ class Family(family.WikimediaFamily):
             'ja': [u'Wikibooks・トーク', u'Wikibooks‐ノート'],
             'ka': u'ვიკიწიგნები განხილვა',
             'kk': [u'Уикикітап талқылауы', u'Уикикітап talqılawı', u'Уикикітап تالقىلاۋى'],
-            'km': u'ការពិភាក្សាអំពីWikibooks',
+            'km': [u'ការពិភាក្សាអំពីWikibooks', u'Wikibooks ពិភាក្ស'],
             'kn': u'Wikibooks ಚರ್ಚೆ',
             'ko': u'위키책토론',
             'ku': [u'Gotûbêja Wîkîpirtûkê', u'Wikibooks nîqaş'],
@@ -408,6 +417,16 @@ class Family(family.WikimediaFamily):
             'si': u'කණිෂ්ඨ විකි සාකච්ඡාව',
         }
 
+        self.namespaces[828] = {
+            'cs': u'Module',
+            'pt': u'Module',
+        }
+
+        self.namespaces[829] = {
+            'cs': u'Module talk',
+            'pt': u'Module talk',
+        }
+
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
             'af', 'ang', 'ca', 'fa', 'fy', 'it', 'nl', 'ru', 'th', 'zh',
@@ -448,7 +467,6 @@ class Family(family.WikimediaFamily):
             'gn': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Guarani_Wikibooks
             'gu': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Gujarati_Wikibooks
             'jp': 'ja',
-            'km': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Khmer_Wikibooks
             'kn': None, # https://bugzilla.wikimedia.org/show_bug.cgi?id=20325
             'ks': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Kashmiri_Wikibooks
             'lb': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_L%C3%ABtzebuergesch_Wikibooks

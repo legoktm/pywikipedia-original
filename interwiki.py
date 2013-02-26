@@ -730,7 +730,6 @@ class PageTree(object):
         site = page.site
         if not site in self.tree:
             self.tree[site] = []
-        assert page not in self.tree[site]
         self.tree[site].append(page)
         self.size += 1
 

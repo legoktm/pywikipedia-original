@@ -19,6 +19,11 @@ class Family(family.WikimediaFamily):
                            for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[2]['fr'] = [u'Utilisateur']
+        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
@@ -37,6 +42,7 @@ class Family(family.WikimediaFamily):
             'fr': [u'Wikiversité', u'Wikiversity'],
             'it': [u'Wikiversità', u'Wikiversity'],
             'ja': u'Wikiversity',
+            'ko': u'Wikiversity',
             'pt': [u'Wikiversidade', u'Wikiversity'],
             'ru': [u'Викиверситет', u'Wikiversity'],
             'sl': [u'Wikiverza', u'Wikiversity'],
@@ -55,6 +61,7 @@ class Family(family.WikimediaFamily):
             'fr': u'Discussion Wikiversité',
             'it': u'Discussioni Wikiversità',
             'ja': [u'Wikiversity・トーク', u'Wikiversity talk', u'Wikiversity‐ノート'],
+            'ko': u'Wikiversity토론',
             'pt': u'Wikiversidade Discussão',
             'ru': u'Обсуждение Викиверситета',
             'sl': u'Pogovor o Wikiverzi',

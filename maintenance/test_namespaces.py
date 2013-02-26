@@ -4,11 +4,18 @@
 This utility's primary use is to find all mismatches between the namespace
 naming in the family files and the language files on the wiki servers.
 
-If the -all parameter is used, it runs through all known languages in a family.
+You may use the following options:
 
--langs and -families parameters may be used to check comma-seperated languages/families.
+-all       Run through all known languages in a family
 
-If the -wikimedia parameter is used, all Wikimedia families are checked.
+-langs     Check comma-seperated languages. If neighter this option nor -all
+           option is given, it checks the default language given by maylang in
+           your user-config.py
+
+-families  Check comma-seperated families
+
+-wikimedia All Wikimedia families are checked
+
 
 Examples:
 
@@ -23,7 +30,7 @@ Examples:
 """
 #
 # (C) Yuri Astrakhan, 2005
-# (C) Pywikipedia bot team, 2006-2010
+# (C) Pywikipedia bot team, 2006-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -31,6 +38,8 @@ __version__ = '$Id$'
 #
 
 import sys
+sys.path.insert(1, '..')
+
 import wikipedia as pywikibot
 import traceback
 
@@ -61,12 +70,10 @@ def main():
             wikimedia = True
 
     mySite = pywikibot.getSite()
-    if language is None:
-        language = mySite.lang
     if wikimedia:
-        families = ['wikipedia', 'wiktionary', 'wikiquote', 'wikisource',
-                    'wikibooks', 'wikinews', 'wikiversity', 'meta', 'commons',
-                    'mediawiki', 'species', 'incubator', 'test']
+        families = ['commons', 'incubator', 'mediawiki', 'meta', 'species',
+                    'test', 'wikibooks', 'wikidata', 'wikinews', 'wikiquote',
+                    'wikisource', 'wikiversity', 'wikivoyage', 'wiktionary']
     elif fam is not None:
         families = fam.split(',')
     else:
@@ -81,6 +88,11 @@ def main():
         if all:
             for lang in fam.langs.iterkeys():
                 testSite(pywikibot.getSite(lang, family))
+        elif language is None:
+            lang = mySite.lang
+            if not lang in fam.langs.keys():
+                lang = fam.langs.keys()[-1]
+            testSite(pywikibot.getSite(lang, family))
         else:
             languages = language.split(',')
             for lang in languages:

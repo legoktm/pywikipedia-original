@@ -115,7 +115,7 @@ class CategoryRedirectBot(object):
             # an update due to changes in a transcluded template
             article.put(newtext, comment)
             if newtext == oldtext:
-                pywikibot.output(u'No changes in made in page %s.'
+                pywikibot.output(u'No changes made in page %s.'
                                  % article.title(asLink=True))
                 return False
             return True

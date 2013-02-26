@@ -14,34 +14,38 @@ class Family(family.WikimediaFamily):
             'en', 'fr', 'mg', 'zh', 'lt', 'ru', 'el', 'ko', 'sv', 'pl', 'tr',
             'ta', 'nl', 'de', 'ku', 'kn', 'vi', 'fi', 'io', 'hu', 'pt', 'ml',
             'no', 'my', 'id', 'it', 'li', 'es', 'et', 'ja', 'fa', 'te', 'ro',
-            'ar', 'cs', 'jv', 'eu', 'lo', 'gl', 'ca', 'uk', 'fj', 'br', 'bg',
+            'ar', 'cs', 'jv', 'eu', 'gl', 'lo', 'ca', 'uk', 'fj', 'br', 'bg',
             'eo', 'hr', 'oc', 'vo', 'is', 'th', 'simple', 'zh-min-nan', 'cy',
-            'scn', 'sr', 'af', 'sw', 'ast', 'fy', 'ps', 'tl', 'nn', 'he', 'ur',
-            'uz', 'wa', 'la', 'da', 'hy', 'sq', 'sm', 'sl', 'hi', 'tt', 'az',
-            'nah', 'pnb', 'ka', 'lv', 'lb', 'bs', 'tk', 'hsb', 'kk', 'sk', 'km',
+            'scn', 'sr', 'af', 'ast', 'sw', 'fy', 'ps', 'tl', 'nn', 'he', 'ur',
+            'uz', 'wa', 'da', 'la', 'hy', 'sq', 'sm', 'sl', 'hi', 'nah', 'tt',
+            'az', 'pnb', 'ka', 'lv', 'lb', 'bs', 'tk', 'hsb', 'kk', 'sk', 'km',
             'mk', 'be', 'ga', 'wo', 'ms', 'ang', 'ky', 'co', 'gn', 'mr', 'csb',
             'st', 'nds', 'ia', 'si', 'sh', 'sd', 'tg', 'ug', 'kl', 'sa', 'mn',
-            'jbo', 'an', 'zu', 'gu', 'rw', 'fo', 'kw', 'gv', 'qu', 'ss', 'ie',
-            'mt', 'om', 'chr', 'roa-rup', 'iu', 'bn', 'pa', 'so', 'am', 'su',
-            'za', 'gd', 'mi', 'tpi', 'ik', 'or', 'yi', 'ln', 'ti', 'sg', 'na',
-            'dv', 'tn', 'ne', 'ha', 'ks', 'ay', 'ts',
+            'jbo', 'an', 'zu', 'or', 'gu', 'rw', 'kw', 'fo', 'gv', 'qu', 'ss',
+            'ie', 'mt', 'om', 'chr', 'roa-rup', 'iu', 'bn', 'pa', 'so', 'am',
+            'su', 'za', 'gd', 'mi', 'tpi', 'yi', 'ln', 'ti', 'sg', 'na', 'dv',
+            'tn', 'ne', 'ha', 'ks', 'ay', 'ts',
         ]
 
         self.langs = dict([(lang, '%s.wiktionary.org' % lang)
                            for lang in self.languages_by_size])
 
         # Override defaults
+        self.namespaces[6]['be'] = [u'Файл', u'Выява']
+        self.namespaces[7]['be'] = [u'Размовы пра файл', u'Размовы пра выяву']
+        self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Vikipediista diskuto', u'Uzula diskuto']
         self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
         self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
+        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
-        self.namespaces[3]['eo'] = [u'Uzanta diskuto', u'Vikipediista diskuto', u'Uzula diskuto']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[13]['da'] = [u'Hjælp diskussion', u'Hjælp-diskussion']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
-        self.namespaces[11]['ks'] = [u'فرما بَحَژ']
-        self.namespaces[10]['ks'] = [u'فرما']
         self.namespaces[11]['hi'] = [u'साँचा वार्ता']
         self.namespaces[10]['hi'] = [u'साँचा']
         self.namespaces[15]['hi'] = [u'श्रेणी वार्ता']
@@ -50,8 +54,8 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
-        self.namespaces[3]['dv'] = [u'މެމްބަރުގެ ވާހަކަ']
-        self.namespaces[-2]['dv'] = [u'މީޑިއާ']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[12]['nl'] = [u'Help']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
@@ -286,7 +290,7 @@ class Family(family.WikimediaFamily):
             'ko': u'위키낱말사전토론',
             'ks': u'Wiktionary بَحَژ',
             'ku': [u'Gotûbêja Wîkîferhengê', u'Wîkîferheng gotûbêj', u'Wîkîferheng nîqaş'],
-            'kw': [u'Kescows Wiktionary', u'Cows Wiktionary', u'Keskows Wiktionary'],
+            'kw': [u'Keskows Wiktionary', u'Cows Wiktionary', u'Kescows Wiktionary'],
             'ky': u'Wiktionary баарлашуу',
             'la': u'Disputatio Victionarii',
             'lb': [u'Wiktionnaire Diskussioun', u'Wiktionary Diskussioun'],
@@ -584,6 +588,18 @@ class Family(family.WikimediaFamily):
             'en': u'Sign gloss talk',
         }
 
+        self.namespaces[828] = {
+            'cs': u'Module',
+            'en': u'Module',
+            'vi': u'Module',
+        }
+
+        self.namespaces[829] = {
+            'cs': u'Module talk',
+            'en': u'Module talk',
+            'vi': u'Module talk',
+        }
+
         # Global bot allowed languages on
         # http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation
         self.cross_allowed = [
@@ -657,6 +673,7 @@ class Family(family.WikimediaFamily):
             'cr': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Nehiyaw_Wiktionary
             'dk': 'da',
             'dz': None,
+            'ik': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Inupiak_Wiktionary
             'jp': 'ja',
             'mh': None, # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Marshallese_Wiktionary
             'mo': 'ro', # http://meta.wikimedia.org/wiki/Proposals_for_closing_projects/Closure_of_Moldovan_Wiktionary

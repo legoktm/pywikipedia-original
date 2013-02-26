@@ -25,8 +25,14 @@ class ArtNoDisp(SingleServerIRCBot):
         SingleServerIRCBot.__init__(self, [(server, port)], nickname, nickname)
         self.channel = channel
         self.site = site
+        ns = []
+        for n in site.namespaces():
+            if type(n) == type(()):
+                ns += n[0]
+            else:
+                ns += [n]
         self.other_ns = re.compile(
-            u'14\[\[07(' + u'|'.join(site.namespaces()) + u')')
+            u'14\[\[07(' + u'|'.join(ns) + u')')
         self.api_url = self.site.api_address()
         self.api_url += 'action=query&meta=siteinfo&siprop=statistics&format=xml'
         self.api_found = re.compile(r'articles="(.*?)"')

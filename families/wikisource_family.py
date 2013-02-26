@@ -14,9 +14,9 @@ class Family(family.WikimediaFamily):
             'fr', 'en', 'de', 'ru', 'it', 'zh', 'pl', 'pt', 'he', 'es', 'sv',
             'fa', 'hu', 'ar', 'ca', 'cs', 'ko', 'sl', 'ro', 'fi', 'vi', 'te',
             'sa', 'el', 'sr', 'hr', 'bn', 'th', 'no', 'hy', 'nl', 'ml', 'la',
-            'vec', 'ja', 'tr', 'eo', 'br', 'yi', 'mk', 'uk', 'gu', 'ta', 'id',
-            'is', 'da', 'be', 'li', 'et', 'mr', 'bg', 'bs', 'sah', 'az', 'gl',
-            'lt', 'kn', 'cy', 'sk', 'zh-min-nan', 'fo',
+            'vec', 'tr', 'eo', 'ja', 'br', 'yi', 'mk', 'uk', 'gu', 'ta', 'id',
+            'is', 'da', 'be', 'li', 'et', 'mr', 'bg', 'bs', 'as', 'sah', 'az',
+            'gl', 'lt', 'kn', 'cy', 'sk', 'zh-min-nan', 'fo',
         ]
 
         self.langs = dict([(lang, '%s.wikisource.org' % lang)
@@ -29,10 +29,19 @@ class Family(family.WikimediaFamily):
         self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
+        self.namespaces[14]['as'] = [u'শ্ৰেণী', u'श्रेणी', u'শ্রেণী']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[12]['nl'] = [u'Help']
+        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[6]['vec'] = [u'File', u'Imagine']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[3]['pl'] = [u'Dyskusja wikiskryby', u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
         self.namespaces[2]['pl'] = [u'Wikiskryba', u'Użytkownik', u'Użytkowniczka']
+        self.namespaces[7]['be'] = [u'Размовы пра файл', u'Размовы пра выяву']
+        self.namespaces[6]['be'] = [u'Файл', u'Выява']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[2]['fr'] = [u'Utilisateur']
         self.namespaces[15]['bn'] = [u'বিষয়শ্রেণী আলোচনা']
         self.namespaces[14]['bn'] = [u'বিষয়শ্রেণী']
         self.namespaces[9]['da'] = [u'MediaWiki diskussion', u'MediaWiki-diskussion']
@@ -500,7 +509,6 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[108] = {
             '-': u'Author',
-            'be': u'Аўтар',
             'gu': u'સર્જક',
             'he': u'מחבר',
             'it': u'Pagina',
@@ -511,7 +519,6 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[109] = {
             '-': u'Author talk',
-            'be': u'Размовы_пра_аўтара',
             'gu': u'સર્જક ચર્ચા',
             'he': u'שיחת מחבר',
             'it': u'Discussioni pagina',
@@ -540,6 +547,116 @@ class Family(family.WikimediaFamily):
         self.namespaces[113] = {
             'fr': u'Discussion Livre',
             'he': u'שיחת מפתח',
+        }
+
+        self.namespaces[250] = {
+            'az': u'Page',
+            'bg': u'Page',
+            'bs': u'Page',
+            'cs': u'Stránka',
+            'fo': u'Page',
+            'gl': u'Page',
+            'is': u'Blaðsíða',
+            'ja': u'Page',
+            'ko': u'Page',
+            'li': u'Page',
+            'lt': u'Page',
+            'mk': u'Page',
+            'sah': u'Page',
+            'sk': u'Page',
+            'sr': u'Page',
+            'ta': u'Page',
+            'th': u'Page',
+            'tr': u'Page',
+            'uk': u'Page',
+            'yi': u'Page',
+            'zh-min-nan': u'Page',
+        }
+
+        self.namespaces[251] = {
+            'az': u'Page talk',
+            'bg': u'Page talk',
+            'bs': u'Page talk',
+            'cs': u'Diskuse ke stránce',
+            'fo': u'Page talk',
+            'gl': u'Page talk',
+            'is': u'Blaðsíðuspjall',
+            'ja': u'Page talk',
+            'ko': u'Page talk',
+            'li': u'Page talk',
+            'lt': u'Page talk',
+            'mk': u'Page talk',
+            'sah': u'Page talk',
+            'sk': u'Page talk',
+            'sr': u'Page talk',
+            'ta': u'Page talk',
+            'th': u'Page talk',
+            'tr': u'Page talk',
+            'uk': u'Page talk',
+            'yi': u'Page talk',
+            'zh-min-nan': u'Page talk',
+        }
+
+        self.namespaces[252] = {
+            'az': u'Index',
+            'bg': u'Index',
+            'bs': u'Index',
+            'cs': u'Index',
+            'fo': u'Index',
+            'gl': u'Index',
+            'is': u'Frumrit',
+            'ja': u'Index',
+            'ko': u'Index',
+            'li': u'Index',
+            'lt': u'Index',
+            'mk': u'Index',
+            'sah': u'Index',
+            'sk': u'Index',
+            'sr': u'Index',
+            'ta': u'Index',
+            'th': u'Index',
+            'tr': u'Index',
+            'uk': u'Index',
+            'yi': u'Index',
+            'zh-min-nan': u'Index',
+        }
+
+        self.namespaces[253] = {
+            'az': u'Index talk',
+            'bg': u'Index talk',
+            'bs': u'Index talk',
+            'cs': u'Diskuse k indexu',
+            'fo': u'Index talk',
+            'gl': u'Index talk',
+            'is': u'Frumritsspjall',
+            'ja': u'Index talk',
+            'ko': u'Index talk',
+            'li': u'Index talk',
+            'lt': u'Index talk',
+            'mk': u'Index talk',
+            'sah': u'Index talk',
+            'sk': u'Index talk',
+            'sr': u'Index talk',
+            'ta': u'Index talk',
+            'th': u'Index talk',
+            'tr': u'Index talk',
+            'uk': u'Index talk',
+            'yi': u'Index talk',
+            'zh-min-nan': u'Index talk',
+        }
+
+        self.namespaces[828] = {
+            'cs': u'Module',
+            'en': u'Module',
+            'fr': u'Module',
+            'it': u'Module',
+        }
+
+        self.namespaces[829] = {
+            'cs': u'Module talk',
+            'en': u'Module talk',
+            'fr': u'Module talk',
+            'it': u'Module talk',
         }
 
         # Global bot allowed languages on http://meta.wikimedia.org/wiki/Bot_policy/Implementation#Current_implementation

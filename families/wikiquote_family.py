@@ -12,11 +12,11 @@ class Family(family.WikimediaFamily):
 
         self.languages_by_size = [
             'en', 'pl', 'it', 'ru', 'fr', 'de', 'pt', 'es', 'sk', 'cs', 'bg',
-            'bs', 'tr', 'sl', 'he', 'lt', 'eo', 'uk', 'el', 'zh', 'id', 'fa',
-            'hu', 'fi', 'sv', 'li', 'nl', 'ca', 'no', 'nn', 'hr', 'sa', 'ja',
+            'bs', 'tr', 'sl', 'he', 'lt', 'uk', 'eo', 'el', 'zh', 'id', 'fa',
+            'hu', 'fi', 'sv', 'nl', 'li', 'ca', 'no', 'nn', 'hr', 'sa', 'ja',
             'az', 'hy', 'ar', 'et', 'ko', 'ml', 'cy', 'ka', 'gl', 'sr', 'ro',
             'ku', 'th', 'te', 'is', 'eu', 'da', 'af', 'vi', 'sq', 'ta', 'hi',
-            'la', 'br', 'be', 'mr', 'uz', 'ur', 'zh-min-nan', 'gu', 'su', 'kn',
+            'la', 'be', 'br', 'mr', 'uz', 'ur', 'zh-min-nan', 'gu', 'su', 'kn',
             'wo', 'ky', 'am',
         ]
 
@@ -24,9 +24,13 @@ class Family(family.WikimediaFamily):
                            for lang in self.languages_by_size])
 
         # Override defaults
-        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
-        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
-        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
+        self.namespaces[6]['be'] = [u'Файл', u'Выява']
+        self.namespaces[7]['be'] = [u'Размовы пра файл', u'Размовы пра выяву']
+        self.namespaces[3]['fr'] = [u'Discussion utilisateur', u'Discussion Utilisateur']
+        self.namespaces[2]['fr'] = [u'Utilisateur']
+        self.namespaces[12]['nl'] = [u'Help']
+        self.namespaces[3]['pt'] = [u'Utilizador Discussão', u'Usuário Discussão', u'Utilizadora Discussão']
+        self.namespaces[2]['pt'] = [u'Utilizador', u'Usuário', u'Utilizadora']
         self.namespaces[3]['ca'] = [u'Usuari Discussió']
         self.namespaces[2]['ca'] = [u'Usuari']
         self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
@@ -40,6 +44,10 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['hi'] = [u'सदस्य']
         self.namespaces[9]['hi'] = [u'मीडियाविकि वार्ता']
         self.namespaces[8]['hi'] = [u'मीडियाविकि']
+        self.namespaces[3]['cs'] = [u'Diskuse s uživatelem', u'Uživatel diskuse', u'Uživatelka diskuse', u'Diskuse s uživatelkou']
+        self.namespaces[10]['zh'] = [u'Template', u'模板', u'样板', u'樣板']
+        self.namespaces[12]['zh'] = [u'Help', u'帮助', u'幫助']
+        self.namespaces[14]['zh'] = [u'Category', u'分类', u'分類']
         self.namespaces[9]['ro'] = [u'Discuție MediaWiki', u'Discuţie MediaWiki']
         self.namespaces[3]['pl'] = [u'Dyskusja użytkownika', u'Dyskusja użytkowniczki']
         self.namespaces[2]['pl'] = [u'Użytkownik', u'Użytkowniczka']
@@ -105,6 +113,7 @@ class Family(family.WikimediaFamily):
             'pt': u'Wikiquote',
             'ro': [u'Wikicitat', u'Wikiquote'],
             'ru': [u'Викицитатник', u'ВЦ'],
+            'sa': [u'विकिसूक्तिः', u'Wikiquote'],
             'sk': [u'Wikicitáty', u'Wikiquote'],
             'sl': [u'Wikinavedek', u'Wikiquote'],
             'sq': u'Wikiquote',
@@ -186,6 +195,7 @@ class Family(family.WikimediaFamily):
             'qu': u'Wikiquote rimanakuy',
             'ro': [u'Discuție Wikicitat', u'Discuţie Wikicitat'],
             'ru': u'Обсуждение Викицитатника',
+            'sa': [u'विकिसूक्तिःसम्भाषणम्', u'विकिसूक्तिःसंभाषणं'],
             'sk': [u'Diskusia k Wikicitátom', u'Komentár k Wikipédii'],
             'sl': u'Pogovor o Wikinavedku',
             'sq': u'Wikiquote diskutim',
@@ -247,6 +257,14 @@ class Family(family.WikimediaFamily):
 
         self.namespaces[109] = {
             'fr': u'Discussion Transwiki',
+            }
+
+        self.namespaces[828] = {
+            'cs': u'Module',
+            }
+
+        self.namespaces[829] = {
+            'cs': u'Module talk',
             }
 
         # attop is a list of languages that prefer to have the interwiki

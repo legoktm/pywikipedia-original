@@ -4072,7 +4072,7 @@ class DataPage(Page):
     setitem          : Setting item(s) on a page
     setclaimvalue    : Set the value of a Wikibase claim
     createclaim      : Create Wikibase claims
-
+    creatitem        : Create an item
     getentity        : Getting item(s) of a page
     getentities      : Get the data for multiple Wikibase entities
     searchentities   : Search for entities
@@ -4105,10 +4105,10 @@ class DataPage(Page):
         #for change Persian language label of a page to "OK"
         items={'type': u'item', 'label': 'fa', 'value': 'OK'})
 
-        #for change english language description of a page to "OK"
+        #for change English language description of a page to "OK"
         items={'type': u'description', 'language': 'en', 'value': 'OK'})
 
-        #for change german language sitelink of a page to "OK"
+        #for change German language sitelink of a page to "OK"
         items={'type': u'sitelink', 'site': 'de', 'title': 'OK'})
         """
         retry_attempt = 0
@@ -4119,6 +4119,10 @@ class DataPage(Page):
             'summary': self._encodeArg(summary, 'summary'),
         }
         params['site'] = self._originSite.dbName().split('_')[0]
+        if self._title:
+            del params['site']
+            params['id']=params['title']
+            del params['title']
         params['format'] = 'jsonfm'
         if items['type'] == u'item':
             params['value'] = items['value']
@@ -4209,7 +4213,95 @@ class DataPage(Page):
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
+    def createitem(self, summary=None, watchArticle=False, minorEdit=True
+                , token=None, newToken=False, sysop=False,
+                captcha=None, botflag=True, maxTries=-1):
+        """Creating an item
+        usage:
+            data.createitem(summary)
+        """
+        retry_attempt = 0
+        retry_delay = 1
+        dblagged = False
+        newPage=True
+        originLang=self._originSite.dbName().split('_')[0]
+        params = {
+            'summary': self._encodeArg(summary, 'summary'),
+            'format': 'jsonfm',
+            'action': 'wbeditentity'
+        }
+        params['data'] = u"{\"labels\":{\""+self._originSite.lang+"\":{\"language\":\""+self._originSite.lang+"\",\"value\":\""+self._originTitle+"\"}}, \"sitelinks\": {\""+originLang+"\": {\"site\": \""+originLang+"\",\"title\": \""+self._originTitle+"\"}}}"
+        if token:
+            params['token'] = token
+        else:
+            params['token'] = self.site().getToken(sysop = sysop)
+        if config.maxlag:
+            params['maxlag'] = str(config.maxlag)
+        if botflag:
+            params['bot'] = 1
+        if watchArticle:
+            params['watch'] = 1
+        if captcha:
+            params['captchaid'] = captcha['id']
+            params['captchaword'] = captcha['answer']
 
+        while True:
+            if (maxTries == 0):
+                raise MaxTriesExceededError()
+            maxTries -= 1
+            # Check whether we are not too quickly after the previous
+            # putPage, and wait a bit until the interval is acceptable
+            if not dblagged:
+                put_throttle()
+            output(u'Creating page %s via API' % self._originTitle)
+            params['createonly'] = 1
+            try:
+                response, data = query.GetData(params, self.site(),
+                                               sysop=sysop, back_response=True)
+                if isinstance(data,basestring):
+                    raise KeyError
+            except httplib.BadStatusLine, line:
+                raise PageNotSaved('Bad status line: %s' % line.line)
+            except ServerError:
+                output(u''.join(traceback.format_exception(*sys.exc_info())))
+                retry_attempt += 1
+                if retry_attempt > config.maxretries:
+                    raise
+                output(u'Got a server error when putting %s; will retry in %i minute%s.'
+                       % (self, retry_delay, retry_delay != 1 and "s" or ""))
+                time.sleep(60 * retry_delay)
+                retry_delay *= 2
+                if retry_delay > 30:
+                    retry_delay = 30
+                continue
+            except ValueError: # API result cannot decode
+                output(u"Server error encountered; will retry in %i minute%s."
+                       % (retry_delay, retry_delay != 1 and "s" or ""))
+                time.sleep(60 * retry_delay)
+                retry_delay *= 2
+                if retry_delay > 30:
+                    retry_delay = 30
+                continue
+            # If it has gotten this far then we should reset dblagged
+            dblagged = False
+            # Check blocks
+            self.site().checkBlocks(sysop = sysop)
+            # A second text area means that an edit conflict has occured.
+            if response.code == 500:
+                output(u"Server error encountered; will retry in %i minute%s."
+                       % (retry_delay, retry_delay != 1 and "s" or ""))
+                time.sleep(60 * retry_delay)
+                retry_delay *= 2
+                if retry_delay > 30:
+                    retry_delay = 30
+                continue
+            if 'error' in data:
+                errorCode = data['error']['code']
+                output(u'Got an unknown error when putting data: %s' %errorCode)
+            else:
+                if data['success'] == u"1":
+                    return 302, response.msg, data['success']
+            return response.code, response.msg, data
     def setclaimvalue(self, guid, value, comment=None, token=None, sysop=False, botflag=True):
         """API module for setting the value of a Wikibase claim.
 
@@ -4289,7 +4381,7 @@ class DataPage(Page):
         data['query'] = {'pages': data['entities']}
         for pageid in data['entities'].keys():
             if pageid == "-1":
-                continue #Means the page does not exist
+                raise NoPage(self.site(), unicode(self),"API query error, no pages found: %s" % data)
             params1['titles'] = pageid
             ndata=query.GetData(params1, self.site(), sysop=sysop)
             data['entities'].update(ndata['query']['pages'])
@@ -4297,7 +4389,7 @@ class DataPage(Page):
         if 'error' in data:
             raise RuntimeError("API query error: %s" % data)
         if not 'pages' in data['query']:
-            raise RuntimeError("API query error, no pages found: %s" % data)
+            raise NoPage(self.site(), unicode(self),"API query error, no pages found: %s" % data)
         pageInfo = ndata['query']['pages'].values()[0]
         if data['query']['pages'].keys()[0] == "-1":
             if 'missing' in pageInfo:

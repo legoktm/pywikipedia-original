@@ -732,12 +732,13 @@ class CosmeticChangesToolkit:
         new = digits.pop(self.site.lang)
         # This only works if there are only two items in digits dict
         old = digits[digits.keys()[0]]
+        faChrs = u'ءاآأإئؤبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیةيك' + u'ًٌٍَُِّْٓٔ'+u'۱۲۳۴۵۶۷۸۹۰'
         # do not change inside file links
         namespaces = list(self.site.namespace(6, all=True))
         pattern = re.compile(u'\[\[(' + '|'.join(namespaces) + '):.+?\.\w+? *(\|((\[\[.*?\]\])|.)*)?\]\]',
                              re.UNICODE)
         #not to let bot edits in latin content
-        exceptions.append(re.compile(u"[A-Za-z\d]+? *?\"*? *?, *?[A-Za-z\d]+?"))
+        exceptions.append(re.compile(u"[^"+faChrs+u"]+? *?\"*? *?, *?[^"+faChrs+u"]+?"))
         exceptions.append(pattern)
         text = pywikibot.replaceExcept(text, u',', u'،', exceptions)
         if self.site.lang=='ckb':

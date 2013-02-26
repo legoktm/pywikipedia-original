@@ -231,13 +231,16 @@ class SubsterBot(basic.AutoBasicBot):
                         #dic = dataoutpage.getentities()
                         out = u'* ~~~~~ / [[%s]] / %s / %s' % (element['id'], item, data[item])
 
-                        pywikibot.output(u'%s <--- %s' % (dataoutpage.title(asLink=True), out))
+                        pywikibot.output(u'%s <--- "%s"' % (dataoutpage.title(asLink=True), out))
 
                         ## check for changes and then write/change/set values
-                        #summary = u'Bot: update data because of configuration on %s.' % page.title(asLink=True)
+                        summary = u'Bot: update data because of configuration on %s.' % page.title(asLink=True)
                         #if not self.WD_save(dataoutpage, dic[u'claims'], {u'p32': data}, summary):
-                        #    pywikibot.output(u'NOTHING TO DO!')
-                        dataoutpage.put( dataoutpage.get() + u'\n' + out )
+                        buf = dataoutpage.get()
+                        if buf.strip().splitlines()[-1].split(u'/')[-1].strip() == data[item]:
+                            pywikibot.output(u'NOTHING TO DO!')
+                        else:
+                            dataoutpage.put(buf + u'\n' + out, comment=summary)
             else:
                 # if changed, write!
                 if (substed_content != content):
@@ -386,6 +389,10 @@ class SubsterBot(basic.AutoBasicBot):
             else:
                 external_buffer = u'n/a'
         else:
+            # consider using 'expires', 'last-modified', 'etag' in order to
+            # make the updating data requests more efficient! use those stored
+            # on page, if the user placed them, else use the conventional mode.
+            # http://www.diveintopython.net/http_web_services/etags.html
             f_url, external_buffer = http.request(self.site, param['url'],
                                                   no_hostname = True, 
                                                   back_response = True)
