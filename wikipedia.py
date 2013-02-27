@@ -4208,11 +4208,12 @@ class DataPage(Page):
                     retry_delay = 30
                 continue
             if 'error' in data:
-                errorCode = data['error']['code']
+                errorCode = data['error']['info']
                 output(u'Got an unknown error when putting data: %s' %errorCode)
             else:
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
+            return 302, response.msg, False
     def createitem(self, summary=None, watchArticle=False, minorEdit=True
                 , token=None, newToken=False, sysop=False,
                 captcha=None, botflag=True, maxTries=-1):
