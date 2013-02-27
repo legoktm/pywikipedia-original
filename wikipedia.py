@@ -4214,9 +4214,10 @@ class DataPage(Page):
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
             return 302, response.msg, False
-    def createitem(self, summary=None, watchArticle=False, minorEdit=True
-                , token=None, newToken=False, sysop=False,
-                captcha=None, botflag=True, maxTries=-1):
+
+    def createitem(self, summary=None, watchArticle=False, minorEdit=True,
+                   token=None, newToken=False, sysop=False, captcha=None,
+                   botflag=True, maxTries=-1):
         """Creating an item
         usage:
             data.createitem(summary)
@@ -4225,13 +4226,17 @@ class DataPage(Page):
         retry_delay = 1
         dblagged = False
         newPage=True
-        originLang=self._originSite.dbName().split('_')[0]
         params = {
             'summary': self._encodeArg(summary, 'summary'),
             'format': 'jsonfm',
             'action': 'wbeditentity'
         }
-        params['data'] = u"{\"labels\":{\""+self._originSite.lang+"\":{\"language\":\""+self._originSite.lang+"\",\"value\":\""+self._originTitle+"\"}}, \"sitelinks\": {\""+originLang+"\": {\"site\": \""+originLang+"\",\"title\": \""+self._originTitle+"\"}}}"
+        params['data'] = (u'{"labels": {"%(lang)s": {"language": "%(lang)s", '
+                          u'"value": "%(title)s"}}, "sitelinks": {"%(site)s": '
+                          u'{"site": "%(site)s", "title": "%(title)s"}}}'
+                          % {'lang': self._originSite.lang,
+                             'title': self._originTitle,
+                             'site': self._originSite.dbName().split('_')[0]})
         if token:
             params['token'] = token
         else:
@@ -4303,7 +4308,9 @@ class DataPage(Page):
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
-    def setclaimvalue(self, guid, value, comment=None, token=None, sysop=False, botflag=True):
+
+    def setclaimvalue(self, guid, value, comment=None, token=None, sysop=False,
+                      botflag=True):
         """API module for setting the value of a Wikibase claim.
 
         (independent of page object and could thus be extracted from this class)
@@ -4330,7 +4337,8 @@ class DataPage(Page):
 
         return
 
-    def createclaim(self, prop, value, comment=None, token=None, sysop=False, botflag=True):
+    def createclaim(self, prop, value, comment=None, token=None, sysop=False,
+                    botflag=True):
         """API module for creating Wikibase claims.
         """
         params = {
