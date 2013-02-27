@@ -72,8 +72,9 @@ def main():
     mySite = pywikibot.getSite()
     if wikimedia:
         families = ['commons', 'incubator', 'mediawiki', 'meta', 'species',
-                    'test', 'wikibooks', 'wikidata', 'wikinews', 'wikiquote',
-                    'wikisource', 'wikiversity', 'wikivoyage', 'wiktionary']
+                    'test', 'wikibooks', 'wikidata', 'wikinews', 'wikipedia',
+                    'wikiquote', 'wikisource', 'wikiversity', 'wikivoyage',
+                    'wiktionary']
     elif fam is not None:
         families = fam.split(',')
     else:
