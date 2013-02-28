@@ -1,11 +1,12 @@
 # -*- coding: utf-8  -*-
 """
-Library to get and put pages on a MediaWiki.
+Library to get and put pages on a MediaWiki wiki.
 
 Contents of the library (objects and functions to be used outside)
 
 Classes:
     Page(site, title): A page on a MediaWiki site
+    DataPage(site, title): A Page object for the data repository.
     ImagePage(site, title): An image descriptor Page
     Site(lang, fam): A MediaWiki site
 
@@ -117,7 +118,7 @@ stopme(): Put this on a bot when it is not or not communicating with the Wiki
 
 """
 #
-# (C) Pywikipedia bot team, 2003-2012
+# (C) Pywikipedia bot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -4072,7 +4073,7 @@ class DataPage(Page):
     setitem          : Setting item(s) on a page
     setclaimvalue    : Set the value of a Wikibase claim
     createclaim      : Create Wikibase claims
-    creatitem        : Create an item
+    createitem       : Create an item
     getentity        : Getting item(s) of a page
     getentities      : Get the data for multiple Wikibase entities
     searchentities   : Search for entities
