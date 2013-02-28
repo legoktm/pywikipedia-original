@@ -4092,6 +4092,7 @@ class DataPage(Page):
         self._originTitle = title
         source = self._originSite.data_repository()
         Page.__init__(self, source, title, *args, **kwargs)
+        self._siteTitle=self._originSite.dbName().split('_')[0].replace("-","_")
         if not (self._originSite == source):
             self._title = None
 
@@ -4119,7 +4120,7 @@ class DataPage(Page):
             'title': self._originTitle,
             'summary': self._encodeArg(summary, 'summary'),
         }
-        params['site'] = self._originSite.dbName().split('_')[0]
+        params['site'] = self._siteTitle
         if self._title:
             del params['site']
             params['id']=params['title']
@@ -4237,7 +4238,7 @@ class DataPage(Page):
                           u'{"site": "%(site)s", "title": "%(title)s"}}}'
                           % {'lang': self._originSite.lang,
                              'title': self._originTitle,
-                             'site': self._originSite.dbName().split('_')[0]})
+                             'site': self._siteTitle})
         if token:
             params['token'] = token
         else:
@@ -4380,7 +4381,7 @@ class DataPage(Page):
         }
         params1=params.copy()
         params['action'] = 'wbgetentities'
-        params['sites'] = self._originSite.dbName().split('_')[0]
+        params['sites'] = self._siteTitle
         del params['prop']
         del params['rvprop']
         del params['rvlimit']
