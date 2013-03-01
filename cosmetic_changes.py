@@ -732,13 +732,13 @@ class CosmeticChangesToolkit:
         new = digits.pop(self.site.lang)
         # This only works if there are only two items in digits dict
         old = digits[digits.keys()[0]]
-        faChrs = u'ءاآأإئؤبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیةيك' + u'ًٌٍَُِّْٓٔ'+u'۱۲۳۴۵۶۷۸۹۰'
+        faChrs = u'ءاآأإئؤبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیةيك'+u'۱۲۳۴۵۶۷۸۹۰'
         # do not change inside file links
         namespaces = list(self.site.namespace(6, all=True))
         pattern = re.compile(u'\[\[(' + '|'.join(namespaces) + '):.+?\.\w+? *(\|((\[\[.*?\]\])|.)*)?\]\]',
                              re.UNICODE)
         #not to let bot edits in latin content
-        exceptions.append(re.compile(u"[^"+faChrs+u"]+? *?\"*? *?, *?[^"+faChrs+u"]+?"))
+        exceptions.append(re.compile(u"[^"+faChrs+u"] *?\"*? *?, *?[^"+faChrs+u"]"))
         exceptions.append(pattern)
         text = pywikibot.replaceExcept(text, u',', u'،', exceptions)
         if self.site.lang=='ckb':
@@ -840,7 +840,7 @@ class CosmeticChangesBot:
                 if not self.acceptall:
                     choice = pywikibot.inputChoice(
                         u'Do you want to accept these changes?',
-                        ['Yes', 'No', 'All', 'Quit'], ['y', 'N', 'a', 'q'], 'N')
+                        ['Yes', 'No', 'All', 'Quit'], ['y', 'n', 'a', 'q'], 'n')
                     if choice == 'a':
                         self.acceptall = True
                     elif choice == 'q':
@@ -913,7 +913,7 @@ def main():
         if not always:
             answer = pywikibot.inputChoice(
                 warning + '\nDo you really want to continue?',
-                ['yes', 'no'], ['y', 'N'], 'N')
+                ['yes', 'no'], ['y', 'n'], 'n')
         if answer == 'y':
             preloadingGen = pagegenerators.PreloadingGenerator(gen)
             bot = CosmeticChangesBot(preloadingGen, acceptall=always,
