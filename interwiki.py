@@ -430,6 +430,7 @@ moved_links = {
                 u'template doc',
                 u'doc',
                 u'documentation, template'], u'/doc'),
+    'sk' : (u'dokumentácia', u'/Dokumentácia'),
     'sv' : (u'dokumentation', u'/dok'),
     'uk' : ([u'документація',
              u'doc',
