@@ -70,7 +70,7 @@ class CommonsLinkBot:
         for page in self.generator:
             try:
                 pywikibot.output(u'\n>>>> %s <<<<' % page.title())
-                commons = pywikibot.getSite('commons', 'commons')
+                commons = pywikibot.getSite().image_repository()
                 commonspage = pywikibot.Page(commons, page.title())
                 try:
                     getcommons = commonspage.get(get_redirect=True)
@@ -123,7 +123,7 @@ class CommonsLinkBot:
         for page in self.generator:
             try:
                 pywikibot.output(u'\n>>>> %s <<<<' % page.title())
-                getCommons = pywikibot.getSite('commons', 'commons')
+                commons = pywikibot.getSite().image_repository()
                 commonsCategory = catlib.Category(getCommons,
                                                   'Category:%s' % page.title())
                 try:
