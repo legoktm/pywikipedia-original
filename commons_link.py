@@ -124,7 +124,7 @@ class CommonsLinkBot:
             try:
                 pywikibot.output(u'\n>>>> %s <<<<' % page.title())
                 commons = pywikibot.getSite().image_repository()
-                commonsCategory = catlib.Category(getCommons,
+                commonsCategory = catlib.Category(commons,
                                                   'Category:%s' % page.title())
                 try:
                     getcommonscat = commonsCategory.get(get_redirect=True)
