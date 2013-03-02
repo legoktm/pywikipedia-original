@@ -622,7 +622,7 @@ class FileData(object):
         #fft = fftpack.fftshift(fft)
         #fft = np.fft.fftn(gray)
         c = (np.array(s)/2.).astype(int)
-        for i in range(0, min(c)-1, int(min(c)/50.)):
+        for i in range(0, min(c)-1, max( int(min(c)/50.), 1 )):
             fft[(c[0]-i):(c[0]+i+1),(c[1]-i):(c[1]+i+1)] = 0.
             #new = np.zeros(s)
             #new[(c[0]-i):(c[0]+i+1),(c[1]-i):(c[1]+i+1)] = fft[(c[0]-i):(c[0]+i+1),(c[1]-i):(c[1]+i+1)]
@@ -643,7 +643,7 @@ class FileData(object):
         #U, S, Vh = linalg.svd(np.matrix(fft))      # do combined 'svd of fft'
         SS = np.zeros(s)
         ss = min(s)
-        for i in range(0, len(S)-1, int(len(S)/100.)):   # (len(S)==ss) -> else; problem!
+        for i in range(0, len(S)-1, max( int(len(S)/100.), 1 )):   # (len(S)==ss) -> else; problem!
             #SS = np.zeros(s)
             #SS[:(ss-i),:(ss-i)] = np.diag(S[:(ss-i)])
             SS[:(i+1),:(i+1)] = np.diag(S[:(i+1)])
@@ -811,6 +811,9 @@ class FileData(object):
         return
 
     def _detect_Properties_PIL(self):
+        """Retrieve as much file property info possible, especially the same
+           as commons does in order to compare if those libraries (ImageMagick,
+           ...) are buggy (thus explicitely use other software for independence)"""
         #self.image_size = (None, None)
         self._info['Properties'] = [{'Format': u'-', 'Pages': 0}]
         if self.image_fileext == u'.svg':   # MIME: 'application/xml; charset=utf-8'
@@ -896,10 +899,8 @@ class FileData(object):
         # djvu: python-djvulibre or python-djvu for djvu support
         # http://pypi.python.org/pypi/python-djvulibre/0.3.9
         #elif self.image_fileext == u'.xcf'
-        #    # use ImageMagick instead of PIL to get these info ...
-        #    data = Popen("identify -verbose info: %s" % self.image_path,
-        #                 shell=True, stderr=PIPE).stderr.read()
-        #    print data
+        #    result = {}
+        #    # DO NOT use ImageMagick (identify) instead of PIL to get these info !!
         else:
             pywikibot.output(u'WARNING: unknown (generic) file type [_detect_Properties_PIL]')
             return
