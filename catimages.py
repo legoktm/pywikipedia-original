@@ -83,7 +83,8 @@ except:
 # modules needing compilation are imported later on request:
 # (see https://jira.toolserver.org/browse/TS-1452)
 # e.g. opencv, jseg, slic, pydmtx, zbar, (pyml or equivalent)
-# binaries: exiftool, pdftotext/pdfimages (poppler), ffprobe (ffmpeg), (ocropus)
+# binaries: exiftool, pdftotext/pdfimages (poppler), ffprobe (ffmpeg),
+#           convert/identify (ImageMagick), (ocropus)
 # TODO:
 #   (pdfminer not used anymore/at the moment...)
 #   python-djvulibre or python-djvu for djvu support
@@ -894,6 +895,11 @@ class FileData(object):
         #    result = {}
         # djvu: python-djvulibre or python-djvu for djvu support
         # http://pypi.python.org/pypi/python-djvulibre/0.3.9
+        #elif self.image_fileext == u'.xcf'
+        #    # use ImageMagick instead of PIL to get these info ...
+        #    data = Popen("identify -verbose info: %s" % self.image_path,
+        #                 shell=True, stderr=PIPE).stderr.read()
+        #    print data
         else:
             pywikibot.output(u'WARNING: unknown (generic) file type [_detect_Properties_PIL]')
             return
@@ -1669,7 +1675,8 @@ class FileData(object):
             mat = np.dot((cameraMatrix), mat)       # linalg.inv(cameraMatrix)
             #_cameraMatrix, rotMatrix, transVect, rotMatrixX, rotMatrixY, rotMatrixZ, eulerAngles = cv2.decomposeProjectionMatrix(rmat)
             #mat = np.dot(rotMatrix, np.eye(3))
-            matD2raw, matD2norm, matnorm = self._util_getD2coords( mat, cameraMatrix, distCoeffs )
+            #matD2raw, matD2norm, matnorm = self._util_getD2coords( mat, cameraMatrix, distCoeffs )
+            matD2raw, matD2norm, matnorm = self._util_getD2coords( mat, np.eye(3), distCoeffs )
             for i in range(3):
                 imagePoints, D2norm, norm = matD2raw[:,:,:,i], 40*matD2norm[:,i], matnorm[:,i]
                 D2norm = D2norm/linalg.norm(D2norm)*40
@@ -1682,10 +1689,10 @@ class FileData(object):
             pywikibot.output(u'result for calibrated camera:\n  rot=%s\n  perp=%s\n  perp2D=%s' % (rot.transpose()[0], perp[:,2], ortho))
             pywikibot.output(u'nice would be to do the same for uncalibrated/default cam settings')
 
-# still beta/experimental thus suppress value output for the moment
-#            self._info['Chessboard'][0]['Rotation']    = tuple(rot.transpose()[0])
-#            self._info['Chessboard'][0]['Perp_Dir']    = tuple(perp[:,2])
-#            self._info['Chessboard'][0]['Perp_Dir_2D'] = tuple(ortho)
+            # still in testing phase; some of the values might have big errors
+            self._info['Chessboard'][0]['Rotation']    = tuple(rot.transpose()[0])
+            self._info['Chessboard'][0]['Perp_Dir']    = tuple(perp[:,2])
+            self._info['Chessboard'][0]['Perp_Dir_2D'] = tuple(ortho)
 
         return
 
@@ -2760,7 +2767,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         # http://cairographics.org/pyrsvg/
         # http://stackoverflow.com/questions/9166400/convert-rgba-png-to-rgb-with-pil
         self.image_size = (None, None)
-        if self.image_fileext == u'.svg':
+        if   self.image_fileext == u'.svg':
             try:
                 svg = rsvg.Handle(self.image_path)
                 img = cairo.ImageSurface(cairo.FORMAT_ARGB32, svg.props.width, svg.props.height)
@@ -2780,6 +2787,24 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
                 self.image_path_JPEG = self.image_path
             except SystemError:
                 self.image_path_JPEG = self.image_path
+        elif self.image_fileext == u'.xcf':
+            # Very few programs other than GIMP read XCF files. This is by design
+            # from the GIMP developers, the format is not really documented or
+            # supported as a general-purpose file format.
+            # Commons uses ImageMagick, thus we have EXACTLY THE SAME support!
+            # (can also be a drawback, e.g. when the library is buggy...)
+            proc = Popen("convert %s %s" % (self.image_path, self.image_path_JPEG),
+                         shell=True, stderr=PIPE)#.stderr.read()
+            proc.wait()
+            if   proc.returncode == 127:
+                raise ImportError("convert (ImageMagick) not found!")
+            elif proc.returncode:
+                self.image_path_JPEG = self.image_path
+
+            #data = Popen("identify -verbose info: %s" % self.image_path,
+            #             shell=True, stderr=PIPE).stderr.read()
+            #print data
+            self.image_size = Image.open(self.image_path_JPEG).size
         else:
             try:
                 im = Image.open(self.image_path) # might be png, gif etc, for instance
