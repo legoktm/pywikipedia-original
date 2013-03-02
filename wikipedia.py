@@ -2588,12 +2588,15 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             'action'     : 'edit',
             'title'      : self.title(),
             'section'    : '%s' % section,
-            'appendtext' : self._encodeArg(newtext, 'text'),
             'token'      : self.site().getToken(),
             'summary'    : self._encodeArg(comment, 'summary'),
             'bot'        : 1,
             }
 
+        if section == 'new':
+            params['text'] = self._encodeArg(newtext, 'text')
+        else:
+            params['appendtext'] = self._encodeArg(newtext, 'text')
         if minorEdit:
             params['minor'] = 1
         else:
