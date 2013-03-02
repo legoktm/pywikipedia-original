@@ -73,11 +73,13 @@ or you need some help regarding this script, you can find us here:
 __version__ = '$Id$'
 #
 
-import re, pagegenerators, urllib2, urllib
+import re, urllib2, urllib
+import webbrowser
+import codecs
 import wikipedia as pywikibot
 from pywikibot import i18n
-import codecs, config
-import webbrowser
+import pagegenerators
+import config
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
