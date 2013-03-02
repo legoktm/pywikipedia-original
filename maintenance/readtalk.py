@@ -3,7 +3,8 @@
 """
 Tool to read all your talk pages.
 
-This tool will go through all the normal (not sysop) accounts configured in user-config and output the contents of the talk page.
+This tool will go through all the normal (not sysop) accounts configured in
+user-config and output the contents of the talk page.
 
 TODO:
 *Error checking
@@ -11,10 +12,12 @@ TODO:
 import sys, re
 sys.path.append(re.sub('/[^/]*$', '', sys.path[0]))
 sys.path.insert(1, '..')
-import wikipedia, config, userlib
+import wikipedia
+import config
+import userlib
 
 
-def readtalk(lang, familyName, sysop = False):
+def readtalk(lang, familyName, sysop=False):
     site = wikipedia.getSite(code=lang, fam=familyName)
     if sysop:
         user = userlib.User(site, config.sysopnames[familyName][lang])
@@ -29,11 +32,12 @@ def readtalk(lang, familyName, sysop = False):
         del pagetext
     wikipedia.output(u'Reading talk page from %s' % user)
     try:
-        wikipedia.output( page.get(get_redirect=True)+"\n")
+        wikipedia.output(page.get(get_redirect=True)+"\n")
     except wikipedia.NoPage:
         wikipedia.output("Talk page is not exist.")
     except wikipedia.UserBlocked:
         wikipedia.output("Account is blocked.")
+
 
 def main():
     # Get a dictionary of all the usernames
@@ -44,7 +48,7 @@ def main():
             all = True
         elif arg.startswith('-sysop'):
             sysop = True
-    if all == True:
+    if all is True:
         if sysop:
             namedict = config.sysopnames
         else:
@@ -60,4 +64,3 @@ if __name__ == "__main__":
         main()
     finally:
         wikipedia.stopme()
-
