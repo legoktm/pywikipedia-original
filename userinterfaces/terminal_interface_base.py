@@ -121,11 +121,13 @@ class UI:
         
     def input(self, question, password = False):
         """
+        Ask the user a question and return the answer.
+
         Works like raw_input(), but returns a unicode string instead of ASCII.
 
         Unlike raw_input, this function automatically adds a space after the
         question.
-        
+
         """
 
         # sound the terminal bell to notify the user
@@ -142,6 +144,9 @@ class UI:
         return text
 
     def inputChoice(self, question, options, hotkeys, default=None):
+        """
+        Ask the user a question with a predefined list of acceptable answers.
+        """
         options = options[:] # we don't want to edit the passed parameter
         for i in range(len(options)):
             option = options[i]
@@ -164,18 +169,19 @@ class UI:
             answer = self.input(prompt)
             if answer.lower() in hotkeys or answer.upper() in hotkeys:
                 return answer
-            elif default and answer=='':        # empty string entered
+            elif default and answer=='':  # empty string entered
                 return default
 
     def editText(self, text, jumpIndex=None, highlight=None):
-        """
+        """Return the text as edited by the user.
+
         Uses a Tkinter edit box because we don't have a console editor
 
         Parameters:
             * text      - a Unicode string
             * jumpIndex - an integer: position at which to put the caret
             * highlight - a substring; each occurence will be highlighted
-            
+
         """
         try:
             import gui
@@ -186,6 +192,7 @@ class UI:
         return editor.edit(text, jumpIndex=jumpIndex, highlight=highlight)
 
     def askForCaptcha(self, url):
+        """Show the user a CAPTCHA image and return the answer."""
         try:
             import webbrowser
             wikipedia.output(u'Opening CAPTCHA in your web browser...')
