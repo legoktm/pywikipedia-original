@@ -756,10 +756,10 @@ class CosmeticChangesToolkit:
             'ckb': u'٠١٢٣٤٥٦٧٨٩',
             'fa': u'۰۱۲۳۴۵۶۷۸۹',
         }
+        faChrs = u'ءاآأإئؤبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیةيك' + digits['fa']
         new = digits.pop(self.site.lang)
         # This only works if there are only two items in digits dict
         old = digits[digits.keys()[0]]
-        faChrs = u'ءاآأإئؤبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیةيك' + digits['fa']
         # do not change inside file links
         namespaces = list(self.site.namespace(6, all=True))
         pattern = re.compile(u'\[\[(' + '|'.join(namespaces) + '):.+?\.\w+? *(\|((\[\[.*?\]\])|.)*)?\]\]',
