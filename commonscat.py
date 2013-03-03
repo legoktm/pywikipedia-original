@@ -149,7 +149,7 @@ ignoreTemplates = {
            u'Commonskat', u'Commonscat2', u'GalleriCommons', u'Søsterlinks'],
     'de': [u'Commons', u'ZhSZV', u'Bauwerk-stil-kategorien',
            u'Bauwerk-funktion-kategorien', u'KsPuB',
-           u'Kategoriesystem Augsburg-Infoleiste'],
+           u'Kategoriesystem Augsburg-Infoleiste', u'Kategorie v. Chr. Ge'],
     'en': [u'Category redirect', u'Commons', u'Commonscat1A', u'Commoncats',
            u'Commonscat4Ra',
            u'Sisterlinks', u'Sisterlinkswp', u'Sister project links',
