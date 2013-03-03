@@ -7,6 +7,7 @@ import family
 # The Wikitech family
 
 class Family(family.Family):
+
     def __init__(self):
         super(Family, self).__init__()
         self.name = 'wikitech'
