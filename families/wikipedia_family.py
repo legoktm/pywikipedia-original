@@ -46,10 +46,6 @@ class Family(family.WikimediaFamily):
 
         # Override defaults
         self.namespaces[2]['cs'] = [u'Wikipedista', u'Uživatel', u'Wikipedistka']
-        self.namespaces[3]['cs'] =  [u'Diskuse s wikipedistou', u'Diskuse s uživatelem', u'Diskuse s wikipedistkou', u'Wikipedista diskuse', u'Wikipedistka diskuse', u'Uživatel diskuse', u'Uživatelka diskuse']
-        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
-        self.namespaces[12]['de'] = [u'Hilfe', u'H']
-        self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD']
         self.namespaces[1]['ja'] = [u'ノート', u'トーク']
         self.namespaces[3]['ja'] = [u'利用者‐会話', u'利用者・トーク']
         self.namespaces[7]['ja'] = [u'ファイル‐ノート', u'ファイル・トーク', u'Image talk', u'画像‐ノート']
@@ -63,6 +59,12 @@ class Family(family.WikimediaFamily):
         self.namespaces[2]['ru'] = [u'Участник', u'У', u'Участница']
         self.namespaces[10]['ru'] = [u'Шаблон', u'Ш', u'T']
         self.namespaces[14]['ru'] = [u'Категория', u'К']
+        self.namespaces[6]['be'] = [u'Файл', u'Выява']
+        self.namespaces[7]['be'] = [u'Размовы пра файл', u'Размовы пра выяву']
+        self.namespaces[13]['de'] = [u'Hilfe Diskussion', u'HD']
+        self.namespaces[12]['de'] = [u'Hilfe', u'H']
+        self.namespaces[3]['de'] = [u'Benutzer Diskussion', u'BD', u'Benutzerin Diskussion']
+        self.namespaces[-2]['bar'] = [u'Media', u'Medium']
 
         # Most namespaces are inherited from family.Family.
         # Translation used on all wikis for the different namespaces.
