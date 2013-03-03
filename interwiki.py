@@ -2632,7 +2632,7 @@ def main():
         if len(namespaces) > 0:
             hintlessPageGen = pagegenerators.NamespaceFilterPageGenerator(hintlessPageGen, namespaces)
         # we'll use iter() to create make a next() function available.
-        bot.setPageGenerator(iter(hintlessPageGen), number=umber, until=until)
+        bot.setPageGenerator(iter(hintlessPageGen), number=number, until=until)
     elif warnfile:
         # TODO: filter namespaces if -namespace parameter was used
         readWarnfile(warnfile, bot)
