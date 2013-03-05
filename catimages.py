@@ -639,23 +639,27 @@ class FileData(object):
         #pywikibot.output( u'FFT_Comp: %s %s' % (1.-float(i*i)/(s[0]*s[1]), peaks) )
 
         # svd
-        U, S, Vh = linalg.svd(np.matrix(gray))
-        #U, S, Vh = linalg.svd(np.matrix(fft))      # do combined 'svd of fft'
-        SS = np.zeros(s)
-        ss = min(s)
-        for i in range(0, len(S)-1, max( int(len(S)/100.), 1 )):   # (len(S)==ss) -> else; problem!
-            #SS = np.zeros(s)
-            #SS[:(ss-i),:(ss-i)] = np.diag(S[:(ss-i)])
-            SS[:(i+1),:(i+1)] = np.diag(S[:(i+1)])
-            #Image.fromarray(np.dot(np.dot(U, SS), Vh) - gray).show()
-            #if ((np.dot(np.dot(U, SS), Vh) - gray).max() >= (255/4.)):
-            if ((np.dot(np.dot(U, SS), Vh) - gray).max() < (255/4.)):
-                break
-        #data['SVD_Comp'] = 1.-float(i)/ss
-        data['SVD_Comp'] = float(i)/ss
-        data['SVD_Min']  = S[:(i+1)].min()
-        #pywikibot.output( u'SVD_Comp: %s' % (1.-float(i)/ss) )
-        #pywikibot.output( u'SVD_Comp: %s %s %s' % (float(i)/ss, S[:(i+1)].min(), S[:(i+1)].max()) )
+        try:
+            U, S, Vh = linalg.svd(np.matrix(gray))
+            #U, S, Vh = linalg.svd(np.matrix(fft))      # do combined 'svd of fft'
+            SS = np.zeros(s)
+            ss = min(s)
+            for i in range(0, len(S)-1, max( int(len(S)/100.), 1 )):   # (len(S)==ss) -> else; problem!
+                #SS = np.zeros(s)
+                #SS[:(ss-i),:(ss-i)] = np.diag(S[:(ss-i)])
+                SS[:(i+1),:(i+1)] = np.diag(S[:(i+1)])
+                #Image.fromarray(np.dot(np.dot(U, SS), Vh) - gray).show()
+                #if ((np.dot(np.dot(U, SS), Vh) - gray).max() >= (255/4.)):
+                if ((np.dot(np.dot(U, SS), Vh) - gray).max() < (255/4.)):
+                    break
+            #data['SVD_Comp'] = 1.-float(i)/ss
+            data['SVD_Comp'] = float(i)/ss
+            data['SVD_Min']  = S[:(i+1)].min()
+            #pywikibot.output( u'SVD_Comp: %s' % (1.-float(i)/ss) )
+            #pywikibot.output( u'SVD_Comp: %s %s %s' % (float(i)/ss, S[:(i+1)].min(), S[:(i+1)].max()) )
+        except linalg.LinAlgError:
+            # SVD did not converge; in fact this should NEVER happen...(?!?)
+            pass
 
         if data:
             self._buffer_Geometry.update(data)
