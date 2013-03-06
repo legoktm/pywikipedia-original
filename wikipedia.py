@@ -4547,7 +4547,7 @@ class DataPage(Page):
 
         """
         links = self.get()['links']
-        self._interwiki = [Page(code.replace('wiki', '').replace('_', '-'),
+        self._interwiki = [Page(getSite(code.replace('wiki', '').replace('_', '-'),fam='wikipedia'),
                                 links[code])
                            for code in links]
         return self._interwiki
