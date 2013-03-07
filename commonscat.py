@@ -182,7 +182,7 @@ ignoreTemplates = {
     'om': [u'Commons'],
     'pt': [u'Correlatos'],
     'simple': [u'Sisterlinks'],
-    'ru': [u'Навигация', u'Навигация для категорий', u'КПР', u'КБР'],
+    'ru': [u'Навигация', u'Навигация для категорий', u'КПР', u'КБР', u'Годы в России', u'commonscat-inline'],
     'tt': [u'Навигация'],
     'zh': [u'Category redirect', u'cr', u'Commons',
            u'Sisterlinks', u'Sisterlinkswp',
