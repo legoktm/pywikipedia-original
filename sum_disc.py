@@ -283,10 +283,8 @@ class SumDiscBot(basic.AutoBasicBot):
 
 
         lang = locale.locale_alias.get(self.site.lang, locale.locale_alias['en']).split('.')[0]
-        try:
-            locale.setlocale(locale.LC_TIME, lang)
-        except locale.Error:    # work-a-round for missing 'de_DE' on nightshade (TS-1554)
-            locale.setlocale(locale.LC_TIME, lang + '.utf8')
+        # use e.g. 'de_DE.utf8' (thus no decode('latin-1') anymore!)
+        locale.setlocale(locale.LC_TIME, lang + '.utf8')
 
         # init constants
         self._userListPage = pywikibot.Page(self.site, bot_config['userlist'])
@@ -658,7 +656,7 @@ class SumDiscBot(basic.AutoBasicBot):
             buf[key] = data_dict[key].sum_disc_data
 
         # write new history
-        self._appendFile( str(buf).decode('latin-1') )
+        self._appendFile( str(buf) )
 
         pywikibot.output(u'\03{lightpurple}*** History updated\03{default}')
 
@@ -1353,7 +1351,7 @@ class SumDiscPages(object):
         count = len(buf)
         if (count > 0):
             data  = [ time.strftime( self.param['parse_msg'][u'start'], 
-                                     time.gmtime()).decode('latin-1') ]
+                                     time.gmtime()) ]
             data += buf
             buf   = string.join(data, u'\n')
             buf  += self.param['parse_msg'][u'end'] % {'sign':u'~~~~'}
@@ -1399,7 +1397,7 @@ class SumDiscPages(object):
             # is localized to the actual date/time settings, cannot localize timestamps that are
             #    half of a year in the past or future!
             timestamp = pywikibot.Timestamp.fromtimestamp( calendar.timegm(timestamp.timetuple()) )
-        return timestamp.strftime(u'%H:%M, %d. %b. %Y').decode('latin-1')
+        return timestamp.strftime(u'%H:%M, %d. %b. %Y')
 
 
 class PageSections(object):
