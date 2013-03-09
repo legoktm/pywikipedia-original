@@ -1350,8 +1350,8 @@ class SumDiscPages(object):
 
         count = len(buf)
         if (count > 0):
-            data  = [ time.strftime( self.param['parse_msg'][u'start'], 
-                                     time.gmtime()) ]
+            data  = [ time.strftime( self.param['parse_msg'][u'start'].encode('utf-8'), 
+                                     time.gmtime() ).decode('utf-8') ]
             data += buf
             buf   = string.join(data, u'\n')
             buf  += self.param['parse_msg'][u'end'] % {'sign':u'~~~~'}
@@ -1397,7 +1397,7 @@ class SumDiscPages(object):
             # is localized to the actual date/time settings, cannot localize timestamps that are
             #    half of a year in the past or future!
             timestamp = pywikibot.Timestamp.fromtimestamp( calendar.timegm(timestamp.timetuple()) )
-        return timestamp.strftime(u'%H:%M, %d. %b. %Y')
+        return timestamp.strftime(u'%H:%M, %d. %b. %Y'.encode('utf-8')).decode('utf-8')
 
 
 class PageSections(object):
