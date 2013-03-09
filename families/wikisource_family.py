@@ -655,7 +655,7 @@ class Family(family.WikimediaFamily):
         self.namespaces[829] = {
             'cs': u'Module talk',
             'en': u'Module talk',
-            'fr': u'Module talk',
+            'fr': u'Discussion Module',
             'it': u'Module talk',
         }
 
