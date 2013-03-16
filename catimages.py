@@ -1516,16 +1516,17 @@ class FileData(object):
         #smallImg = cv2.equalizeHist( smallImg )
         im = smallImg
 
-        found_all = None
+        found_all = False
+        corners   = None
         try:
             #found_all, corners = cv.FindChessboardCorners( im, chessboard_dim )
             found_all, corners = cv2.findChessboardCorners( im, chessboard_dim )
         except cv2.error, e:
             pywikibot.output(u'%s' % e)
 
-        cv2.drawChessboardCorners( im, chessboard_dim, corners, found_all )
-        #cv2.imshow("win", im)
-        #cv2.waitKey()
+        #cv2.drawChessboardCorners( im, chessboard_dim, corners, found_all )
+        ##cv2.imshow("win", im)
+        ##cv2.waitKey()
 
         if corners is not None:
             corners = [ tuple(item[0]) for item in corners ]
