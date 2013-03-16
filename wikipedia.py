@@ -4371,7 +4371,7 @@ class DataPage(Page):
                 params['token'] = token
             else:
                 params['token'] = self.site().getToken(sysop = sysop)
-            output(u"Changing %s" self.title())
+            output(u"Changing %s" % self.title())
             data = query.GetData(params, self.site(), sysop=sysop)
             if 'error' in data:
                 raise RuntimeError("API query error: %s" % data)
@@ -4389,7 +4389,7 @@ class DataPage(Page):
                 params['token'] = token
             else:
                 params['token'] = self.site().getToken(sysop = sysop)
-            output(u"Changing %s" self.title())
+            output(u"Changing %s" % self.title())
             data = query.GetData(params, self.site(), sysop=sysop)
             if 'error' in data:
                 raise RuntimeError("API query error: %s" % data)
