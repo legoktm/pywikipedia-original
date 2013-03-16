@@ -4345,7 +4345,7 @@ class DataPage(Page):
                         value=int(value.replace("q","").replace("Q",""))
                     except ValueError:
                         search=self.searchentities(value, 'item')
-                        value=int(search[0]["id"].replace("Q",""))
+                        value=int(search[0]["id"].replace("q",""))
                     else:
                         pass
                 else:
