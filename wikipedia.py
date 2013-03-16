@@ -4371,6 +4371,7 @@ class DataPage(Page):
                 params['token'] = token
             else:
                 params['token'] = self.site().getToken(sysop = sysop)
+            output(u"Changing %s" self.title())
             data = query.GetData(params, self.site(), sysop=sysop)
             if 'error' in data:
                 raise RuntimeError("API query error: %s" % data)
@@ -4379,15 +4380,16 @@ class DataPage(Page):
         else:
             params = {
             'action': 'wbcreateclaim',
-            'entity': self.title(),
+            'entity': self.title().replace("Q","q"),
             'snaktype': 'value',
-            'property': u"p"+str(WDproperty),
+            'property': u"p"+str(propertyID),
             'value': value,
             }
             if token:
                 params['token'] = token
             else:
                 params['token'] = self.site().getToken(sysop = sysop)
+            output(u"Changing %s" self.title())
             data = query.GetData(params, self.site(), sysop=sysop)
             if 'error' in data:
                 raise RuntimeError("API query error: %s" % data)
