@@ -4316,7 +4316,7 @@ class DataPage(Page):
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
-    def editclaim(self, WDproperty, value,raw_value=False, comment=None, token=None, sysop=False,botflag=True):
+    def editclaim(self, WDproperty, value,raw_value=False, refs=None, comment=None, token=None, sysop=False,botflag=True):
         if isinstance(WDproperty,int):
             propertyID=WDproperty
         elif isinstance(WDproperty,basestring):
@@ -4326,7 +4326,7 @@ class DataPage(Page):
                 try:
                     propertyID=int(WDproperty.replace("p","").replace("P",""))
                 except ValueError:
-                    search=self.searchentities(WDproperty, 'property')
+                    search=self.searchentities(WDproperty, 'property', lang=self._originSite.lang)
                     propertyID=int(search[0]["id"].replace("p",""))
                 else:
                     pass
@@ -4344,7 +4344,7 @@ class DataPage(Page):
                     try:
                         value=int(value.replace("q","").replace("Q",""))
                     except ValueError:
-                        search=self.searchentities(value, 'item')
+                        search=self.searchentities(value, 'item', lang=self._originSite.lang)
                         value=int(search[0]["id"].replace("q",""))
                     else:
                         pass
@@ -4377,6 +4377,7 @@ class DataPage(Page):
                 raise RuntimeError("API query error: %s" % data)
             if u'warnings' in data:
                 output(str(data[u'warnings']))
+            guid=theclaim['g']
         else:
             params = {
             'action': 'wbcreateclaim',
@@ -4390,6 +4391,59 @@ class DataPage(Page):
             else:
                 params['token'] = self.site().getToken(sysop = sysop)
             output(u"Changing %s" % self.title())
+            data = query.GetData(params, self.site(), sysop=sysop)
+            if 'error' in data:
+                raise RuntimeError("API query error: %s" % data)
+            if u'warnings' in data:
+                output(str(data[u'warnings']))
+            guid=data['claim']['id']
+        if refs:
+            snak=[]
+            for ref in refs:
+                if isinstance(ref,basestring):
+                    raise RuntimeError("the references must be like this:{(ref1,value1),(ref2,value2)}")
+                for i in [0,1]:  
+                    if isinstance(ref[i],int):
+                        value=ref[i]
+                    elif isinstance(ref[i],basestring):
+                        try:
+                            value=int(ref[i])
+                        except ValueError:
+                            try:
+                                value=int(ref[i].replace("q","").replace("Q","").replace("P","").replace("p",""))
+                            except ValueError:
+                                if i==0:
+                                    typesearch='property'
+                                else:
+                                    typesearch='item'
+                                search=self.searchentities(ref[i], typesearch, lang=self._originSite.lang)
+                                value=int(search[0]["id"].replace("q","").replace("p",""))
+                            else:
+                                pass
+                        else:
+                            pass
+                    else:
+                        raise RuntimeError("Unknown item: %s" % ref[i])
+                    snak.append(value)
+            finalsnak={}
+            for i in range(0,len(snak)/2):
+                snaki =  [{"snaktype":"value",
+		      "property":"p"+str(snak[i*2]),
+		      "datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":snak[(i*2)+1]}}}]
+                finalsnak["p"+str(snak[i*2])]=snaki
+            finalsnak=json.dumps(finalsnak)
+            finalsnak=finalsnak.replace("'", '"')
+            params = {
+            'action': 'wbsetreference',
+            'statement' : guid,
+            'snaks' :u"%s" % finalsnak,
+            'bot' : '1'
+            }
+            if token:
+                params['token'] = token
+            else:
+                params['token'] = self.site().getToken(sysop = sysop)
+            output(u"Adding references to %s" % self.title())
             data = query.GetData(params, self.site(), sysop=sysop)
             if 'error' in data:
                 raise RuntimeError("API query error: %s" % data)
@@ -4527,7 +4581,7 @@ class DataPage(Page):
             raise BadTitle('BadTitle: %s' % self)
         return entities
 
-    def searchentities(self, search, entitytype=None, sysop=False):
+    def searchentities(self, search, entitytype=None, lang='en', sysop=False):
         """API module to search for entities.
 
         (independent of page object and could thus be extracted from this class)
@@ -4536,7 +4590,7 @@ class DataPage(Page):
             'action': 'wbsearchentities',
             'search': search,
             #'language': self.site().language(),
-            'language': 'en',
+            'language': lang,
         }
         if entitytype:
             params['type']=entitytype
