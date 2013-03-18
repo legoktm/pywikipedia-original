@@ -52,7 +52,7 @@ class Win32CtypesUI(Win32BaseUI):
         self.stdout = stdout
         self.stderr = stderr
         self.encoding = 'utf-8'
-        
+
     def printColorized(self, text, targetStream):
         std_out_handle = ctypes.windll.kernel32.GetStdHandle(-11)
         # Color tags might be cascaded, e.g. because of transliteration.
@@ -82,7 +82,7 @@ class Win32CtypesUI(Win32BaseUI):
         targetStream.write(text.encode(self.encoding, 'replace'))
         # just to be sure, reset the color
         ctypes.windll.kernel32.SetConsoleTextAttribute(std_out_handle, windowsColors['default'])
-        
+
     def _raw_input(self):
         data = self.stdin.readline()
         if '\x1a' in data:

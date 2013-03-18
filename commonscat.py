@@ -149,7 +149,15 @@ ignoreTemplates = {
            u'Commonskat', u'Commonscat2', u'GalleriCommons', u'Søsterlinks'],
     'de': [u'Commons', u'ZhSZV', u'Bauwerk-stil-kategorien',
            u'Bauwerk-funktion-kategorien', u'KsPuB',
-           u'Kategoriesystem Augsburg-Infoleiste'],
+           u'Kategoriesystem Augsburg-Infoleiste',
+           u'Kategorie Ge', u'Kategorie v. Chr. Ge',
+           u'Kategorie Geboren nach Jh. v. Chr.', u'Kategorie Geboren nach Jh.',
+           u'!Kategorie Gestorben nach Jh. v. Chr.',
+           u'!Kategorie Gestorben nach Jh.',
+           u'Kategorie Jahr', u'Kategorie Jahr v. Chr.',
+           u'Kategorie Jahrzehnt', u'Kategorie Jahrzehnt v. Chr.',
+           u'Kategorie Jahrhundert', u'Kategorie Jahrhundert v. Chr.',
+           u'Kategorie Jahrtausend', u'Kategorie Jahrtausend v. Chr.'],
     'en': [u'Category redirect', u'Commons', u'Commonscat1A', u'Commoncats',
            u'Commonscat4Ra',
            u'Sisterlinks', u'Sisterlinkswp', u'Sister project links',
@@ -178,7 +186,7 @@ ignoreTemplates = {
     'om': [u'Commons'],
     'pt': [u'Correlatos'],
     'simple': [u'Sisterlinks'],
-    'ru': [u'Навигация', u'Навигация для категорий', u'КПР', u'КБР'],
+    'ru': [u'Навигация', u'Навигация для категорий', u'КПР', u'КБР', u'Годы в России', u'commonscat-inline'],
     'tt': [u'Навигация'],
     'zh': [u'Category redirect', u'cr', u'Commons',
            u'Sisterlinks', u'Sisterlinkswp',
@@ -205,13 +213,14 @@ msg_change = {
     'zh': u'機器人：更改 commonscat 連結，從 %(oldcat)s 至 %(newcat)s',
 }
 
+
 class CommonscatBot:
 
     def __init__(self, generator, always, summary=None):
         self.generator = generator
         self.always = always
-        self.dry = False
         self.summary = summary
+        self.site = pywikibot.getSite()
 
     def run(self):
         for page in self.generator:
@@ -264,35 +273,34 @@ class CommonscatBot:
             # show what was changed
             pywikibot.showDiff(page.get(), text)
             pywikibot.output(u'Comment: %s' %comment)
-            if not self.dry:
-                if not self.always:
-                    choice = pywikibot.inputChoice(
-                        u'Do you want to accept these changes?',
-                        ['Yes', 'No', 'Always', 'Quit'],
-                        ['y', 'N', 'a', 'q'], 'N')
-                    if choice == 'a':
-                        self.always = True
-                    elif choice == 'q':
-                        import sys
-                        sys.exit()
-                if self.always or choice == 'y':
-                    try:
-                        # Save the page
-                        page.put(text, comment=comment,
-                                 minorEdit=minorEdit, botflag=botflag)
-                    except pywikibot.LockedPage:
-                        pywikibot.output(u"Page %s is locked; skipping."
-                                         % page.title(asLink=True))
-                    except pywikibot.EditConflict:
-                        pywikibot.output(
-                            u'Skipping %s because of edit conflict'
-                            % (page.title()))
-                    except pywikibot.SpamfilterError, error:
-                        pywikibot.output(
+            if not self.always:
+                choice = pywikibot.inputChoice(
+                    u'Do you want to accept these changes?',
+                    ['Yes', 'No', 'Always', 'Quit'],
+                    ['y', 'N', 'a', 'q'], 'N')
+                if choice == 'a':
+                    self.always = True
+                elif choice == 'q':
+                    import sys
+                    sys.exit()
+            if self.always or choice == 'y':
+                try:
+                    # Save the page
+                    page.put(text, comment=comment,
+                             minorEdit=minorEdit, botflag=botflag)
+                except pywikibot.LockedPage:
+                    pywikibot.output(u"Page %s is locked; skipping."
+                                     % page.title(asLink=True))
+                except pywikibot.EditConflict:
+                    pywikibot.output(
+                        u'Skipping %s because of edit conflict'
+                        % (page.title()))
+                except pywikibot.SpamfilterError, error:
+                    pywikibot.output(
 u'Cannot change %s because of spam blacklist entry %s'
-                            % (page.title(), error.url))
-                    else:
-                        return True
+                        % (page.title(), error.url))
+                else:
+                    return True
         return False
 
     @classmethod
@@ -325,15 +333,15 @@ u'Cannot change %s because of spam blacklist entry %s'
         return False
 
     def updateInterwiki (self, wikipediaPage = None, commonsPage = None):
-        '''
-        Update the interwiki's at commons from a wikipedia page. The bot just
-        replaces the interwiki links at the commons page with the interwiki's from
-        the wikipedia page. This should probably be more intelligent. We could use
-        add all the interwiki's and remove duplicates. Or only remove language links
-        if multiple language links to the same language exist.
+        '''Update the interwiki's at commons from a wikipedia page. The bot just
+        replaces the interwiki links at the commons page with the interwiki's
+        from the wikipedia page. This should probably be more intelligent. We
+        could use add all the interwiki's and remove duplicates. Or only remove
+        language links if multiple language links to the same language exist.
 
-        This function is disabled for the moment untill i figure out what the best
-        way is to update the interwiki's.
+        This function is disabled for the moment until i figure out what the
+        best way is to update the interwiki's.
+
         '''
         interwikis = {}
         comment= u''
@@ -356,10 +364,10 @@ u'Cannot change %s because of spam blacklist entry %s'
             commonsPage.put(newtext=newtext, comment=comment)
 
     def addCommonscat (self, page):
-        '''
-        Take a page. Go to all the interwiki page looking for a commonscat template.
-        When all the interwiki's links are checked and a proper category is found
-        add it to the page.
+        '''Take a page. Go to all the interwiki page looking for a commonscat
+        template. When all the interwiki's links are checked and a proper
+        category is found add it to the page.
+
         '''
         pywikibot.output(u'Working on ' + page.title());
         #Get the right templates for this page
@@ -416,6 +424,8 @@ u'Cannot change %s because of spam blacklist entry %s'
                           newtemplate=u'', newcat=u'', linktitle=u'',
                           description=u''):
         ''' Change the current commonscat template and target. '''
+        if oldcat == '3=S' or linktitle == '3=S':
+            return #additional param on de-wiki, TODO: to be handled
         if not linktitle and (page.title().lower() in oldcat.lower() or
                               oldcat.lower() in page.title().lower()):
             linktitle = oldcat
@@ -501,12 +511,13 @@ u'Cannot change %s because of spam blacklist entry %s'
         if pywikibot.verbose:
             pywikibot.output("getCommonscat: " + name )
         try:
-            commonsSite = pywikibot.getSite("commons", "commons")
+            commonsSite = self.site.image_repository()
             #This can throw a pywikibot.BadTitle
             commonsPage = pywikibot.Page(commonsSite, "Category:" + name)
 
             if not commonsPage.exists():
-                logpages = commonsSite.logpages(mode='delete', title=commonsPage.title())
+                logpages = commonsSite.logpages(mode='delete',
+                                                title=commonsPage.title())
                 try:
                     logitem = logpages.next()
                     (logpage, loguser, logtimestamp, logcomment) = logitem
@@ -519,15 +530,19 @@ u'Cannot change %s because of spam blacklist entry %s'
                         elif m.group('newcat2'):
                             return self.checkCommonscatLink(m.group('newcat2'))
                     else:
-                        pywikibot.output(u'getCommonscat: Deleted by %s. Couldn\'t find move target in \" %s \"' % (loguser, logcomment))
+                        pywikibot.output(
+                            u'getCommonscat: Deleted by %s. Couldn\'t find move target in \" %s \"'
+                            % (loguser, logcomment))
                         return u''
                 except StopIteration:
                     if pywikibot.verbose:
-                        pywikibot.output(u"getCommonscat: The category doesnt exist and nothing found in the deletion log.")
+                        pywikibot.output(
+                            u"getCommonscat: The category doesnt exist and nothing found in the deletion log.")
                     return u''
             elif commonsPage.isRedirectPage():
                 if pywikibot.verbose:
-                    pywikibot.output(u"getCommonscat: The category is a redirect")
+                    pywikibot.output(
+                        u"getCommonscat: The category is a redirect")
                 return self.checkCommonscatLink(
                     commonsPage.getRedirectTarget().title(withNamespace=False))
             elif "Category redirect" in commonsPage.templates():

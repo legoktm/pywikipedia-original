@@ -49,7 +49,7 @@ __version__ = '$Id$'
 #
 
 # python default packages
-import re, urllib2, os, locale, sys, datetime, math, shutil, mimetypes
+import re, urllib2, os, locale, sys, datetime, math, shutil, mimetypes, shelve
 import StringIO, json # fallback: simplejson
 from subprocess import Popen, PIPE
 import Image
@@ -62,7 +62,7 @@ if not os.path.isabs(scriptdir):
 # additional python packages (more exotic and problematic ones)
 try:
     import numpy as np
-    from scipy import ndimage
+    from scipy import ndimage, fftpack, linalg
     import cv
     # TS: nonofficial cv2.so backport of the testing-version of
     # python-opencv because of missing build-host, done by DaB
@@ -83,7 +83,8 @@ except:
 # modules needing compilation are imported later on request:
 # (see https://jira.toolserver.org/browse/TS-1452)
 # e.g. opencv, jseg, slic, pydmtx, zbar, (pyml or equivalent)
-# binaries: exiftool, pdftotext/pdfimages (poppler), ffprobe (ffmpeg), (ocropus)
+# binaries: exiftool, pdftotext/pdfimages (poppler), ffprobe (ffmpeg),
+#           convert/identify (ImageMagick), (ocropus)
 # TODO:
 #   (pdfminer not used anymore/at the moment...)
 #   python-djvulibre or python-djvu for djvu support
@@ -498,22 +499,24 @@ class FileData(object):
         if (self.image_mime[1] in ['ogg', 'pdf', 'vnd.djvu']):
             return
 
-        result = self._util_get_Geometry_CV()
+        result = self._util_get_Geometry_CVnSCIPY()
 
-        self._info['Geometry'] = [{'Lines': result['Lines'], 'Circles': result['Circles'], 'Corners': result['Corners']}]
+        self._info['Geometry'] = [{'Lines': result['Lines'], 'Circles': result['Circles'], 'Corners': result['Corners'],
+                                   'FFT_Comp': result['FFT_Comp'], 'SVD_Comp': result['SVD_Comp'], 'SVD_Min': result['SVD_Min']}]
         return
 
     # https://code.ros.org/trac/opencv/browser/trunk/opencv/samples/python/houghlines.py?rev=2770
-    def _util_get_Geometry_CV(self):
+    def _util_get_Geometry_CVnSCIPY(self):
         # http://docs.opencv.org/modules/imgproc/doc/feature_detection.html#cornerharris
         # http://docs.opencv.org/modules/imgproc/doc/feature_detection.html#houghcircles
         # http://docs.opencv.org/modules/imgproc/doc/feature_detection.html#houghlines
         # http://docs.opencv.org/modules/imgproc/doc/feature_detection.html#houghlinesp
-        
+
         if hasattr(self, '_buffer_Geometry'):
             return self._buffer_Geometry
 
-        self._buffer_Geometry = {'Lines': '-', 'Circles': '-', 'Edge_Ratio': '-', 'Corners': '-'}
+        self._buffer_Geometry = {'Lines': '-', 'Circles': '-', 'Edge_Ratio': '-', 'Corners': '-',
+                                 'FFT_Comp': '-', 'FFT_Peaks': '-', 'SVD_Comp': '-', 'SVD_Min': '-'}
 
         scale = 1.
         try:
@@ -534,14 +537,14 @@ class FileData(object):
 
         # similar to face or people detection
         smallImg = np.empty( (cv.Round(img.shape[1]/scale), cv.Round(img.shape[0]/scale)), dtype=np.uint8 )
-        gray = cv2.cvtColor( img, cv.CV_BGR2GRAY )
+        _gray = cv2.cvtColor( img, cv.CV_BGR2GRAY )
         # smooth it, otherwise a lot of false circles may be detected
-        #gray = cv2.GaussianBlur( gray, (9, 9), 2 )
-        gray = cv2.GaussianBlur( gray, (5, 5), 2 )
+        #gray = cv2.GaussianBlur( _gray, (9, 9), 2 )
+        gray = cv2.GaussianBlur( _gray, (5, 5), 2 )
         smallImg = cv2.resize( gray, smallImg.shape, interpolation=cv2.INTER_LINEAR )
         #smallImg = cv2.equalizeHist( smallImg )
         src = smallImg
-        
+
         # https://code.ros.org/trac/opencv/browser/trunk/opencv/samples/python/houghlines.py?rev=2770
         #dst = cv2.Canny(src, 50, 200)
         dst = cv2.Canny(src, 10, 10)
@@ -608,6 +611,55 @@ class FileData(object):
 
         #cv2.imshow("people detector", color_dst)
         #c = cv2.waitKey(0) & 255
+
+        # fft
+        gray = cv2.resize( _gray, smallImg.shape, interpolation=cv2.INTER_LINEAR )
+        #s = (self.image_size[1], self.image_size[0])
+        s = gray.shape
+        fft = fftpack.fftn(gray)
+        peaks = np.where(fft > (fft.max()*0.001))[0].shape[0]
+        # shift quadrants so that low spatial frequencies are in the center
+        #fft = fftpack.fftshift(fft)
+        #fft = np.fft.fftn(gray)
+        c = (np.array(s)/2.).astype(int)
+        for i in range(0, min(c)-1, max( int(min(c)/50.), 1 )):
+            fft[(c[0]-i):(c[0]+i+1),(c[1]-i):(c[1]+i+1)] = 0.
+            #new = np.zeros(s)
+            #new[(c[0]-i):(c[0]+i+1),(c[1]-i):(c[1]+i+1)] = fft[(c[0]-i):(c[0]+i+1),(c[1]-i):(c[1]+i+1)]
+            #Image.fromarray(fftpack.fftshift(fft).real).show()
+            ##Image.fromarray(fftpack.ifftn(fftpack.ifftshift(new)).real - gray).show()
+            #Image.fromarray(fftpack.ifftn(fft).real - gray).show()
+            if ((fftpack.ifftn(fft).real - gray).max() >= (255/2.)):
+                break
+        #fft = fftpack.ifftshift(fft)
+        #Image.fromarray(fftpack.ifftn(fft).real).show()
+        #Image.fromarray(np.fft.ifftn(fft).real).show()
+        data['FFT_Comp']  = 1.-float(i*i)/(s[0]*s[1])
+        data['FFT_Peaks'] = peaks
+        #pywikibot.output( u'FFT_Comp: %s %s' % (1.-float(i*i)/(s[0]*s[1]), peaks) )
+
+        # svd
+        try:
+            U, S, Vh = linalg.svd(np.matrix(gray))
+            #U, S, Vh = linalg.svd(np.matrix(fft))      # do combined 'svd of fft'
+            SS = np.zeros(s)
+            ss = min(s)
+            for i in range(0, len(S)-1, max( int(len(S)/100.), 1 )):   # (len(S)==ss) -> else; problem!
+                #SS = np.zeros(s)
+                #SS[:(ss-i),:(ss-i)] = np.diag(S[:(ss-i)])
+                SS[:(i+1),:(i+1)] = np.diag(S[:(i+1)])
+                #Image.fromarray(np.dot(np.dot(U, SS), Vh) - gray).show()
+                #if ((np.dot(np.dot(U, SS), Vh) - gray).max() >= (255/4.)):
+                if ((np.dot(np.dot(U, SS), Vh) - gray).max() < (255/4.)):
+                    break
+            #data['SVD_Comp'] = 1.-float(i)/ss
+            data['SVD_Comp'] = float(i)/ss
+            data['SVD_Min']  = S[:(i+1)].min()
+            #pywikibot.output( u'SVD_Comp: %s' % (1.-float(i)/ss) )
+            #pywikibot.output( u'SVD_Comp: %s %s %s' % (float(i)/ss, S[:(i+1)].min(), S[:(i+1)].max()) )
+        except linalg.LinAlgError:
+            # SVD did not converge; in fact this should NEVER happen...(?!?)
+            pass
 
         if data:
             self._buffer_Geometry.update(data)
@@ -756,12 +808,16 @@ class FileData(object):
             pywikibot.output(u'WARNING: unknown file type [_detect_AverageColor_PILnCV]')
             return
 
-        result             = self._util_average_Color_colormath(h)
-        result['Gradient'] = self._util_get_Geometry_CV().get('Edge_Ratio', None) or '-'
+        result              = self._util_average_Color_colormath(h)
+        result['Gradient']  = self._util_get_Geometry_CVnSCIPY().get('Edge_Ratio', None) or '-'
+        result['FFT_Peaks'] = self._util_get_Geometry_CVnSCIPY().get('FFT_Peaks', None) or '-'
         self._info['ColorAverage'] = [result]
         return
 
     def _detect_Properties_PIL(self):
+        """Retrieve as much file property info possible, especially the same
+           as commons does in order to compare if those libraries (ImageMagick,
+           ...) are buggy (thus explicitely use other software for independence)"""
         #self.image_size = (None, None)
         self._info['Properties'] = [{'Format': u'-', 'Pages': 0}]
         if self.image_fileext == u'.svg':   # MIME: 'application/xml; charset=utf-8'
@@ -846,6 +902,9 @@ class FileData(object):
         #    result = {}
         # djvu: python-djvulibre or python-djvu for djvu support
         # http://pypi.python.org/pypi/python-djvulibre/0.3.9
+        #elif self.image_fileext == u'.xcf'
+        #    result = {}
+        #    # DO NOT use ImageMagick (identify) instead of PIL to get these info !!
         else:
             pywikibot.output(u'WARNING: unknown (generic) file type [_detect_Properties_PIL]')
             return
@@ -1443,7 +1502,7 @@ class FileData(object):
             if im == None:
                 raise IOError
 
-            scale  = max([1., np.average(np.array(im.shape)[0:2]/500.)])
+            scale  = max([1., np.average(np.array(im.shape)[0:2]/1000.)])
         except IOError:
             pywikibot.output(u'WARNING: unknown file type [_detect_Chessboard_CV]')
             return
@@ -1457,23 +1516,213 @@ class FileData(object):
         #smallImg = cv2.equalizeHist( smallImg )
         im = smallImg
 
-        found_all = None
+        found_all = False
+        corners   = None
         try:
             #found_all, corners = cv.FindChessboardCorners( im, chessboard_dim )
             found_all, corners = cv2.findChessboardCorners( im, chessboard_dim )
         except cv2.error, e:
             pywikibot.output(u'%s' % e)
-     
-        ##cv.DrawChessboardCorners( im3, chessboard_dim, corners, found_all )
-        #cv.ShowImage("win", im3);
-        #cv.WaitKey()
 
-        # further detection ?
+        #cv2.drawChessboardCorners( im, chessboard_dim, corners, found_all )
+        ##cv2.imshow("win", im)
+        ##cv2.waitKey()
+
+        if corners is not None:
+            corners = [ tuple(item[0]) for item in corners ]
+            self._info['Chessboard'] = [{ 'Corners': corners, }]
+
+#        # chess board recognition (more tolerant)
+#        # http://codebazaar.blogspot.ch/2011/08/chess-board-recognition-project-part-1.html
+#        # https://code.ros.org/trac/opencv/browser/trunk/opencv/samples/python/houghlines.py?rev=2770
+#        # http://docs.opencv.org/doc/tutorials/imgproc/imgtrans/canny_detector/canny_detector.html
+#        dst = im.copy()
+#        color_dst = cv2.cvtColor(dst, cv.CV_GRAY2BGR)
+#        dst = cv2.GaussianBlur(dst, (3, 3), 5)
+#        thr = 150
+#        dst = cv2.Canny(dst, thr, 3*thr)
+#        cv2.imshow("win", dst)
+#        cv2.waitKey()
+#        # lines to find grid
+#        # http://dsp.stackexchange.com/questions/2420/alternatives-to-hough-transform-for-detecting-a-grid-like-structure
+#        USE_STANDARD = True
+#        if USE_STANDARD:
+#            #lines = cv.HoughLines2(dst, storage, cv.CV_HOUGH_STANDARD, 1, pi / 180, 100, 0, 0)
+#            #lines = cv2.HoughLines(dst, 1, math.pi / 180, 100)
+#            lines = cv2.HoughLines(dst, 1, math.pi / 180, 150)
+#            if (lines is not None) and len(lines):
+#                lines = lines[0]
+#                #data['Lines'] = len(lines)
+#
+#            ls = np.array(lines)
+#            import pylab
+#            (n, bins, patches) = pylab.hist(ls[:,1])
+#            print n, bins, patches
+#            pylab.grid(True)
+#            pylab.show()
+#
+#            for (rho, theta) in lines:
+#                #if theta > 0.3125: continue
+#                a = math.cos(theta)
+#                b = math.sin(theta)
+#                x0 = a * rho 
+#                y0 = b * rho
+#                pt1 = (cv.Round(x0 + 1000*(-b)), cv.Round(y0 + 1000*(a)))
+#                pt2 = (cv.Round(x0 - 1000*(-b)), cv.Round(y0 - 1000*(a)))
+#                cv2.line(color_dst, pt1, pt2, cv.RGB(255, 0, 0), 3, 8)
+#        else:
+#            #lines = cv.HoughLines2(dst, storage, cv.CV_HOUGH_PROBABILISTIC, 1, pi / 180, 50, 50, 10)
+#            lines = cv2.HoughLinesP(dst, 1, math.pi / 180, 100) 
+#
+#            for line in lines[0]:
+#                print line
+#                cv2.line(color_dst, tuple(line[0:2]), tuple(line[2:4]), cv.CV_RGB(255, 0, 0), 3, 8)
+#        cv2.imshow("win", color_dst)
+#        cv2.waitKey()
 
         if found_all:
-            self._info['Chessboard'] = [{'Corners': corners}]
+            # pose detection
+            # http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
+            # http://stackoverflow.com/questions/10022568/opencv-2-3-camera-calibration
+            d = shelve.open( os.path.join(scriptdir, 'dtbext/opencv/camera_virtual_default') )
+            if ('retval' not in d):
+                # http://commons.wikimedia.org/wiki/File:Mutilated_checkerboard_3.jpg
+                pywikibot.output(u"Doing (virtual) camera calibration onto reference image 'File:Mutilated_checkerboard_3.jpg'")
+                im3 = cv2.imread( 'Mutilated_checkerboard_3.jpg', cv2.CV_LOAD_IMAGE_GRAYSCALE )
+                im3 = cv2.resize( im3, (cv.Round(im3.shape[1]/scale), cv.Round(im3.shape[0]/scale)), interpolation=cv2.INTER_LINEAR )
+                # Compute the the three dimensional world-coordinates
+                tmp = []
+                for h in range(chessboard_dim[0]):
+                    for w in range(chessboard_dim[1]):
+                        tmp.append( (float(h), float(w), 0.0) )
+                objectPoints = np.array(tmp)
+                # Compute matrices
+                _found_all, _corners = cv2.findChessboardCorners( im3, chessboard_dim, flags=cv.CV_CALIB_CB_ADAPTIVE_THRESH | cv.CV_CALIB_CB_FILTER_QUADS )
+                #cv2.drawChessboardCorners( im3, chessboard_dim, _corners, _found_all )
+                retval, cameraMatrix, distCoeffs, rvecs, tvecs = cv2.calibrateCamera([objectPoints.astype('float32')], [_corners.astype('float32')], im3.shape, np.eye(3), np.zeros((5, 1)))
+                fovx, fovy, focalLength, principalPoint, aspectRatio = cv2.calibrationMatrixValues(cameraMatrix, im3.shape, 1.0, 1.0)
+                d['objectPoints']   = [objectPoints.astype('float32')]  # shape: (49, 3)    in a list of 1 item
+                d['imagePoints']    = [_corners.astype('float32')]      # shape: (49, 1, 2) in a list of 1 item
+                d['cameraMatrix']   = cameraMatrix
+                d['distCoeffs']     = distCoeffs
+                d['rvecs']          = rvecs
+                d['tvecs']          = tvecs
+                d['imageSize']      = im3.shape
+                d['apertureWidth']  = 1.0
+                d['apertureHeight'] = 1.0
+                d['fovx']           = fovx
+                d['fovy']           = fovy
+                d['focalLength']    = focalLength
+                d['principalPoint'] = principalPoint
+                d['aspectRatio']    = aspectRatio
+                d['retval']         = retval
+            else:
+                objectPoints = d['objectPoints'][0]
+                cameraMatrix, distCoeffs = d['cameraMatrix'], d['distCoeffs']
+                # would be nice to use these:
+                #cameraMatrix, distCoeffs = np.eye(3), np.zeros((5,1))
+                # ..,since they are simple... else other have to be documented as "used calibration" !!!
+            d.close()
+            # http://answers.opencv.org/question/1073/what-format-does-cv2solvepnp-use-for-points-in/
+            rvec, tvec = cv2.solvePnP(objectPoints, corners, cameraMatrix, distCoeffs)
+            #rvec, tvec = cv2.solvePnP(objectPoints, corners, cameraMatrix, None)
+            # http://www.opencv.org.cn/opencvdoc/2.3.2/html/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html
+            # http://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
+            #print cv2.Rodrigues(rvec)[0], linalg.norm(rvec), rvec
+            #print tvec
+            #cv2.composeRT
+            #(cv2.findFundamentalMat, cv2.findHomography or from 'pose', cv2.estimateAffine3D)
+
+            im = cv2.cvtColor(im, cv2.COLOR_GRAY2BGR)
+            ## draw the rotated 3D object
+            #imagePoints, jacobian = cv2.projectPoints(objectPoints, rvec, tvec, cameraMatrix, distCoeffs)
+            #for i in range(len(imagePoints)-1):
+            #    cv2.line(im, tuple(imagePoints[i][0].astype(int)), tuple(imagePoints[i+1][0].astype(int)), (125.,125.,125.), 3)
+
+            mat = np.eye(3)
+            color = [(0., 0., 255.), (0., 255., 0.), (255., 0., 0.)]
+            label = ['x', 'y', 'z']
+            # axis-cross
+            matD2raw, matD2norm, matnorm = self._util_getD2coords( mat, cameraMatrix, distCoeffs, sign=-1 )
+            for i in range(3):
+                imagePoints, D2norm, norm = matD2raw[:,:,:,i], 40*matD2norm[:,i], matnorm[:,i]
+                #cv2.line(im, tuple(imagePoints[0][0].astype(int)), tuple(imagePoints[1][0].astype(int)), color[i], 1)
+                #cv2.putText(im, label[i], tuple(imagePoints[1][0].astype(int)), cv2.FONT_HERSHEY_PLAIN, 1.5, color[i])
+                cv2.line(im, (50,50), (50+D2norm[0].astype(int),50+D2norm[1].astype(int)), color[i], 1)
+                cv2.putText(im, label[i], (50+D2norm[0].astype(int),50+D2norm[1].astype(int)), cv2.FONT_HERSHEY_PLAIN, 1., color[i])
+            # rotated axis-cross
+            matD2raw, matD2norm, matnorm = self._util_getD2coords( mat, cameraMatrix, distCoeffs, rvec=rvec, tvec=tvec )
+            for i in range(3):
+                imagePoints, D2norm, norm = matD2raw[:,:,:,i], 40*matD2norm[:,i], matnorm[:,i]
+                cv2.line(im, tuple(imagePoints[0][0].astype(int)), tuple(imagePoints[1][0].astype(int)), color[i], 3)
+                cv2.putText(im, label[i], tuple(imagePoints[1][0].astype(int)), cv2.FONT_HERSHEY_PLAIN, 1.5, color[i])
+                cv2.line(im, (50,100), (50+D2norm[0].astype(int),100+D2norm[1].astype(int)), color[i], 1)
+                cv2.putText(im, label[i], (50+D2norm[0].astype(int),100+D2norm[1].astype(int)), cv2.FONT_HERSHEY_PLAIN, 1., color[i])
+                ortho = imagePoints[1][0]-imagePoints[0][0]     # z-axis is orthogonal to object surface
+            ortho = ortho/linalg.norm(ortho)
+# self-calculated rotated axis-cross
+            rmat = np.zeros((3,4))
+            rmat[:,0:3] = cv2.Rodrigues(rvec)[0]
+            #rmat[:,3]   = tvec[:,0]
+            mat = np.dot(rmat, cv2.convertPointsToHomogeneous(np.eye(3).astype('float32')).transpose()[:,0,:])
+            ## rotation between z-axis (direction of view) and translation point tvec
+            #vec = np.array([0.,0.,1.])
+            #angle = np.arccos( np.dot(tvec[:,0], vec)/(linalg.norm(tvec[:,0])*linalg.norm(vec)) )
+            #axis  = np.cross(tvec[:,0], vec)
+            #rvec2 = axis/linalg.norm(axis) * -angle
+            #rmat2 = cv2.Rodrigues(rvec2)[0]
+            ##mat = np.dot(rmat2, mat)
+            ##rot = cv2.Rodrigues(np.dot(rmat2, rmat[:,0:3]))[0]
+            rot = rvec
+            perp = mat
+            # what follows SHOULD be invartiant of the choice of 'cameraMatrix' and 'distCoeffs' ... ! is it ?
+            #cameraMatrix = np.eye(3)
+            #distCoeffs = np.zeros((5,1))
+            mat = np.dot((cameraMatrix), mat)       # linalg.inv(cameraMatrix)
+            #_cameraMatrix, rotMatrix, transVect, rotMatrixX, rotMatrixY, rotMatrixZ, eulerAngles = cv2.decomposeProjectionMatrix(rmat)
+            #mat = np.dot(rotMatrix, np.eye(3))
+            #matD2raw, matD2norm, matnorm = self._util_getD2coords( mat, cameraMatrix, distCoeffs )
+            matD2raw, matD2norm, matnorm = self._util_getD2coords( mat, np.eye(3), distCoeffs )
+            for i in range(3):
+                imagePoints, D2norm, norm = matD2raw[:,:,:,i], 40*matD2norm[:,i], matnorm[:,i]
+                D2norm = D2norm/linalg.norm(D2norm)*40
+                cv2.line(im, (50,200), (50+D2norm[0].astype(int),200+D2norm[1].astype(int)), color[i], 1)
+                cv2.putText(im, label[i], (50+D2norm[0].astype(int),200+D2norm[1].astype(int)), cv2.FONT_HERSHEY_PLAIN, 1., color[i])
+                #ortho = imagePoints[1][0]-imagePoints[0][0]     # z-axis is orthogonal to object surface
+
+            #cv2.imshow("win", im)
+            #cv2.waitKey()
+            pywikibot.output(u'result for calibrated camera:\n  rot=%s\n  perp=%s\n  perp2D=%s' % (rot.transpose()[0], perp[:,2], ortho))
+            pywikibot.output(u'nice would be to do the same for uncalibrated/default cam settings')
+
+            # still in testing phase; some of the values might have big errors
+            self._info['Chessboard'][0]['Rotation']    = tuple(rot.transpose()[0])
+            self._info['Chessboard'][0]['Perp_Dir']    = tuple(perp[:,2])
+            self._info['Chessboard'][0]['Perp_Dir_2D'] = tuple(ortho)
 
         return
+
+    def _util_getD2coords(self, D3coords, cameraMatrix, distCoeffs, rvec=None, tvec=None, sign=1):
+        if rvec is None:
+            rvec = np.zeros((3,1))
+        if tvec is None:
+            tvec = np.zeros((3,1))
+        matD2raw  = np.zeros((2,1,2,D3coords.shape[0]))
+        matD2norm = np.zeros((2,D3coords.shape[0]))
+        matnorm   = np.zeros((1,D3coords.shape[0]))
+        for i in range(D3coords.shape[0]):
+#            D2raw, jacobian = cv2.projectPoints(np.array([[0.,0.,0.],D3coords[:,i]]), rvec, tvec, cameraMatrix, distCoeffs)
+            D2raw, jacobian = cv2.projectPoints(np.array([[0.,0.,-1.],[D3coords[0,i],D3coords[1,i],D3coords[2,i]-1.]]), rvec, tvec, cameraMatrix, distCoeffs)
+            D2norm = (D2raw[1][0]-D2raw[0][0])
+            norm   = linalg.norm(D2norm)
+#            D2norm[1] *= sign   # usual 2D coords <-> pixel/picture coords
+            D2norm[0] *= sign   # usual 2D coords <-> pixel/picture coords
+            D2norm    *= sign   # invert all
+            matD2raw[:,:,:,i] = D2raw
+            matD2norm[:,i]    = D2norm
+            matnorm[:,i]      = norm
+        matD2norm = matD2norm/max(matnorm[0])
+        return (matD2raw, matD2norm, matnorm)
 
     def _util_get_DataTags_EXIF(self):
         # http://tilloy.net/dev/pyexiv2/tutorial.html
@@ -2048,18 +2297,6 @@ class FileData(object):
         self._info['Audio'] = [data]
         return
 
-# TODO: TEST for FFT and SVD ; use e.g. for Category:Graphics !!!
-#    def _detect_xxxFeatures_SCIPY(self):
-#        from scipy import fftpack, linalg
-#
-#        #img = cv2.imread( self.image_path_JPEG, 1 )
-#        fft = fftpack.fft(img)
-#        U, S, Vh = linalg.svd(img)
-#        # linalg.svd(fft)
-# invert fft and svd with loss, then compare to original image (e.g. subtraction)
-# count how many values are needed to restore up to a fixed threshold... use this
-# as additional 'simplicy' detection for graphics...
-
 
 # all classification and categorization methods and definitions - default variation
 #  use simplest classification I can think of (self-made) and do categorization
@@ -2277,6 +2514,7 @@ class CatImages_Default(FileData):
         result = self._info_filter['ColorAverage']
         relevance = (result and result[0]['Gradient'] < 0.1) and \
                     (0.005 < result[0]['Peaks'] < 0.1)  # black/white texts are below that
+                    #(result[0]['FFT_Peaks'] < 500)      # has to be tested first !!!
 
         return (u'Graphics', bool(relevance))
 
@@ -2535,7 +2773,7 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
         # http://cairographics.org/pyrsvg/
         # http://stackoverflow.com/questions/9166400/convert-rgba-png-to-rgb-with-pil
         self.image_size = (None, None)
-        if self.image_fileext == u'.svg':
+        if   self.image_fileext == u'.svg':
             try:
                 svg = rsvg.Handle(self.image_path)
                 img = cairo.ImageSurface(cairo.FORMAT_ARGB32, svg.props.width, svg.props.height)
@@ -2555,6 +2793,24 @@ class CatImagesBot(checkimages.checkImagesBot, CatImages_Default):
                 self.image_path_JPEG = self.image_path
             except SystemError:
                 self.image_path_JPEG = self.image_path
+        elif self.image_fileext == u'.xcf':
+            # Very few programs other than GIMP read XCF files. This is by design
+            # from the GIMP developers, the format is not really documented or
+            # supported as a general-purpose file format.
+            # Commons uses ImageMagick, thus we have EXACTLY THE SAME support!
+            # (can also be a drawback, e.g. when the library is buggy...)
+            proc = Popen("convert %s %s" % (self.image_path, self.image_path_JPEG),
+                         shell=True, stderr=PIPE)#.stderr.read()
+            proc.wait()
+            if   proc.returncode == 127:
+                raise ImportError("convert (ImageMagick) not found!")
+            elif proc.returncode:
+                self.image_path_JPEG = self.image_path
+
+            #data = Popen("identify -verbose info: %s" % self.image_path,
+            #             shell=True, stderr=PIPE).stderr.read()
+            #print data
+            self.image_size = Image.open(self.image_path_JPEG).size
         else:
             try:
                 im = Image.open(self.image_path) # might be png, gif etc, for instance

@@ -5,7 +5,7 @@ File containing all standard fixes
 """
 
 #
-# (C) Pywikipedia team, 2008-2010
+# (C) Pywikipedia team, 2008-2013
 #
 __version__ = '$Id$'
 #
@@ -28,12 +28,11 @@ help = u"""
                   * grammar-de  - fix grammar and typography in German
                   * vonbis      - Ersetze Binde-/Gedankenstrich durch "bis"
                                   in German
-                  * music       - Links auf Begriffsklärungen in German
-                  * datum       - specific date formats in German
+                  * music-de    - Links auf Begriffsklärungen in German
+                  * datum-de    - specific date formats in German
                   * correct-ar  - Corrections for Arabic Wikipedia and any
                                   Arabic wiki.
-                  * yu-tld      - the yu top-level domain will soon be
-                                  disabled, see
+                  * yu-tld      - the yu top-level domain is disabled
                   * fckeditor   - Try to convert FCKeditor HTML tags to wiki
                                   syntax.
                                   http://lists.wikimedia.org/pipermail/wikibots-l/2009-February/000290.html
@@ -366,8 +365,8 @@ fixes = {
     },
 
     # some disambiguation stuff for de:
-    # python replace.py -fix:music -subcat:Album
-    'music': {
+    # python replace.py -fix:music-de -subcat:Album
+    'music-de': {
         'regex': False,
         'msg': {
             'de':u'Bot: korrigiere Links auf Begriffsklärungen',
@@ -387,8 +386,8 @@ fixes = {
     },
 
     # format of dates of birth and death, for de:
-    # python replace.py -fix:datum -ref:Vorlage:Personendaten
-    'datum': {
+    # python replace.py -fix:datum-de -ref:Vorlage:Personendaten
+    'datum-de': {
         'regex': True,
         'msg': {
             'de': u'Bot: Korrigiere Datumsformat',
@@ -589,7 +588,7 @@ fixes = {
             (u'Special:Whatlinkshere',   u'Special:WhatLinksHere'),
         ],
     },
-    # yu top-level domain will soon be disabled,
+    # yu top-level domain was disabled in 2010,
     # see http://lists.wikimedia.org/pipermail/wikibots-l/2009-February/000290.html
     # The following are domains that are often-used.
     'yu-tld': {

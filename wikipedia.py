@@ -1,11 +1,12 @@
 # -*- coding: utf-8  -*-
 """
-Library to get and put pages on a MediaWiki.
+Library to get and put pages on a MediaWiki wiki.
 
 Contents of the library (objects and functions to be used outside)
 
 Classes:
     Page(site, title): A page on a MediaWiki site
+    DataPage(site, title): A Page object for the data repository.
     ImagePage(site, title): An image descriptor Page
     Site(lang, fam): A MediaWiki site
 
@@ -117,7 +118,7 @@ stopme(): Put this on a bot when it is not or not communicating with the Wiki
 
 """
 #
-# (C) Pywikipedia bot team, 2003-2012
+# (C) Pywikipedia bot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -2587,12 +2588,15 @@ u'Page %s is semi-protected. Getting edit page to find out if we are allowed to 
             'action'     : 'edit',
             'title'      : self.title(),
             'section'    : '%s' % section,
-            'appendtext' : self._encodeArg(newtext, 'text'),
             'token'      : self.site().getToken(),
             'summary'    : self._encodeArg(comment, 'summary'),
             'bot'        : 1,
             }
 
+        if section == 'new':
+            params['text'] = self._encodeArg(newtext, 'text')
+        else:
+            params['appendtext'] = self._encodeArg(newtext, 'text')
         if minorEdit:
             params['minor'] = 1
         else:
@@ -4072,7 +4076,7 @@ class DataPage(Page):
     setitem          : Setting item(s) on a page
     setclaimvalue    : Set the value of a Wikibase claim
     createclaim      : Create Wikibase claims
-    creatitem        : Create an item
+    createitem       : Create an item
     getentity        : Getting item(s) of a page
     getentities      : Get the data for multiple Wikibase entities
     searchentities   : Search for entities
@@ -4091,6 +4095,7 @@ class DataPage(Page):
         self._originTitle = title
         source = self._originSite.data_repository()
         Page.__init__(self, source, title, *args, **kwargs)
+        self._siteTitle=self._originSite.dbName().split('_')[0].replace("-","_")
         if not (self._originSite == source):
             self._title = None
 
@@ -4118,7 +4123,7 @@ class DataPage(Page):
             'title': self._originTitle,
             'summary': self._encodeArg(summary, 'summary'),
         }
-        params['site'] = self._originSite.dbName().split('_')[0]
+        params['site'] = self._siteTitle
         if self._title:
             del params['site']
             params['id']=params['title']
@@ -4208,14 +4213,16 @@ class DataPage(Page):
                     retry_delay = 30
                 continue
             if 'error' in data:
-                errorCode = data['error']['code']
+                errorCode = data['error']['info']
+                output(u'Got an unknown error when putting data: %s' %errorCode)
             else:
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
-            return response.code, response.msg, data
-    def createitem(self, summary=None, watchArticle=False, minorEdit=True
-                , token=None, newToken=False, sysop=False,
-                captcha=None, botflag=True, maxTries=-1):
+            return 302, response.msg, False
+
+    def createitem(self, summary=None, value=None, watchArticle=False, minorEdit=True,
+                   token=None, newToken=False, sysop=False, captcha=None,
+                   botflag=True, maxTries=-1):
         """Creating an item
         usage:
             data.createitem(summary)
@@ -4224,13 +4231,20 @@ class DataPage(Page):
         retry_delay = 1
         dblagged = False
         newPage=True
-        originLang=self._originSite.dbName().split('_')[0]
         params = {
             'summary': self._encodeArg(summary, 'summary'),
             'format': 'jsonfm',
             'action': 'wbeditentity'
         }
-        params['data'] = u"{\"labels\":{\""+self._originSite.lang+"\":{\"language\":\""+self._originSite.lang+"\",\"value\":\""+self._originTitle+"\"}}, \"sitelinks\": {\""+originLang+"\": {\"site\": \""+originLang+"\",\"title\": \""+self._originTitle+"\"}}}"
+        if not value:
+            params['data'] = (u'{"labels": {"%(lang)s": {"language": "%(lang)s", '
+                          u'"value": "%(title)s"}}, "sitelinks": {"%(site)s": '
+                          u'{"site": "%(site)s", "title": "%(title)s"}}}'
+                          % {'lang': self._originSite.lang,
+                             'title': self._originTitle,
+                             'site': self._siteTitle})
+        else:
+            params['data'] = re.sub(ur"\bu\'", u'"',repr(value).decode("unicode-escape")).replace("'", '"')
         if token:
             params['token'] = token
         else:
@@ -4302,59 +4316,139 @@ class DataPage(Page):
                 if data['success'] == u"1":
                     return 302, response.msg, data['success']
             return response.code, response.msg, data
-    def setclaimvalue(self, guid, value, comment=None, token=None, sysop=False, botflag=True):
-        """API module for setting the value of a Wikibase claim.
-
-        (independent of page object and could thus be extracted from this class)
-        """
-        params = {
-            'action': 'wbsetclaimvalue',
-            'claim': guid,
-            'snaktype': 'value',
-            'value': value,
-        }
-        if token:
-            params['token'] = token
+    def editclaim(self, WDproperty, value,raw_value=False, refs=None, comment=None, token=None, sysop=False,botflag=True):
+        if isinstance(WDproperty,int):
+            propertyID=WDproperty
+        elif isinstance(WDproperty,basestring):
+            try:
+                propertyID=int(WDproperty)
+            except ValueError:
+                try:
+                    propertyID=int(WDproperty.replace("p","").replace("P",""))
+                except ValueError:
+                    search=self.searchentities(WDproperty, 'property', lang=self._originSite.lang)
+                    propertyID=int(search[0]["id"].replace("p",""))
+                else:
+                    pass
+            else:
+                pass
         else:
-            params['token'] = self.site().getToken(sysop = sysop)
-        #if botflag:
-        #    params['bot'] = 1
-        # retrying is done by query.GetData
-        data = query.GetData(params, self.site(), sysop=sysop)
-
-        if 'error' in data:
-            raise RuntimeError("API query error: %s" % data)
-        if u'warnings' in data:
-            output(str(data[u'warnings']))
-
-        return
-
-    def createclaim(self, prop, value, comment=None, token=None, sysop=False, botflag=True):
-        """API module for creating Wikibase claims.
-        """
-        params = {
+            raise RuntimeError("Unknown property type: %s" % WDproperty)
+        if not raw_value:      
+            if isinstance(value,int):
+                pass
+            elif isinstance(value,basestring):
+                try:
+                    value=int(value)
+                except ValueError:
+                    try:
+                        value=int(value.replace("q","").replace("Q",""))
+                    except ValueError:
+                        search=self.searchentities(value, 'item', lang=self._originSite.lang)
+                        value=int(search[0]["id"].replace("q",""))
+                    else:
+                        pass
+                else:
+                    pass
+            else:
+                raise RuntimeError("Unknown property type: %s" % value)
+            value="{\"entity-type\":\"item\",\"numeric-id\":%s}" % value
+        else:
+            pass
+        claims=self.get()['claims']
+        theclaim=None
+        for claim in claims:
+            if claim['m'][1]==propertyID:
+                theclaim=claim
+        if theclaim:
+            params = {
+                'action': 'wbsetclaimvalue',
+                'claim': theclaim['g'],
+                'snaktype': 'value',
+                'value': value,
+            }
+            if token:
+                params['token'] = token
+            else:
+                params['token'] = self.site().getToken(sysop = sysop)
+            output(u"Changing %s" % self.title())
+            data = query.GetData(params, self.site(), sysop=sysop)
+            if 'error' in data:
+                raise RuntimeError("API query error: %s" % data)
+            if u'warnings' in data:
+                output(str(data[u'warnings']))
+            guid=theclaim['g']
+        else:
+            params = {
             'action': 'wbcreateclaim',
-            'entity': self.title(),
+            'entity': self.title().replace("Q","q"),
             'snaktype': 'value',
-            'property': prop,
+            'property': u"p"+str(propertyID),
             'value': value,
-        }
-        if token:
-            params['token'] = token
-        else:
-            params['token'] = self.site().getToken(sysop = sysop)
-        #if botflag:
-        #    params['bot'] = 1
-        # retrying is done by query.GetData
-        data = query.GetData(params, self.site(), sysop=sysop)
-
-        if 'error' in data:
-            raise RuntimeError("API query error: %s" % data)
-        if u'warnings' in data:
-            output(str(data[u'warnings']))
-
-        return
-
+            }
+            if token:
+                params['token'] = token
+            else:
+                params['token'] = self.site().getToken(sysop = sysop)
+            output(u"Changing %s" % self.title())
+            data = query.GetData(params, self.site(), sysop=sysop)
+            if 'error' in data:
+                raise RuntimeError("API query error: %s" % data)
+            if u'warnings' in data:
+                output(str(data[u'warnings']))
+            guid=data['claim']['id']
+        if refs:
+            snak=[]
+            for ref in refs:
+                if isinstance(ref,basestring):
+                    raise RuntimeError("the references must be like this:{(ref1,value1),(ref2,value2)}")
+                for i in [0,1]:  
+                    if isinstance(ref[i],int):
+                        value=ref[i]
+                    elif isinstance(ref[i],basestring):
+                        try:
+                            value=int(ref[i])
+                        except ValueError:
+                            try:
+                                value=int(ref[i].replace("q","").replace("Q","").replace("P","").replace("p",""))
+                            except ValueError:
+                                if i==0:
+                                    typesearch='property'
+                                else:
+                                    typesearch='item'
+                                search=self.searchentities(ref[i], typesearch, lang=self._originSite.lang)
+                                value=int(search[0]["id"].replace("q","").replace("p",""))
+                            else:
+                                pass
+                        else:
+                            pass
+                    else:
+                        raise RuntimeError("Unknown item: %s" % ref[i])
+                    snak.append(value)
+            finalsnak={}
+            for i in range(0,len(snak)/2):
+                snaki =  [{"snaktype":"value",
+		      "property":"p"+str(snak[i*2]),
+		      "datavalue":{"type":"wikibase-entityid","value":{"entity-type":"item","numeric-id":snak[(i*2)+1]}}}]
+                finalsnak["p"+str(snak[i*2])]=snaki
+            finalsnak=json.dumps(finalsnak)
+            finalsnak=finalsnak.replace("'", '"')
+            params = {
+            'action': 'wbsetreference',
+            'statement' : guid,
+            'snaks' :u"%s" % finalsnak,
+            'bot' : '1'
+            }
+            if token:
+                params['token'] = token
+            else:
+                params['token'] = self.site().getToken(sysop = sysop)
+            output(u"Adding references to %s" % self.title())
+            data = query.GetData(params, self.site(), sysop=sysop)
+            if 'error' in data:
+                raise RuntimeError("API query error: %s" % data)
+            if u'warnings' in data:
+                output(str(data[u'warnings']))
     def getentity(self,force=False, get_redirect=False, throttle=True,
                   sysop=False, change_edit_time=True):
         """Returns items of a entity in a dictionary
@@ -4370,7 +4464,7 @@ class DataPage(Page):
         }
         params1=params.copy()
         params['action'] = 'wbgetentities'
-        params['sites'] = self._originSite.dbName().split('_')[0]
+        params['sites'] = self._siteTitle
         del params['prop']
         del params['rvprop']
         del params['rvlimit']
@@ -4487,7 +4581,7 @@ class DataPage(Page):
             raise BadTitle('BadTitle: %s' % self)
         return entities
 
-    def searchentities(self, search, sysop=False):
+    def searchentities(self, search, entitytype=None, lang='en', sysop=False):
         """API module to search for entities.
 
         (independent of page object and could thus be extracted from this class)
@@ -4496,8 +4590,10 @@ class DataPage(Page):
             'action': 'wbsearchentities',
             'search': search,
             #'language': self.site().language(),
-            'language': 'en',
+            'language': lang,
         }
+        if entitytype:
+            params['type']=entitytype
         # retrying is done by query.GetData
         data = query.GetData(params, self.site(), sysop=sysop)
         search  = data['search']
@@ -4533,7 +4629,7 @@ class DataPage(Page):
 
         """
         links = self.get()['links']
-        self._interwiki = [Page(code.replace('wiki', '').replace('_', '-'),
+        self._interwiki = [Page(getSite(code.replace('wiki', '').replace('_', '-'),fam='wikipedia'),
                                 links[code])
                            for code in links]
         return self._interwiki

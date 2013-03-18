@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# (C) Pywikipedia bot team, 2003-2012
+# (C) Pywikipedia bot team, 2003-2013
 #
 # Distributed under the terms of the MIT license.
 #
@@ -34,6 +34,7 @@ colors = [
 
 colorTagR = re.compile('\03{(?P<name>%s)}' % '|'.join(colors))
 
+
 class UI:
     def __init__(self):
         self.stdin  = sys.stdin
@@ -60,40 +61,47 @@ class UI:
         else:
             self.printNonColorized(text, targetStream)    
 
-    def output(self, text, toStdout = False):
+    def output(self, text, toStdout=False):
         """
         If a character can't be displayed in the encoding used by the user's
         terminal, it will be replaced with a question mark or by a
         transliteration.
+        
         """
         if config.transliterate:
-            # Encode our unicode string in the encoding used by the user's console,
-            # and decode it back to unicode. Then we can see which characters
-            # can't be represented in the console encoding.
+            # Encode our unicode string in the encoding used by the user's
+            # console, and decode it back to unicode. Then we can see which
+            # characters can't be represented in the console encoding.
             # We need to take min(console_encoding, transliteration_target)
             # the first is what the terminal is capable of
             # the second is how unicode-y the user would like the output
-            codecedText = text.encode(self.encoding, 'replace').decode(self.encoding)
+            codecedText = text.encode(self.encoding,
+                                      'replace').decode(self.encoding)
             if self.transliteration_target:
-                codecedText = codecedText.encode(self.transliteration_target, 'replace').decode(self.transliteration_target)
+                codecedText = codecedText.encode(self.transliteration_target,
+                                                 'replace').decode(self.transliteration_target)
             transliteratedText = ''
-            # Note: A transliteration replacement might be longer than the original
-            # character, e.g. ч is transliterated to ch.
+            # Note: A transliteration replacement might be longer than the
+            # original character, e.g. ч is transliterated to ch.
             prev = "-"
             for i in xrange(len(codecedText)):
                 # work on characters that couldn't be encoded, but not on
                 # original question marks.
                 if codecedText[i] == '?' and text[i] != u'?':
                     try:
-                        transliterated = transliterator.transliterate(text[i], default = '?', prev = prev, next = text[i+1])
+                        transliterated = transliterator.transliterate(
+                            text[i], default='?', prev=prev, next=text[i+1])
                     except IndexError:
-                        transliterated = transliterator.transliterate(text[i], default = '?', prev = prev, next = ' ')
+                        transliterated = transliterator.transliterate(
+                            text[i], default = '?', prev=prev, next=' ')
                     # transliteration was successful. The replacement
                     # could consist of multiple letters.
                     # mark the transliterated letters in yellow.
-                    transliteratedText += '\03{lightyellow}%s\03{default}' % transliterated
+                    transliteratedText += '\03{lightyellow}%s\03{default}' \
+                                          % transliterated
                     transLength = len(transliterated)
-                    # memorize if we replaced a single letter by multiple letters.
+                    # memorize if we replaced a single letter by multiple
+                    # letters.
                     if len(transliterated) > 0:
                         prev = transliterated[-1]
                 else:
@@ -113,10 +121,13 @@ class UI:
         
     def input(self, question, password = False):
         """
+        Ask the user a question and return the answer.
+
         Works like raw_input(), but returns a unicode string instead of ASCII.
 
         Unlike raw_input, this function automatically adds a space after the
         question.
+
         """
 
         # sound the terminal bell to notify the user
@@ -132,7 +143,10 @@ class UI:
         text = unicode(text, self.encoding)
         return text
 
-    def inputChoice(self, question, options, hotkeys, default = None):
+    def inputChoice(self, question, options, hotkeys, default=None):
+        """
+        Ask the user a question with a predefined list of acceptable answers.
+        """
         options = options[:] # we don't want to edit the passed parameter
         for i in range(len(options)):
             option = options[i]
@@ -145,7 +159,8 @@ class UI:
                 caseHotkey = hotkey
             if m:
                 pos = m.start()
-                options[i] = '%s[%s]%s' % (option[:pos], caseHotkey, option[pos+1:])
+                options[i] = '%s[%s]%s' % (option[:pos], caseHotkey,
+                                           option[pos+1:])
             else:
                 options[i] = '%s [%s]' % (option, caseHotkey)
         # loop until the user entered a valid choice
@@ -154,17 +169,19 @@ class UI:
             answer = self.input(prompt)
             if answer.lower() in hotkeys or answer.upper() in hotkeys:
                 return answer
-            elif default and answer=='':        # empty string entered
+            elif default and answer=='':  # empty string entered
                 return default
 
-    def editText(self, text, jumpIndex = None, highlight = None):
-        """
+    def editText(self, text, jumpIndex=None, highlight=None):
+        """Return the text as edited by the user.
+
         Uses a Tkinter edit box because we don't have a console editor
 
         Parameters:
             * text      - a Unicode string
             * jumpIndex - an integer: position at which to put the caret
             * highlight - a substring; each occurence will be highlighted
+
         """
         try:
             import gui
@@ -172,17 +189,24 @@ class UI:
             print 'Could not load GUI modules: %s' % e
             return text
         editor = gui.EditBoxWindow()
-        return editor.edit(text, jumpIndex = jumpIndex, highlight = highlight)
+        return editor.edit(text, jumpIndex=jumpIndex, highlight=highlight)
 
     def askForCaptcha(self, url):
+        """Show the user a CAPTCHA image and return the answer."""
         try:
             import webbrowser
             wikipedia.output(u'Opening CAPTCHA in your web browser...')
             if webbrowser.open(url):
-                return wikipedia.input(u'What is the solution of the CAPTCHA that is shown in your web browser?')
+                return wikipedia.input(
+                    u'What is the solution of the CAPTCHA that is shown in '
+                    u'your web browser?')
             else:
                 raise
         except:
-            wikipedia.output(u'Error in opening web browser: %s' % sys.exc_info()[0])
-            wikipedia.output(u'Please copy this url to your web browser and open it:\n %s' % url)
-            return wikipedia.input(u'What is the solution of the CAPTCHA at this url ?')
+            wikipedia.output(u'Error in opening web browser: %s'
+                             % sys.exc_info()[0])
+            wikipedia.output(
+                u'Please copy this url to your web browser and open it:\n %s'
+                % url)
+            return wikipedia.input(
+                u'What is the solution of the CAPTCHA at this url ?')

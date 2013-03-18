@@ -66,32 +66,40 @@ or you need some help regarding this script, you can find us here:
 
 #
 # (C) Filnik, 2007-2010
-# (C) Pywikipedia bot team, 2007-2010
+# (C) Pywikipedia bot team, 2007-2013
 #
 # Distributed under the terms of the MIT license.
 #
 __version__ = '$Id$'
 #
 
-import re, pagegenerators, urllib2, urllib
+import re, urllib2, urllib
+import webbrowser
+import codecs
 import wikipedia as pywikibot
 from pywikibot import i18n
-import codecs, config
-import webbrowser
+import pagegenerators
+import config
 
 # This is required for the text that is shown when you run this script
 # with the parameter -help.
 docuReplacements = {
-    '&params;':     pagegenerators.parameterHelp,
+    '&params;': pagegenerators.parameterHelp,
 }
 
 nn_iw_msg = u'<!--interwiki (no, sv, da first; then other languages alphabetically by name)-->'
 
+
 class NoEnoughData(pywikibot.Error):
     """ Error class for when the user doesn't specified all the data needed """
 
+
 class NothingFound(pywikibot.Error):
-    """ An exception indicating that a regex has return [] instead of results."""
+    """
+    An exception indicating that a regex has return [] instead of results.
+
+    """
+
 
 # Useful for the untagged function
 def pageText(url):
@@ -104,36 +112,43 @@ def pageText(url):
         response.close()
         # When you load to many users, urllib2 can give this error.
     except urllib2.HTTPError:
-        pywikibot.output(u"Server error. Pausing for 10 seconds... " + time.strftime("%d %b %Y %H:%M:%S (UTC)", time.gmtime()) )
+        pywikibot.output(u"Server error. Pausing for 10 seconds... " +
+                         time.strftime("%d %b %Y %H:%M:%S (UTC)",
+                                       time.gmtime()))
         response.close()
         time.sleep(10)
         return pageText(url)
     return text
 
-def untaggedGenerator(untaggedProject, limit = 500):
+def untaggedGenerator(untaggedProject, limit=500):
     """ Function to get the pages returned by this tool:
-    http://toolserver.org/~daniel/WikiSense/UntaggedImages.php """
+    http://toolserver.org/~daniel/WikiSense/UntaggedImages.php
+
+    """
     lang = untaggedProject.split('.', 1)[0]
     project = '.' + untaggedProject.split('.', 1)[1]
+    URL = 'http://toolserver.org/~daniel/WikiSense/UntaggedImages.php?'
     if lang == 'commons':
-        link = 'http://toolserver.org/~daniel/WikiSense/UntaggedImages.php?wikifam=commons.wikimedia.org&since=-100d&until=&img_user_text=&order=img_timestamp&max=100&order=img_timestamp&format=html'
+        link = '%swikifam=commons.wikimedia.org&since=-100d&until=&img_user_text=&order=img_timestamp&max=%d&order=img_timestamp&format=html' \
+               % (URL, limit)
     else:
-        link = 'http://toolserver.org/~daniel/WikiSense/UntaggedImages.php?wikilang=' + lang + '&wikifam=' + project + '&order=img_timestamp&max=' + str(limit) + '&ofs=0&max=' + str(limit)
+        link = '%swikilang=%s&wikifam=%s&order=img_timestamp&max=%d&ofs=0&max=%d' \
+               % (URL, lang, project, limit, limit)
     text = pageText(link)
-    #print text
-    regexp = r"""<td valign='top' title='Name'><a href='http://.*?\.org/w/index\.php\?title=(.*?)'>.*?</a></td>"""
+    regexp = r"<td valign='top' title='Name'><a href='http://.*?\.org/w/index\.php\?title=(.*?)'>.*?</a></td>"
     results = re.findall(regexp, text)
     if results == []:
         print link
         raise NothingFound(
-'Nothing found! Try to use the tool by yourself to be sure that it works!')
+            'Nothing found! Try to use the tool by yourself to be sure that it '
+            'works!')
     else:
         for result in results:
             yield pywikibot.Page(pywikibot.getSite(), result)
 
-def add_text(page = None, addText = None, summary = None, regexSkip = None,
-             regexSkipUrl = None, always = False, up = False, putText = True,
-             oldTextGiven = None, reorderEnabled = True, create=False):
+def add_text(page=None, addText=None, summary=None, regexSkip=None,
+             regexSkipUrl=None, always=False, up=False, putText=True,
+             oldTextGiven=None, reorderEnabled=True, create=False):
     if not addText:
         raise NoEnoughData('You have to specify what text you want to add!')
     if not summary:
@@ -174,12 +189,11 @@ def add_text(page = None, addText = None, summary = None, regexSkip = None,
 
     errorCount = 0
     site = pywikibot.getSite()
-    # /wiki/ is not always the right path in non-wiki projects
     pathWiki = site.family.nicepath(site.lang)
 
     if putText:
         pywikibot.output(u'Loading %s...' % page.title())
-    if oldTextGiven == None:
+    if oldTextGiven is None:
         try:
             text = page.get()
         except pywikibot.NoPage:
@@ -189,29 +203,29 @@ def add_text(page = None, addText = None, summary = None, regexSkip = None,
                 text = u''
             else:
                 pywikibot.output(u"%s doesn't exist, skip!" % page.title())
-                return (False, False, always) # continue
+                return (False, False, always)
         except pywikibot.IsRedirectPage:
             pywikibot.output(u"%s is a redirect, skip!" % page.title())
-            return (False, False, always) # continue
+            return (False, False, always)
     else:
         text = oldTextGiven
     # Understand if the bot has to skip the page or not
     # In this way you can use both -except and -excepturl
-    if regexSkipUrl != None:
+    if regexSkipUrl is not None:
         url = '%s%s' % (pathWiki, page.urlname())
         result = re.findall(regexSkipUrl, site.getUrl(url))
         if result != []:
             pywikibot.output(
 u'''Exception! regex (or word) used with -exceptUrl is in the page. Skip!
 Match was: %s''' % result)
-            return (False, False, always) # continue
-    if regexSkip != None:
+            return (False, False, always)
+    if regexSkip is not None:
         result = re.findall(regexSkip, text)
         if result != []:
             pywikibot.output(
 u'''Exception! regex (or word) used with -except is in the page. Skip!
 Match was: %s''' % result)
-            return (False, False, always) # continue
+            return (False, False, always)
     # If not up, text put below
     if not up:
         newtext = text
@@ -229,8 +243,9 @@ Match was: %s''' % result)
             # nn got a message between the categories and the iw's
             # and they want to keep it there, first remove it
             hasCommentLine = False
-            if (site.language()==u'nn'):
-                regex = re.compile('(<!-- ?interwiki \(no(?:/nb)?, ?sv, ?da first; then other languages alphabetically by name\) ?-->)')
+            if (site.language() == u'nn'):
+                regex = re.compile(
+                    '(<!-- ?interwiki \(no(?:/nb)?, ?sv, ?da first; then other languages alphabetically by name\) ?-->)')
                 found = regex.findall(newtext)
                 if found:
                     hasCommentLine = True
@@ -240,31 +255,31 @@ Match was: %s''' % result)
             newtext += u"\n%s" % addText
             # Reputting the categories
             newtext = pywikibot.replaceCategoryLinks(newtext,
-                                                 categoriesInside, site, True)
+                                                     categoriesInside, site,
+                                                     True)
             #Put the nn iw message back
-            if site.language()==u'nn' and (interwikiInside or hasCommentLine):
+            if site.language() == u'nn' and (interwikiInside or hasCommentLine):
                 newtext = newtext + u'\r\n\r\n' + nn_iw_msg
             # Dealing the stars' issue
             allstars = []
             starstext = pywikibot.removeDisabledParts(text)
             for star in starsList:
-                regex = re.compile('(\{\{(?:template:|)%s\|.*?\}\}[\s]*)' % star,
-                                   re.I)
+                regex = re.compile('(\{\{(?:template:|)%s\|.*?\}\}[\s]*)'
+                                   % star, re.I)
                 found = regex.findall(starstext)
                 if found != []:
                     newtext = regex.sub('', newtext)
                     allstars += found
             if allstars != []:
-                newtext = newtext.strip()+'\r\n\r\n'
+                newtext = newtext.strip() + '\r\n\r\n'
                 allstars.sort()
                 for element in allstars:
                     newtext += '%s\r\n' % element.strip()
             # Adding the interwiki
-            newtext = pywikibot.replaceLanguageLinks(newtext, interwikiInside, site)
+            newtext = pywikibot.replaceLanguageLinks(newtext, interwikiInside,
+                                                     site)
         else:
-            # Adding the text
             newtext += u"\n%s" % addText
-    # If instead the text must be added above...
     else:
         newtext = addText + '\n' + text
     if putText and text != newtext:
@@ -279,7 +294,8 @@ Match was: %s''' % result)
             if not always:
                 choice = pywikibot.inputChoice(
                     u'Do you want to accept these changes?',
-                    ['Yes', 'No', 'All', 'open in Browser'], ['y', 'N', 'a', 'b'], 'N')
+                    ['Yes', 'No', 'All', 'open in Browser'],
+                    ['y', 'n', 'a', 'b'], 'n')
                 if choice == 'a':
                     always = True
                 elif choice == 'n':
@@ -326,14 +342,19 @@ Match was: %s''' % result)
         else:
             return (text, newtext, always)
 
+
 def main():
     # If none, the var is setted only for check purpose.
-    summary = None; addText = None; regexSkip = None; regexSkipUrl = None;
-    generator = None; always = False
-    textfile=None
-    talkPage=False
+    summary = None
+    addText = None
+    regexSkip = None
+    regexSkipUrl = None
+    generator = None
+    always = False
+    textfile = None
+    talkPage = False
     reorderEnabled = True
-    namespaces=[]
+    namespaces = []
     # Load a lot of default generators
     genFactory = pagegenerators.GeneratorFactory()
     # Put the text above or below the text?
@@ -360,8 +381,7 @@ def main():
             if len(arg) == 5:
                 generator = [pywikibot.Page(
                     pywikibot.getSite(),
-                    pywikibot.input(u'What page do you want to use?')
-                    )]
+                    pywikibot.input(u'What page do you want to use?'))]
             else:
                 generator = [pywikibot.Page(pywikibot.getSite(), arg[6:])]
         elif arg.startswith('-excepturl'):
@@ -397,7 +417,6 @@ def main():
         f.close()
     if not generator:
         generator = genFactory.getCombinedGenerator()
-    # Check if there are the minimal settings
     if not generator:
         raise NoEnoughData(
             'You have to specify the generator you want to use for the script!')
@@ -406,14 +425,14 @@ def main():
         site = pywikibot.getSite()
         for namespace in site.namespaces():
             index = site.getNamespaceIndex(namespace)
-            if index%2==1 and index>0:
+            if index % 2 == 1 and index > 0:
                 namespaces += [index]
         generator = pagegenerators.NamespaceFilterPageGenerator(
             generator, namespaces)
-    # Main Loop
     for page in generator:
         (text, newtext, always) = add_text(page, addText, summary, regexSkip,
-                                           regexSkipUrl, always, up, True, reorderEnabled=reorderEnabled,
+                                           regexSkipUrl, always, up, True,
+                                           reorderEnabled=reorderEnabled,
                                            create=talkPage)
 
 if __name__ == "__main__":

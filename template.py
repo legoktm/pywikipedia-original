@@ -354,12 +354,9 @@ u'Unless using solely -subst or -remove, you must give an even number of templat
         gens = [pg.ReferringPageGenerator(t, onlyTemplateInclusion=True)
                 for t in oldTemplates]
         gen = pg.CombinedPageGenerator(gens)
-        gen = pg.NamespaceFilterPageGenerator(gen,
-                                              map(int, genFactory.namespaces))
         gen = pg.DuplicateFilterPageGenerator(gen)
-
+        
     preloadingGen = pg.PreloadingGenerator(gen)
-
     bot = TemplateRobot(preloadingGen, templates, subst, remove, editSummary,
                         acceptAll, addedCat)
     bot.run()

@@ -12,8 +12,8 @@ class Family(family.WikimediaFamily):
 
         self.languages_by_size = [
             'sr', 'en', 'fr', 'pl', 'de', 'it', 'es', 'pt', 'ru', 'zh', 'ja',
-            'sv', 'ca', 'el', 'ta', 'cs', 'fa', 'ar', 'fi', 'ro', 'he', 'tr',
-            'bg', 'sq', 'uk', 'no', 'ko', 'bs', 'eo',
+            'sv', 'ca', 'el', 'ta', 'cs', 'fa', 'ar', 'fi', 'ro', 'tr', 'he',
+            'bg', 'uk', 'sq', 'no', 'ko', 'bs', 'eo',
         ]
 
         self.langs = dict([(lang, '%s.wikinews.org' % lang)
@@ -185,6 +185,7 @@ class Family(family.WikimediaFamily):
             'ru': u'Комментарии',
             'sq': u'Komentet',
             'sr': u'Коментар',
+            'uk': u'Коментарі',
         }
 
         self.namespaces[103] = {
@@ -201,16 +202,19 @@ class Family(family.WikimediaFamily):
             'ru': u'Обсуждение комментариев',
             'sq': u'Komentet diskutim',
             'sr': u'Разговор о коментару',
+            'uk': u'Обговорення коментарів',
         }
 
         self.namespaces[104] = {
             'fr': u'Page',
             'pt': u'Transwiki',
+            'uk': u'Інкубатор',
         }
 
         self.namespaces[105] = {
             'fr': u'Discussion Page',
             'pt': u'Transwiki Discussão',
+            'uk': u'Обговорення інкубатора',
         }
 
         self.namespaces[106] = {

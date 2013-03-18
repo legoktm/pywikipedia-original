@@ -343,7 +343,10 @@ that you have to break it off, use "-continue" next time.
 __version__ = '$Id$'
 #
 
-import sys, copy, re, os
+import sys
+import copy
+import re
+import os
 import time
 import codecs
 import socket
@@ -360,10 +363,12 @@ docuReplacements = {
     '&pagegenerators_help;': pagegenerators.parameterHelp
 }
 
+
 class SaveError(pywikibot.Error):
     """
     An attempt to save a page with changed interwiki has failed.
     """
+
 
 class LinkMustBeRemoved(SaveError):
     """
@@ -371,89 +376,82 @@ class LinkMustBeRemoved(SaveError):
     preferences or because the user chose not to change the page.
     """
 
+
 class GiveUpOnPage(pywikibot.Error):
     """
     The user chose not to work on this page and its linked pages any more.
     """
 
+
 # Subpage templates. Must be in lower case,
 # whereas subpage itself must be case sensitive
 moved_links = {
-    'ar' : ([u'documentation',
-             u'template documentation',
-             u'شرح',
-             u'توثيق'], u'/doc'),
-    'bn' : (u'documentation', u'/doc'),
-    'ca' : (u'ús de la plantilla', u'/ús'),
-    'cs' : (u'dokumentace',   u'/doc'),
-    'da' : (u'dokumentation', u'/doc'),
-    'de' : (u'dokumentation', u'/Meta'),
+    'ar': ([u'documentation', u'template documentation', u'شرح', u'توثيق'],
+           u'/doc'),
+    'bn': (u'documentation', u'/doc'),
+    'ca': (u'ús de la plantilla', u'/ús'),
+    'cs': (u'dokumentace',   u'/doc'),
+    'da': (u'dokumentation', u'/doc'),
+    'de': (u'dokumentation', u'/Meta'),
     'dsb': ([u'dokumentacija', u'doc'], u'/Dokumentacija'),
-    'en' : ([u'documentation',
-             u'template documentation',
-             u'template doc',
-             u'doc',
-             u'documentation, template'], u'/doc'),
-    'es' : ([u'documentación', u'documentación de plantilla'], u'/doc'),
-    'eu' : (u'txantiloi dokumentazioa', u'/dok'),
-    'fa' : ([u'documentation',
-             u'template documentation',
-             u'template doc',
-             u'doc',
-             u'توضیحات',
-             u'زیرصفحه توضیحات'], u'/doc'),
+    'en': ([u'documentation', u'template documentation', u'template doc',
+            u'doc', u'documentation, template'], u'/doc'),
+    'es': ([u'documentación', u'documentación de plantilla'], u'/doc'),
+    'eu': (u'txantiloi dokumentazioa', u'/dok'),
+    'fa': ([u'documentation', u'template documentation', u'template doc',
+            u'doc', u'توضیحات', u'زیرصفحه توضیحات'], u'/doc'),
     # fi: no idea how to handle this type of subpage at :Metasivu:
-    'fi' : (u'mallineohje', None),
-    'fr' : ([u'/documentation', u'documentation', u'doc_modèle',
-             u'documentation modèle', u'documentation modèle compliqué',
-             u'documentation modèle en sous-page',
-             u'documentation modèle compliqué en sous-page',
-             u'documentation modèle utilisant les parserfunctions en sous-page',
+    'fi': (u'mallineohje', None),
+    'fr': ([u'/documentation', u'documentation', u'doc_modèle',
+            u'documentation modèle', u'documentation modèle compliqué',
+            u'documentation modèle en sous-page',
+            u'documentation modèle compliqué en sous-page',
+            u'documentation modèle utilisant les parserfunctions en sous-page',
             ],
-            u'/Documentation'),
+           u'/Documentation'),
     'hsb': ([u'dokumentacija', u'doc'], u'/Dokumentacija'),
-    'hu' : (u'sablondokumentáció', u'/doc'),
-    'id' : (u'template doc',  u'/doc'),
+    'hu': (u'sablondokumentáció', u'/doc'),
+    'id': (u'template doc',  u'/doc'),
     'ilo': (u'documentation', u'/doc'),
-    'ja' : (u'documentation', u'/doc'),
-    'ka' : (u'თარგის ინფო',   u'/ინფო'),
-    'ko' : (u'documentation', u'/설명문서'),
-    'ms' : (u'documentation', u'/doc'),
-    'no' : (u'dokumentasjon', u'/dok'),
-    'nn' : (u'dokumentasjon', u'/dok'),
-    'pl' : (u'dokumentacja',  u'/opis'),
-    'pt' : ([u'documentação', u'/doc'],  u'/doc'),
-    'ro' : (u'documentaţie',  u'/doc'),
-    'ru' : (u'doc',           u'/doc'),
+    'ja': (u'documentation', u'/doc'),
+    'ka': (u'თარგის ინფო',   u'/ინფო'),
+    'ko': (u'documentation', u'/설명문서'),
+    'ms': (u'documentation', u'/doc'),
+    'no': (u'dokumentasjon', u'/dok'),
+    'nn': (u'dokumentasjon', u'/dok'),
+    'pl': (u'dokumentacja',  u'/opis'),
+    'pt': ([u'documentação', u'/doc'], u'/doc'),
+    'ro': (u'documentaţie',  u'/doc'),
+    'ru': (u'doc', u'/doc'),
     'simple': ([u'documentation',
                 u'template documentation',
                 u'template doc',
                 u'doc',
                 u'documentation, template'], u'/doc'),
-    'sv' : (u'dokumentation', u'/dok'),
-    'uk' : ([u'документація',
-             u'doc',
-             u'documentation'], u'/Документація'),
-    'vi' : (u'documentation', u'/doc'),
-    'zh' : ([u'documentation', u'doc'], u'/doc'),
+    'sk': (u'dokumentácia', u'/Dokumentácia'),
+    'sv': (u'dokumentation', u'/dok'),
+    'uk': ([u'документація', u'doc', u'documentation'], u'/Документація'),
+    'vi': (u'documentation', u'/doc'),
+    'zh': ([u'documentation', u'doc'], u'/doc'),
 }
 
 # A list of template names in different languages.
 # Pages which contain these shouldn't be changed.
 ignoreTemplates = {
     '_default': [u'delete'],
-    'ar' : [u'قيد الاستخدام'],
-    'cs' : [u'Pracuje_se'],
-    'de' : [u'inuse', 'in use', u'in bearbeitung', u'inbearbeitung',
-            u'löschen', u'sla',
-            u'löschantrag', u'löschantragstext',
-            u'falschschreibung',
-            u'obsolete schreibung', 'veraltete schreibweise'],
-    'en' : [u'inuse', u'softredirect'],
-    'fa' : [u'در دست ویرایش ۲', u'حذف سریع'],
+    'ar': [u'قيد الاستخدام'],
+    'cs': [u'Pracuje_se'],
+    'de': [u'inuse', 'in use', u'in bearbeitung', u'inbearbeitung',
+           u'löschen', u'sla',
+           u'löschantrag', u'löschantragstext',
+           u'falschschreibung',
+           u'obsolete schreibung', 'veraltete schreibweise'],
+    'en': [u'inuse', u'softredirect'],
+    'fa': [u'در دست ویرایش ۲', u'حذف سریع'],
     'pdc': [u'lösche'],
-    'zh' : [u'inuse'],
+    'zh': [u'inuse'],
 }
+
 
 class Global(object):
     """
@@ -496,9 +494,9 @@ class Global(object):
     contentsondisk = config.interwiki_contents_on_disk
     lacklanguage = None
     minlinks = 0
-    quiet  = False
+    quiet = False
     restoreAll = False
-    async  = False
+    async = False
     summary = u''
     repository = False
 
@@ -511,9 +509,12 @@ class Global(object):
         elif arg.startswith('-hintfile'):
             hintfilename = arg[10:]
             if (hintfilename is None) or (hintfilename == ''):
-                hintfilename = pywikibot.input(u'Please enter the hint filename:')
+                hintfilename = pywikibot.input(
+                    u'Please enter the hint filename:')
             f = codecs.open(hintfilename, 'r', config.textfile_encoding)
-            R = re.compile(ur'\[\[(.+?)(?:\]\]|\|)') # hint or title ends either before | or before ]]
+
+            # hint or title ends either before | or before ]]
+            R = re.compile(ur'\[\[(.+?)(?:\]\]|\|)')
             for pageTitle in R.findall(f.read()):
                 self.hints.append(pageTitle)
             f.close()
@@ -573,7 +574,7 @@ class Global(object):
         elif arg.startswith('-neverlink:'):
             self.neverlink += arg[11:].split(",")
         elif arg.startswith('-ignore:'):
-            self.ignore += [pywikibot.Page(None,p) for p in arg[8:].split(",")]
+            self.ignore += [pywikibot.Page(None, p) for p in arg[8:].split(",")]
         elif arg.startswith('-ignorefile:'):
             ignorefile = arg[12:]
             ignorePageGen = pagegenerators.TextfilePageGenerator(ignorefile)
@@ -603,7 +604,8 @@ class Global(object):
             self.async = True
         elif arg.startswith('-summary'):
             if len(arg) == 8:
-                self.summary = pywikibot.input(u'What summary do you want to use?')
+                self.summary = pywikibot.input(
+                    u'What summary do you want to use?')
             else:
                 self.summary = arg[9:]
         elif arg.startswith('-lack:'):
@@ -616,6 +618,7 @@ class Global(object):
         else:
             return False
         return True
+
 
 class StoredPage(pywikibot.Page):
     """
@@ -633,20 +636,20 @@ class StoredPage(pywikibot.Page):
     SPstore = None
 
     # attributes created by pywikibot.Page.__init__
-    SPcopy = [ '_editrestriction',
-               '_site',
-               '_namespace',
-               '_section',
-               '_title',
-               'editRestriction',
-               'moveRestriction',
-               '_permalink',
-               '_userName',
-               '_ipedit',
-               '_editTime',
-               '_startTime',
-               '_revisionId',
-               '_deletedRevs' ]
+    SPcopy = ['_editrestriction',
+              '_site',
+              '_namespace',
+              '_section',
+              '_title',
+              'editRestriction',
+              'moveRestriction',
+              '_permalink',
+              '_userName',
+              '_ipedit',
+              '_editTime',
+              '_startTime',
+              '_revisionId',
+              '_deletedRevs']
 
     def SPdeleteStore():
         if StoredPage.SPpath:
@@ -683,6 +686,7 @@ class StoredPage(pywikibot.Page):
             del StoredPage.SPstore[self.SPkey]
 
     _contents = property(SPgetContents, SPsetContents, SPdelContents)
+
 
 class PageTree(object):
     """
@@ -762,6 +766,7 @@ class PageTree(object):
             for page in plist:
                 yield page
 
+
 class Subject(object):
     """
     Class to follow the progress of a single 'subject' (i.e. a page with
@@ -812,9 +817,8 @@ class Subject(object):
             done <- NL(pending) U done
         return done
 
-
-    Subject objects only operate on pages that should have been preloaded before.
-    In fact, at any time:
+    Subject objects only operate on pages that should have been preloaded
+    before. In fact, at any time:
       * todo contains new Pages that have not been loaded yet
       * done contains Pages that have been loaded, and that have been treated.
       * If batch preloadings are successful, Page._get() is never called from
@@ -831,13 +835,15 @@ class Subject(object):
 
         # Remember the "origin page"
         self.originPage = originPage
+        self.repoPage = None
         # todo is a list of all pages that still need to be analyzed.
         # Mark the origin page as todo.
         self.todo = PageTree()
         if originPage:
             self.todo.add(originPage)
         if globalvar.repository:
-            self.todo.add(pywikibot.DataPage(originPage))
+            self.repoPage = pywikibot.DataPage(originPage)
+            self.todo.add(self.repoPage)
 
         # done is a list of all pages that have been analyzed and that
         # are known to belong to this subject.
@@ -847,7 +853,7 @@ class Subject(object):
         # As we haven't yet found a page that links to the origin page, we
         # start with an empty list for it.
         if originPage:
-            self.foundIn = {self.originPage:[]}
+            self.foundIn = {self.originPage: []}
         else:
             self.foundIn = {}
         # This is a list of all pages that are currently scheduled for
@@ -875,7 +881,6 @@ class Subject(object):
             for page in tree.filter(site):
                 if page.exists() and page.isDisambig():
                     return page
-        return None
 
     def getFoundNonDisambig(self, site):
         """
@@ -886,10 +891,9 @@ class Subject(object):
         """
         for tree in [self.done, self.pending]:
             for page in tree.filter(site):
-                if page.exists() and not page.isDisambig() \
-                   and not page.isRedirectPage() and not page.isCategoryRedirect():
+                if page.exists() and not page.isDisambig() and \
+                   not page.isRedirectPage() and not page.isCategoryRedirect():
                     return page
-        return None
 
     def getFoundInCorrectNamespace(self, site):
         """
@@ -900,25 +904,36 @@ class Subject(object):
         """
         for tree in [self.done, self.pending, self.todo]:
             for page in tree.filter(site):
-                # -hintsonly: before we have an origin page, any namespace will do.
-                if self.originPage and page.namespace() == self.originPage.namespace():
-                    if page.exists() and not page.isRedirectPage() and not page.isCategoryRedirect():
+                # -hintsonly: before we have an origin page, any namespace will
+                # do.
+                if self.originPage and \
+                   page.namespace() == self.originPage.namespace():
+                    if page.exists() and not \
+                       page.isRedirectPage() and not page.isCategoryRedirect():
                         return page
-        return None
 
-    def translate(self, hints = None, keephintedsites = False):
+    def translate(self, hints=None, keephintedsites=False):
         """Add the given translation hints to the todo list"""
         if globalvar.same and self.originPage:
             if hints:
-                pages = titletranslate.translate(self.originPage, hints = hints + ['all:'],
-                           auto = globalvar.auto, removebrackets = globalvar.hintnobracket)
+                pages = titletranslate.translate(
+                    self.originPage,
+                    hints=hints + ['all:'],
+                    auto=globalvar.auto,
+                    removebrackets=globalvar.hintnobracket)
             else:
-                pages = titletranslate.translate(self.originPage, hints = ['all:'],
-                           auto = globalvar.auto, removebrackets = globalvar.hintnobracket)
+                pages = titletranslate.translate(
+                    self.originPage,
+                    hints=['all:'],
+                    auto=globalvar.auto,
+                    removebrackets=globalvar.hintnobracket)
         else:
-            pages = titletranslate.translate(self.originPage, hints=hints,
-                           auto=globalvar.auto, removebrackets=globalvar.hintnobracket,
-                           site=pywikibot.getSite())
+            pages = titletranslate.translate(
+                self.originPage,
+                hints=hints,
+                auto=globalvar.auto,
+                removebrackets=globalvar.hintnobracket,
+                site=pywikibot.getSite())
         for page in pages:
             if globalvar.contentsondisk:
                 page = StoredPage(page)
@@ -945,7 +960,8 @@ class Subject(object):
         # Bug-check: Isn't there any work still in progress? We can't work on
         # different sites at a time!
         if len(self.pending) > 0:
-            raise 'BUG: Can\'t start to work on %s; still working on %s' % (site, self.pending)
+            raise "BUG: Can't start to work on %s; still working on %s" \
+                  % (site, self.pending)
         # Prepare a list of suitable pages
         result = []
         for page in self.todo.filter(site):
@@ -957,7 +973,7 @@ class Subject(object):
         # If there are any, return them. Otherwise, nothing is in progress.
         return result
 
-    def makeForcedStop(self,counter):
+    def makeForcedStop(self, counter):
         """
         Ends work on the page before the normal end.
         """
@@ -1017,26 +1033,33 @@ class Subject(object):
         if linkedPage in self.foundIn:
             # We have seen this page before, don't ask again.
             return False
-        elif self.originPage and self.originPage.namespace() != linkedPage.namespace():
+        elif self.originPage and \
+             self.originPage.namespace() != linkedPage.namespace():
             # Allow for a mapping between different namespaces
-            crossFrom = self.originPage.site.family.crossnamespace.get(self.originPage.namespace(), {})
-            crossTo = crossFrom.get(self.originPage.site.language(), crossFrom.get('_default', {}))
-            nsmatch = crossTo.get(linkedPage.site.language(), crossTo.get('_default', []))
+            crossFrom = self.originPage.site.family.crossnamespace.get(
+                self.originPage.namespace(), {})
+            crossTo = crossFrom.get(self.originPage.site.language(),
+                                    crossFrom.get('_default', {}))
+            nsmatch = crossTo.get(linkedPage.site.language(),
+                                  crossTo.get('_default', []))
             if linkedPage.namespace() in nsmatch:
                 return False
             if globalvar.autonomous:
-                pywikibot.output(u"NOTE: Ignoring link from page %s in namespace %i to page %s in namespace %i."
-                                 % (linkingPage, linkingPage.namespace(),
-                                    linkedPage, linkedPage.namespace()))
+                pywikibot.output(
+u"NOTE: Ignoring link from page %s in namespace %i to page %s in namespace %i."
+                    % (linkingPage, linkingPage.namespace(), linkedPage,
+                       linkedPage.namespace()))
                 # Fill up foundIn, so that we will not write this notice
                 self.foundIn[linkedPage] = [linkingPage]
                 return True
             else:
                 preferredPage = self.getFoundInCorrectNamespace(linkedPage.site)
                 if preferredPage:
-                    pywikibot.output(u"NOTE: Ignoring link from page %s in namespace %i to page %s in namespace %i because page %s in the correct namespace has already been found."
-                                     % (linkingPage, linkingPage.namespace(), linkedPage,
-                                        linkedPage.namespace(), preferredPage))
+                    pywikibot.output(
+u"NOTE: Ignoring link from page %s in namespace %i to page %s in namespace %i "
+u"because page %s in the correct namespace has already been found."
+                        % (linkingPage, linkingPage.namespace(), linkedPage,
+                           linkedPage.namespace(), preferredPage))
                     return True
                 else:
                     choice = pywikibot.inputChoice(
@@ -1051,13 +1074,17 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                         if choice == 'g':
                             self.makeForcedStop(counter)
                         elif choice == 'a':
-                            newHint = pywikibot.input(u'Give the alternative for language %s, not using a language code:'
-                                                      % linkedPage.site.language())
+                            newHint = pywikibot.input(
+                                u'Give the alternative for language %s, not '
+                                u'using a language code:'
+                                % linkedPage.site.language())
                             if newHint:
-                                alternativePage = pywikibot.Page(linkedPage.site, newHint)
+                                alternativePage = pywikibot.Page(
+                                    linkedPage.site, newHint)
                                 if alternativePage:
                                     # add the page that was entered by the user
-                                    self.addIfNew(alternativePage, counter, None)
+                                    self.addIfNew(alternativePage, counter,
+                                                  None)
                         else:
                             pywikibot.output(
                                 u"NOTE: ignoring %s and its interwiki links"
@@ -1069,13 +1096,17 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
             return False
 
     def wiktionaryMismatch(self, page):
-        if self.originPage and globalvar.same=='wiktionary':
+        if self.originPage and globalvar.same == 'wiktionary':
             if page.title().lower() != self.originPage.title().lower():
-                pywikibot.output(u"NOTE: Ignoring %s for %s in wiktionary mode" % (page, self.originPage))
-                return True
-            elif page.title() != self.originPage.title() and self.originPage.site.nocapitalize and page.site.nocapitalize:
-                pywikibot.output(u"NOTE: Ignoring %s for %s in wiktionary mode because both languages are uncapitalized."
+                pywikibot.output(u"NOTE: Ignoring %s for %s in wiktionary mode"
                                  % (page, self.originPage))
+                return True
+            elif page.title() != self.originPage.title() and \
+                 self.originPage.site.nocapitalize and page.site.nocapitalize:
+                pywikibot.output(
+                    u"NOTE: Ignoring %s for %s in wiktionary mode because both "
+                    u"languages are uncapitalized."
+                    % (page, self.originPage))
                 return True
         return False
 
@@ -1094,15 +1125,17 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
         chosen to use instead of the given page.
         """
         if not self.originPage:
-            return (False, None) # any page matches until we have an origin page
+            return (False, None)  # any page matches til we have an origin page
         if globalvar.autonomous:
             if self.originPage.isDisambig() and not page.isDisambig():
-                pywikibot.output(u"NOTE: Ignoring link from disambiguation page %s to non-disambiguation %s"
-                                 % (self.originPage, page))
+                pywikibot.output(
+                    u"NOTE: Ignoring link from disambiguation page %s to "
+                    u"non-disambiguation %s" % (self.originPage, page))
                 return (True, None)
             elif not self.originPage.isDisambig() and page.isDisambig():
-                pywikibot.output(u"NOTE: Ignoring link from non-disambiguation page %s to disambiguation %s"
-                                 % (self.originPage, page))
+                pywikibot.output(
+                    u"NOTE: Ignoring link from non-disambiguation page %s to "
+                    u"disambiguation %s" % (self.originPage, page))
                 return (True, None)
         else:
             choice = 'y'
@@ -1110,32 +1143,39 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                 disambig = self.getFoundDisambig(page.site)
                 if disambig:
                     pywikibot.output(
-                        u"NOTE: Ignoring non-disambiguation page %s for %s because disambiguation page %s has already been found."
+                        u"NOTE: Ignoring non-disambiguation page %s for %s "
+                        u"because disambiguation page %s has already been "
+                        u"found."
                         % (page, self.originPage, disambig))
                     return (True, None)
                 else:
                     choice = pywikibot.inputChoice(
-                        u'WARNING: %s is a disambiguation page, but %s doesn\'t seem to be one. Follow it anyway?'
+                        u"WARNING: %s is a disambiguation page, but %s doesn't "
+                        u"seem to be one. Follow it anyway?"
                         % (self.originPage, page),
                         ['Yes', 'No', 'Add an alternative', 'Give up'],
                         ['y', 'n', 'a', 'g'])
             elif not self.originPage.isDisambig() and page.isDisambig():
                 nondisambig = self.getFoundNonDisambig(page.site)
                 if nondisambig:
-                    pywikibot.output(u"NOTE: Ignoring disambiguation page %s for %s because non-disambiguation page %s has already been found."
-                                     % (page, self.originPage, nondisambig))
+                    pywikibot.output(
+                        u"NOTE: Ignoring disambiguation page %s for %s because "
+                        u"non-disambiguation page %s has already been found."
+                        % (page, self.originPage, nondisambig))
                     return (True, None)
                 else:
                     choice = pywikibot.inputChoice(
-                        u'WARNING: %s doesn\'t seem to be a disambiguation page, but %s is one. Follow it anyway?'
+                        u'WARNING: %s doesn\'t seem to be a disambiguation '
+                        u'page, but %s is one. Follow it anyway?'
                         % (self.originPage, page),
                         ['Yes', 'No', 'Add an alternative', 'Give up'],
                         ['y', 'n', 'a', 'g'])
             if choice == 'n':
                 return (True, None)
             elif choice == 'a':
-                newHint = pywikibot.input(u'Give the alternative for language %s, not using a language code:'
-                                          % page.site.language())
+                newHint = pywikibot.input(
+                    u'Give the alternative for language %s, not using a '
+                    u'language code:' % page.site.language())
                 alternativePage = pywikibot.Page(page.site, newHint)
                 return (True, alternativePage)
             elif choice == 'g':
@@ -1170,7 +1210,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
             return
         if (self.untranslated or globalvar.askhints) and not self.hintsAsked \
            and self.originPage and self.originPage.exists() \
-           and not self.originPage.isRedirectPage() and not self.originPage.isCategoryRedirect():
+           and not self.originPage.isRedirectPage() and \
+           not self.originPage.isCategoryRedirect():
             # Only once!
             self.hintsAsked = True
             if globalvar.untranslated:
@@ -1180,17 +1221,24 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                     pywikibot.output(self.originPage.get()[:t])
                 # loop
                 while True:
-                    newhint = pywikibot.input(u'Give a hint (? to see pagetext):')
+                    newhint = pywikibot.input(
+                        u'Give a hint (? to see pagetext):')
                     if newhint == '?':
                         t += globalvar.showtextlinkadd
                         pywikibot.output(self.originPage.get()[:t])
                     elif newhint and not ':' in newhint:
-                        pywikibot.output(u'Please enter a hint in the format language:pagename or type nothing if you do not have a hint.')
+                        pywikibot.output(
+                            u'Please enter a hint in the format '
+                            u'language:pagename or type nothing if you do not '
+                            u'have a hint.')
                     elif not newhint:
                         break
                     else:
-                        pages = titletranslate.translate(self.originPage, hints=[newhint],
-                                   auto = globalvar.auto, removebrackets=globalvar.hintnobracket)
+                        pages = titletranslate.translate(
+                            self.originPage,
+                            hints=[newhint],
+                            auto=globalvar.auto,
+                            removebrackets=globalvar.hintnobracket)
                         for page in pages:
                             self.addIfNew(page, counter, None)
                             if globalvar.hintsareright:
@@ -1203,14 +1251,14 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
         In other words, all the pages in self.pending have already
         been preloaded.
 
-        The only argument is an instance
-        of a counter class, that has methods minus() and plus() to keep
-        counts of the total work todo.
+        The only argument is an instance of a counter class, that has methods
+        minus() and plus() to keep counts of the total work todo.
+
         """
         # Loop over all the pages that should have been taken care of
         for page in self.pending:
-            if page.title == None: ### seems a DataPage
-                page.get() ### get it's title (and content)
+            if page.title == None:  ### seems a DataPage
+                page.get()  ### get it's title (and content)
             # Mark the page as done
             self.done.add(page)
 
@@ -1219,9 +1267,11 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                 dictName, year = page.autoFormat()
                 if dictName is not None:
                     if self.originPage:
-                        pywikibot.output(u'WARNING: %s:%s relates to %s:%s, which is an auto entry %s(%s)'
-                                         % (self.originPage.site.language(), self.originPage,
-                                            page.site.language(), page, dictName, year))
+                        pywikibot.output(
+                            u'WARNING: %s:%s relates to %s:%s, which is an '
+                            u'auto entry %s(%s)'
+                            % (self.originPage.site.language(), self.originPage,
+                               page.site.language(), page, dictName, year))
 
                     # Abort processing if the bot is running in autonomous mode.
                     if globalvar.autonomous:
@@ -1239,12 +1289,13 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                     pywikibot.output(u"NOTE: %s does not exist. Skipping."
                                      % page)
                 if page == self.originPage:
-                    # The page we are working on is the page that does not exist.
-                    # No use in doing any work on it in that case.
+                    # The page we are working on is the page that does not
+                    # exist. No use in doing any work on it in that case.
                     for site, count in self.todo.siteCounts():
                         counter.minus(site, count)
                     self.todo = PageTree()
-                    # In some rare cases it might be we already did check some 'automatic' links
+                    # In some rare cases it might be we already did check some
+                    # 'automatic' links
                     self.done = PageTree()
                 continue
 
@@ -1269,7 +1320,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                     pywikibot.output(u"NOTE: %s is %sredirect to %s"
                                      % (page, redir, redirectTargetPage))
                 if self.originPage is None or page == self.originPage:
-                    # the 1st existig page becomes the origin page, if none was supplied
+                    # the 1st existig page becomes the origin page, if none was
+                    # supplied
                     if globalvar.initialredirect:
                         if globalvar.contentsondisk:
                             redirectTargetPage = StoredPage(redirectTargetPage)
@@ -1280,8 +1332,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                             self.todo.add(redirectTargetPage)
                             counter.plus(redirectTargetPage.site)
                     else:
-                        # This is a redirect page to the origin. We don't need to
-                        # follow the redirection.
+                        # This is a redirect page to the origin. We don't need
+                        # to follow the redirection.
                         # In this case we can also stop all hints!
                         for site, count in self.todo.siteCounts():
                             counter.minus(site, count)
@@ -1325,7 +1377,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
 
             # Page exists, isnt a redirect, and is a plain link (no section)
             if self.originPage is None:
-                # the 1st existig page becomes the origin page, if none was supplied
+                # the 1st existig page becomes the origin page, if none was
+                # supplied
                 self.originPage = page
             try:
                 iw = page.interwiki()
@@ -1347,7 +1400,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
 
             duplicate = None
             for p in self.done.filter(page.site):
-                if p != page and p.exists() and not p.isRedirectPage() and not p.isCategoryRedirect():
+                if p != page and p.exists() and \
+                   not p.isRedirectPage() and not p.isCategoryRedirect():
                     duplicate = p
                     break
 
@@ -1357,7 +1411,8 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                     # Ignore the interwiki links.
                     iw = ()
                 if globalvar.lacklanguage:
-                    if globalvar.lacklanguage in [link.site.language() for link in iw]:
+                    if globalvar.lacklanguage in [link.site.language()
+                                                  for link in iw]:
                         iw = ()
                         self.workonme = False
                 if len(iw) < globalvar.minlinks:
@@ -1365,8 +1420,9 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                     self.workonme = False
 
             elif globalvar.autonomous and duplicate and not skip:
-                pywikibot.output(u"Stopping work on %s because duplicate pages"\
-                    " %s and %s are found" % (self.originPage, duplicate, page))
+                pywikibot.output(u"Stopping work on %s because duplicate pages"
+                                 " %s and %s are found"
+                                 % (self.originPage, duplicate, page))
                 self.makeForcedStop(counter)
                 try:
                     f = codecs.open(
@@ -1539,15 +1595,15 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                     else:
                         #TODO: allow answer to repeat previous or go back after a mistake
                         answer = pywikibot.inputChoice(u'What should be done?', ['accept', 'reject', 'give up', 'accept all'], ['a', 'r', 'g', 'l'], 'a')
-                    if answer == 'l': # accept all
+                    if answer == 'l':  # accept all
                         acceptall = True
                         answer = 'a'
-                    if answer == 'a': # accept this one
+                    if answer == 'a':  # accept this one
                         result[site] = pages[0]
                         break
-                    elif answer == 'g': # give up
+                    elif answer == 'g':  # give up
                         return None
-                    elif answer == 'r': # reject
+                    elif answer == 'r':  # reject
                         # None acceptable
                         break
         return result
@@ -1576,7 +1632,7 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
             t2 = (((int(time2[0:4]) * 12 + int(time2[4:6])) * 30 +
                    int(time2[6:8])) * 24 + int(time2[8:10])) * 60 + \
                    int(time2[10:12])
-            return abs(t2-t1)
+            return abs(t2 - t1)
 
         if not self.isDone():
             raise "Bugcheck: finish called before done"
@@ -1604,7 +1660,7 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
         pywikibot.output(u"======Post-processing %s======" % self.originPage)
         # Assemble list of accepted interwiki links
         new = self.assemble()
-        if new is None: # User said give up
+        if new is None:  # User said give up
             pywikibot.output(u"======Aborted processing %s======"
                              % self.originPage)
             return
@@ -1629,7 +1685,7 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
             frgnSiteDone = False
 
             for siteCode in lclSite.family.languages_by_size:
-                site = pywikibot.getSite(code = siteCode)
+                site = pywikibot.getSite(siteCode)
                 if (not lclSiteDone and site == lclSite) or \
                    (not frgnSiteDone and site != lclSite and site in new):
                     if site == lclSite:
@@ -1639,14 +1695,14 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                             if self.replaceLinks(new[site], new):
                                 updatedSites.append(site)
                             if site != lclSite:
-                                 frgnSiteDone = True
+                                frgnSiteDone = True
                         except SaveError:
                             notUpdatedSites.append(site)
                         except GiveUpOnPage:
                             break
                 elif not globalvar.strictlimittwo and site in new \
                      and site != lclSite:
-                    old={}
+                    old = {}
                     try:
                         for page in new[site].interwiki():
                             old[page.site] = page
@@ -1655,12 +1711,12 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                                          % new[site])
                         continue
                     mods, mcomment, adding, removing, modifying \
-                          = compareLanguages(old, new, insite = lclSite)
+                          = compareLanguages(old, new, insite=lclSite)
                     if (len(removing) > 0 and not globalvar.autonomous) or \
                        (len(modifying) > 0 and self.problemfound) or \
                        len(old) == 0 or \
-                       (globalvar.needlimit and \
-                        len(adding) + len(modifying) >= globalvar.needlimit +1):
+                       (globalvar.needlimit and
+                        len(adding) + len(modifying) >= globalvar.needlimit + 1):
                         try:
                             if self.replaceLinks(new[site], new):
                                 updatedSites.append(site)
@@ -1687,7 +1743,7 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                    (page.site.sitename() == 'wikipedia:is' or
                     page.site.sitename() == 'wikipedia:zh' and
                     page.namespace() == 10):
-                    old={}
+                    old = {}
                     try:
                         for mypage in new[page.site].interwiki():
                             old[mypage.site] = mypage
@@ -1713,7 +1769,7 @@ u'WARNING: %s is in namespace %i, but %s is in namespace %i. Follow it anyway?'
                             diff = minutesDiff(page.editTime(),
                                                time.strftime("%Y%m%d%H%M%S",
                                                              time.gmtime()))
-                            if diff > 30*24*60:
+                            if diff > 30 * 24 * 60:
                                 smallWikiAllowed = True
                             else:
                                 pywikibot.output(
@@ -1842,7 +1898,7 @@ u'NOTE: number of edits are restricted at %s'
                 del new[stmp]
 
         # Put interwiki links into a map
-        old={}
+        old = {}
         for page2 in interwikis:
             old[page2.site] = page2
 
@@ -1867,7 +1923,7 @@ u'NOTE: number of edits are restricted at %s'
                    globalvar.cleanup and \
                    unicode(rmPage) not in globalvar.remove or \
                    rmPage.site.lang in ['hak', 'hi', 'cdo', 'sa'] and \
-                   pywikibot.unicode_error: #work-arround for bug #3081100 (do not remove affected pages)
+                   pywikibot.unicode_error:  # work-arround for bug #3081100 (do not remove affected pages)
                     new[rmsite] = rmPage
                     pywikibot.output(
                         u"WARNING: %s is either deleted or has a mismatching disambiguation state."
@@ -2068,6 +2124,7 @@ u'\03{lightred}WARNING: This may be false positive due to unicode bug #3081100\0
         except (socket.error, IOError):
             pywikibot.output(u'ERROR: could not report backlinks')
 
+
 class InterwikiBot(object):
     """A class keeping track of a list of subjects, controlling which pages
        are queried from which languages when."""
@@ -2084,32 +2141,34 @@ class InterwikiBot(object):
         self.pageGenerator = None
         self.generated = 0
 
-    def add(self, page, hints = None):
+    def add(self, page, hints=None):
         """Add a single subject to the list"""
-        subj = Subject(page, hints = hints)
+        subj = Subject(page, hints=hints)
         self.subjects.append(subj)
         for site, count in subj.openSites():
             # Keep correct counters
             self.plus(site, count)
 
-    def setPageGenerator(self, pageGenerator, number = None, until = None):
+    def setPageGenerator(self, pageGenerator, number=None, until=None):
         """Add a generator of subjects. Once the list of subjects gets
            too small, this generator is called to produce more Pages"""
         self.pageGenerator = pageGenerator
         self.generateNumber = number
         self.generateUntil = until
 
-    def dump(self, append = True):
+    def dump(self, append=True):
         site = pywikibot.getSite()
-        dumpfn = pywikibot.config.datafilepath(
-                     'interwiki-dumps',
-                     'interwikidump-%s-%s.txt' % (site.family.name, site.lang))
-        if append: mode = 'appended'
-        else: mode = 'written'
+        dumpfn = pywikibot.config.datafilepath('interwiki-dumps',
+                                               'interwikidump-%s-%s.txt'
+                                               % (site.family.name, site.lang))
+        if append:
+            mode = 'appended'
+        else:
+            mode = 'written'
         f = codecs.open(dumpfn, mode[0], 'utf-8')
         for subj in self.subjects:
             if subj.originPage:
-                f.write(subj.originPage.title(asLink=True)+'\n')
+                f.write(subj.originPage.title(asLink=True) + '\n')
         f.close()
         pywikibot.output(u'Dump %s (%s) %s.' % (site.lang, site.family.name, mode))
         return dumpfn
@@ -2166,10 +2225,10 @@ class InterwikiBot(object):
                 if self.generateUntil:
                     until = self.generateUntil
                     if page.site.lang not in page.site.family.nocapitalize:
-                        until = until[0].upper()+until[1:]
+                        until = until[0].upper() + until[1:]
                     if page.title(withNamespace=False) > until:
                         raise StopIteration
-                self.add(page, hints = globalvar.hints)
+                self.add(page, hints=globalvar.hints)
                 self.generated += 1
                 if self.generateNumber:
                     if self.generated >= self.generateNumber:
@@ -2218,12 +2277,14 @@ class InterwikiBot(object):
             # Can we make more home-language queries by adding subjects?
             if self.pageGenerator and mycount < globalvar.maxquerysize:
                 timeout = 60
-                while timeout<3600:
+                while timeout < 3600:
                     try:
                         self.generateMore(globalvar.maxquerysize - mycount)
                     except pywikibot.ServerError:
                         # Could not extract allpages special page?
-                        pywikibot.output(u'ERROR: could not retrieve more pages. Will try again in %d seconds'%timeout)
+                        pywikibot.output(
+                            u'ERROR: could not retrieve more pages. Will try again in %d seconds'
+                            % timeout)
                         time.sleep(timeout)
                         timeout *= 2
                     else:
@@ -2281,7 +2342,7 @@ class InterwikiBot(object):
     def queryStep(self):
         self.oneQuery()
         # Delete the ones that are done now.
-        for i in xrange(len(self.subjects)-1, -1, -1):
+        for i in xrange(len(self.subjects) - 1, -1, -1):
             subj = self.subjects[i]
             if subj.isDone():
                 subj.finish()
@@ -2310,6 +2371,7 @@ class InterwikiBot(object):
 
     def __len__(self):
         return len(self.subjects)
+
 
 def compareLanguages(old, new, insite):
 
@@ -2362,7 +2424,8 @@ def compareLanguages(old, new, insite):
 
     return mods, mcomment, adding, removing, modifying
 
-def botMayEdit (page):
+
+def botMayEdit(page):
     tmpl = []
     try:
         tmpl, loc = moved_links[page.site.lang]
@@ -2376,11 +2439,12 @@ def botMayEdit (page):
         pass
     tmpl += ignoreTemplates['_default']
     if tmpl != []:
-        templates = page.templatesWithParams(get_redirect=True);
+        templates = page.templatesWithParams(get_redirect=True)
         for template in templates:
             if template[0].lower() in tmpl:
                 return False
     return True
+
 
 def readWarnfile(filename, bot):
     import warnfile
@@ -2388,10 +2452,14 @@ def readWarnfile(filename, bot):
     # we won't use removeHints
     (hints, removeHints) = reader.getHints()
     for page, pagelist in hints.iteritems():
-        # The WarnfileReader gives us a list of pagelinks, but titletranslate.py expects a list of strings, so we convert it back.
-        # TODO: This is a quite ugly hack, in the future we should maybe make titletranslate expect a list of pagelinks.
-        hintStrings = ['%s:%s' % (hintedPage.site.language(), hintedPage.title()) for hintedPage in pagelist]
-        bot.add(page, hints = hintStrings)
+        # The WarnfileReader gives us a list of pagelinks, but titletranslate.py
+        # expects a list of strings, so we convert it back.
+        # TODO: This is a quite ugly hack, in the future we should maybe make
+        # titletranslate expect a list of pagelinks.
+        hintStrings = ['%s:%s' % (hintedPage.site.language(),
+                                  hintedPage.title()) for hintedPage in pagelist]
+        bot.add(page, hints=hintStrings)
+
 
 def main():
     singlePageTitle = []
@@ -2408,7 +2476,7 @@ def main():
     optContinue = False
     optRestore = False
     restoredFiles = []
-    File2Restore  = []
+    File2Restore = []
     dumpFileName = ''
     append = True
     newPages = None
@@ -2478,7 +2546,7 @@ def main():
         site = pywikibot.getSite()
         try:
             mainpagename = site.siteinfo()['mainpage']
-        except TypeError: #pywikibot module handle
+        except TypeError:  # pywikibot module handle
             mainpagename = site.siteinfo['mainpage']
         globalvar.skip.add(pywikibot.Page(site, mainpagename))
     except pywikibot.Error:
@@ -2498,7 +2566,8 @@ def main():
             namespaces = []
         else:
             ns = 'all'
-        hintlessPageGen = pagegenerators.NewpagesPageGenerator(newPages, namespace=ns)
+        hintlessPageGen = pagegenerators.NewpagesPageGenerator(newPages,
+                                                               namespace=ns)
 
     elif optRestore or optContinue or globalvar.restoreAll:
         site = pywikibot.getSite()
@@ -2507,7 +2576,7 @@ def main():
             for FileName in glob.iglob('interwiki-dumps/interwikidump-*.txt'):
                 s = FileName.split('\\')[1].split('.')[0].split('-')
                 sitename = s[1]
-                for i in xrange(0,2):
+                for i in xrange(0, 2):
                     s.remove(s[0])
                 sitelang = '-'.join(s)
                 if site.family.name == sitename:
@@ -2515,16 +2584,19 @@ def main():
         else:
             File2Restore.append([site.family.name, site.lang])
         for sitename, sitelang in File2Restore:
-            dumpfn = pywikibot.config.datafilepath(
-                               'interwiki-dumps',
-                               u'interwikidump-%s-%s.txt'
-                                 % (sitename, sitelang))
-            pywikibot.output(u'Reading interwikidump-%s-%s.txt' % (sitename, sitelang))
+            dumpfn = pywikibot.config.datafilepath('interwiki-dumps',
+                                                   u'interwikidump-%s-%s.txt'
+                                                   % (sitename, sitelang))
+            pywikibot.output(u'Reading interwikidump-%s-%s.txt'
+                             % (sitename, sitelang))
             site = pywikibot.getSite(sitelang, sitename)
             if not hintlessPageGen:
-                hintlessPageGen = pagegenerators.TextfilePageGenerator(dumpfn, site)
+                hintlessPageGen = pagegenerators.TextfilePageGenerator(dumpfn,
+                                                                       site)
             else:
-                hintlessPageGen = pagegenerators.CombinedPageGenerator([hintlessPageGen,pagegenerators.TextfilePageGenerator(dumpfn, site)])
+                hintlessPageGen = pagegenerators.CombinedPageGenerator(
+                    [hintlessPageGen,
+                     pagegenerators.TextfilePageGenerator(dumpfn, site)])
             restoredFiles.append(dumpfn)
         if hintlessPageGen:
             hintlessPageGen = pagegenerators.DuplicateFilterPageGenerator(hintlessPageGen)
@@ -2540,10 +2612,14 @@ def main():
                     nextPage = lastPage
                     namespace = page.namespace()
             if nextPage == "!":
-                pywikibot.output(u"Dump file is empty?! Starting at the beginning.")
+                pywikibot.output(
+                    u"Dump file is empty?! Starting at the beginning.")
             else:
                 nextPage += '!'
-            hintlessPageGen = pagegenerators.CombinedPageGenerator([hintlessPageGen, pagegenerators.AllpagesPageGenerator(nextPage, namespace, includeredirects = False)])
+            hintlessPageGen = pagegenerators.CombinedPageGenerator(
+                [hintlessPageGen,
+                 pagegenerators.AllpagesPageGenerator(nextPage, namespace,
+                                                      includeredirects=False)])
         if not hintlessPageGen:
             pywikibot.output(u'No Dumpfiles found.')
             return
@@ -2556,7 +2632,7 @@ def main():
         if len(namespaces) > 0:
             hintlessPageGen = pagegenerators.NamespaceFilterPageGenerator(hintlessPageGen, namespaces)
         # we'll use iter() to create make a next() function available.
-        bot.setPageGenerator(iter(hintlessPageGen), number = number, until=until)
+        bot.setPageGenerator(iter(hintlessPageGen), number=number, until=until)
     elif warnfile:
         # TODO: filter namespaces if -namespace parameter was used
         readWarnfile(warnfile, bot)
@@ -2568,7 +2644,7 @@ def main():
             singlePage = pywikibot.Page(pywikibot.getSite(), singlePageTitle)
         else:
             singlePage = None
-        bot.add(singlePage, hints = globalvar.hints)
+        bot.add(singlePage, hints=globalvar.hints)
 
     try:
         try:
@@ -2595,7 +2671,7 @@ def main():
                 pass
 
 #===========
-globalvar=Global()
+globalvar = Global()
 
 if __name__ == "__main__":
     try:
